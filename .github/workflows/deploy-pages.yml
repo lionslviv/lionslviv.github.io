@@ -26,9 +26,9 @@ jobs:
       - run: npm ci
       - name: Build
         env:
-          # Без власного домену сайт живе в /<назва-репо>/.
-          # Коли підключите leopolislions.org.ua: BASE_PATH=/ і файл public/CNAME.
-          BASE_PATH: ${{ vars.BASE_PATH || format('/{0}/', github.event.repository.name) }}
+          # Репозиторій <owner>.github.io публікується в корінь, інші в /<назва-репо>/.
+          # Власний домен: BASE_PATH=/, SITE_URL=https://домен і файл public/CNAME.
+          BASE_PATH: ${{ vars.BASE_PATH || (github.event.repository.name == format('{0}.github.io', github.repository_owner) && '/' || format('/{0}/', github.event.repository.name)) }}
           SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
         run: npm run build
       - uses: actions/upload-pages-artifact@v3

@@ -15,7 +15,7 @@ const esc = (s = '') => s.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/
 export function icsEvent(e: IcsEvent): string {
   return [
     'BEGIN:VEVENT',
-    `UID:${e.uid}@leopolislions.org.ua`,
+    `UID:${e.uid}@lviv-international-lions`,
     `DTSTAMP:${stamp(new Date().toISOString())}`,
     `DTSTART:${stamp(e.start)}`,
     `DTEND:${stamp(e.end)}`,
