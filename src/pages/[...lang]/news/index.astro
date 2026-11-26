@@ -4,7 +4,6 @@ import PageHead from '../../../components/PageHead.astro';
 import Photo from '../../../components/Photo.astro';
 import { news } from '../../../data/content';
 import { dateLong } from '../../../lib/format';
-import { u } from '../../../lib/url';
 import { langPaths, langOf, lp, tr, t } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
@@ -13,9 +12,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
 ---
 <Base title={T.nav.news} description={s('News from Lviv International Lions Club: project reports, event announcements, stories of people.', 'Новини Lviv International Lions Club: звіти про проєкти, анонси подій, історії людей.')}>
-  <PageHead title={T.nav.news} lead={s('Project reports, event announcements and stories of the people we work alongside.', 'Звіти про проєкти, анонси подій та історії людей, поруч з якими ми працюємо.')}>
-    <a href={u(lang === 'uk' ? '/uk/news.xml' : '/news.xml')} class="link mt-6 inline-block text-[15px]">{s('Subscribe via RSS', 'Підписатися через RSS')}</a>
-  </PageHead>
+  <PageHead title={T.nav.news} lead={s('Project reports, event announcements and stories of the people we work alongside.', 'Звіти про проєкти, анонси подій та історії людей, поруч з якими ми працюємо.')} />
   <section class="wrap pb-24">
     <!-- Пости, опубліковані в демо-адмінці, з’являються тут (localStorage) -->
     <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2" data-local-posts hidden></ul>

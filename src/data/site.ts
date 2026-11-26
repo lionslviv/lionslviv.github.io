@@ -28,11 +28,12 @@ export const club = {
   social: [
     { label: 'Facebook', href: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/' },
   ],
-  bank: {
-    recipient: { en: 'NGO "Lviv International Lions Club" (name to be confirmed)', uk: 'ГО "Львівський міжнародний Лайонс клуб" (назва уточнюється)' } as L,
-    iban: 'UA00 0000 0000 0000 0000 0000 0000 0',
-    edrpou: '00000000',
-    purpose: { en: 'Charitable donation for statutory activities', uk: 'Благодійний внесок на статутну діяльність' } as L,
+  // Реальні реквізити для донатів (надав клуб 26.11.2026): банка Monobank
+  donate: {
+    jarName: 'Lions club Lviv box',
+    jarUrl: 'https://send.monobank.ua/jar/82D2HNJ6Ak',
+    card: '4874 1000 3541 7933',
+    qr: '/donate/monobank-jar-qr.svg', // згенеровано з jarUrl, перевірено декодуванням
   },
 };
 

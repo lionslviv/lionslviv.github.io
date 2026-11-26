@@ -1,22 +1,27 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import PageHead from '../../../components/PageHead.astro';
-import { events, kindLabel } from '../../../data/content';
+import { events, kindLabel, albums } from '../../../data/content';
 import { club } from '../../../data/site';
 import { u } from '../../../lib/url';
-import { dayNum, monthShort, weekday, time, dateLong, monthTitle } from '../../../lib/format';
+import { dayNum, monthShort, weekday, time, monthTitle } from '../../../lib/format';
 import { langPaths, langOf, lp, tr, t } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 
-const now = new Date('2026-11-26T12:00:00+02:00'); // демо-"сьогодні"
-const upcoming = events.filter((e) => new Date(e.start) >= now).sort((a, b) => a.start.localeCompare(b.start));
-const past = events.filter((e) => new Date(e.start) < now).sort((a, b) => b.start.localeCompare(a.start));
+const now = new Date('2026-11-26T12:00:00+02:00'); // демо-"сьогодні"; у продакшні new Date()
+const sorted = [...events].sort((a, b) => a.start.localeCompare(b.start));
+const upcoming = sorted.filter((e) => new Date(e.start) >= now);
+const past = sorted.filter((e) => new Date(e.start) < now).reverse();
+const albumOf = (slug: string) => albums.find((a) => a.eventSlug === slug);
 
 const monthKey = (iso: string) => iso.slice(0, 7);
 const groups = Object.entries(Object.groupBy(upcoming, (e) => monthKey(e.start)));
+// У календарі показуємо всі місяці з подіями, і минулими, і майбутніми
+const calMonths = Object.entries(Object.groupBy(sorted, (e) => monthKey(e.start)));
+const todayKey = { y: 2026, m: 11, d: 26 };
 const wd = (iso: string) => (lang === 'uk' ? weekday(iso, lang).slice(0, 2) : weekday(iso, lang).slice(0, 3));
 const days = lang === 'uk' ? ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -28,23 +33,38 @@ function grid(key: string) {
   const lead = (first.getUTCDay() + 6) % 7;
   return [...Array(lead).fill(null), ...Array.from({ length: n }, (_, i) => i + 1)];
 }
+
+// Підписка на календар: webcal для Apple/Outlook, cid для Google Calendar
+const icsPath = u(lang === 'uk' ? '/uk/events.ics' : '/events.ics');
+const icsAbs = new URL(icsPath, Astro.site).toString();
+const webcal = icsAbs.replace(/^https?:/, 'webcal:');
+const googleSub = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
+const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be confirmed', 'Час уточнюється') : time(e.start, lang));
 ---
 <Base title={T.nav.events} description={s('Meetings and events of Lviv International Lions Club.', 'Розклад зустрічей і подій Lviv International Lions Club.')}>
-  <PageHead title={s('Events and meetings', 'Події та зустрічі')} lead={`${tr(lang, club.meetingRule)}. ${s('Open events are for everyone; club meetings are visible to members after signing in.', 'Відкриті події доступні всім, збори клубу бачать члени після входу.')}`}>
-    <div class="mt-8 flex flex-wrap gap-3">
+  <PageHead title={s('Events and meetings', 'Події та зустрічі')} lead={s(`Our meetings are held in English at ${tr('en', club.meetingPlace)}. Guests are welcome: write to us before you come.`, `Зустрічі проходять англійською в готелі Leopolis, вул. Театральна, 16, Львів. Гості запрошені: напишіть нам перед візитом.`)}>
+    <div class="mt-8 flex flex-wrap items-center gap-3">
       <div class="inline-flex rounded-full bg-[var(--bg-alt)] p-1" role="tablist" aria-label={s('View', 'Вигляд')}>
-        <button class="btn btn-sm bg-[var(--surface)] shadow-sm" role="tab" aria-selected="true" data-view="list">{s('List', 'Список')}</button>
-        <button class="btn btn-sm" role="tab" aria-selected="false" data-view="cal">{s('Calendar', 'Календар')}</button>
+        <button type="button" class="btn btn-sm bg-[var(--surface)] shadow-sm" role="tab" aria-selected="true" aria-controls="pane-list" data-view="list">{s('List', 'Список')}</button>
+        <button type="button" class="btn btn-sm" role="tab" aria-selected="false" aria-controls="pane-cal" data-view="cal">{s('Calendar', 'Календар')}</button>
       </div>
-      <a href={u(lang === 'uk' ? '/uk/events.ics' : '/events.ics')} class="btn btn-quiet btn-sm">{s('Subscribe to calendar', 'Підписатися на календар')}</a>
+      <details class="relative" data-sub>
+        <summary class="btn btn-quiet btn-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">{s('Subscribe to calendar', 'Підписатися на календар')}</summary>
+        <div class="absolute left-0 z-20 mt-2 grid w-[min(18rem,calc(100vw-2.5rem))] gap-1 rounded-2xl bg-[var(--surface)] p-2 shadow-lg ring-1 ring-[var(--line)]">
+          <a href={googleSub} target="_blank" rel="noopener" class="rounded-xl px-3 py-3 text-[15px] font-[560] hover:bg-[var(--bg-alt)]">Google Calendar</a>
+          <a href={webcal} class="rounded-xl px-3 py-3 text-[15px] font-[560] hover:bg-[var(--bg-alt)]">{s('Apple Calendar / Outlook', 'Apple Calendar / Outlook')}</a>
+          <a href={icsPath} download class="rounded-xl px-3 py-3 text-[15px] font-[560] hover:bg-[var(--bg-alt)]">{s('Download .ics file', 'Завантажити файл .ics')}</a>
+        </div>
+      </details>
     </div>
   </PageHead>
 
-  <section class="wrap pb-24" data-pane="list">
+  <section id="pane-list" class="wrap pb-24" data-pane="list" role="tabpanel">
     <p class="panel mb-10 p-5 text-[15px]" data-members-note hidden>
       {s('The schedule includes members-only meetings.', 'У розкладі є зустрічі лише для членів клубу.')} <a class="link" href={lp(lang, '/login')}>{T.signIn}</a> {s('to see them.', ', щоб їх бачити.')}
     </p>
     <div data-local-events></div>
+    {groups.length === 0 && <p class="t-lead mb-14">{s('New meetings will be announced here soon.', 'Нові зустрічі скоро з’являться тут.')}</p>}
     {groups.map(([key, list]) => (
       <div class="mb-14">
         <h2 class="t-h3 mb-4 first-letter:uppercase">{monthTitle(key, lang)}</h2>
@@ -62,7 +82,8 @@ function grid(key: string) {
                     {e.visibility === 'members' && <span class="badge">{T.forMembers}</span>}
                     {e.demo && <span class="badge badge-gold">{T.demo}</span>}
                   </p>
-                  <p class="text-soft">{e.timeUnknown ? '' : `${time(e.start, lang)}. `}{tr(lang, e.location)}</p>
+                  <p class="text-soft">{when(e)}. {tr(lang, e.location)}</p>
+                  <p class="hidden max-w-[60ch] pt-1 text-[15px] text-soft md:block">{tr(lang, e.description)}</p>
                 </div>
                 <span class="badge badge-blue col-start-2 w-fit md:col-start-auto">{tr(lang, kindLabel[e.kind])}</span>
               </a>
@@ -71,34 +92,77 @@ function grid(key: string) {
         </ul>
       </div>
     ))}
-    <h2 class="t-h3 mb-4 mt-20">{s('Past events', 'Минулі події')}</h2>
-    <ul class="grid gap-2">
-      {past.map((e) => <li><a class="link" href={lp(lang, `/events/${e.slug}`)}>{tr(lang, e.title)}</a> <span class="text-soft">{dateLong(e.start, lang)}</span></li>)}
-    </ul>
+
+    {past.length > 0 && (
+      <div>
+        <h2 class="t-h3 mb-4 mt-20">{s('Past meetings', 'Минулі зустрічі')}</h2>
+        <ul class="divide-y divide-[var(--line)] border-y border-[var(--line)]">
+          {past.map((e) => {
+            const al = albumOf(e.slug);
+            const cover = al?.photos[0];
+            return (
+              <li>
+                <a href={lp(lang, `/events/${e.slug}`)} class="group grid grid-cols-[72px_1fr] items-center gap-5 py-5 md:grid-cols-[96px_1fr_auto] md:gap-8">
+                  <div class="leading-none text-soft">
+                    <p class="t-num text-[34px] font-[720] tracking-[-0.03em]">{dayNum(e.start, lang)}</p>
+                    <p class="t-small mt-1">{monthShort(e.start, lang)}, {wd(e.start)}</p>
+                  </div>
+                  <div>
+                    <p class="text-[19px] font-[620] group-hover:text-[var(--accent)]">{tr(lang, e.title)}</p>
+                    <p class="t-small mt-1">{tr(lang, e.location)}{al ? ` · ${al.photos.length} ${T.photos}` : ''}</p>
+                  </div>
+                  {cover?.src && <img src={u(cover.src)} alt="" width="160" height="110" loading="lazy" decoding="async" class="col-start-2 h-[72px] w-[108px] rounded-xl object-cover md:col-start-auto md:h-[88px] md:w-[132px]" />}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    )}
   </section>
 
-  <section class="wrap grid gap-14 pb-24 lg:grid-cols-2" data-pane="cal" hidden>
-    {groups.map(([key, list]) => (
-      <div>
-        <h2 class="t-h3 mb-5 first-letter:uppercase">{monthTitle(key, lang)}</h2>
-        <div class="grid grid-cols-7 gap-1 text-center text-[13px] text-soft">
-          {days.map((d) => <span class="py-2">{d}</span>)}
+  <section id="pane-cal" class="wrap grid gap-14 pb-24 lg:grid-cols-2" data-pane="cal" role="tabpanel" hidden>
+    {calMonths.map(([key, list]) => {
+      const [y, m] = key.split('-').map(Number);
+      return (
+        <div>
+          <h2 class="t-h3 mb-5 first-letter:uppercase">{monthTitle(key, lang)}</h2>
+          <div class="grid grid-cols-7 gap-1 text-center text-[13px] text-soft">
+            {days.map((d) => <span class="py-2">{d}</span>)}
+          </div>
+          <div class="grid grid-cols-7 gap-1">
+            {grid(key).map((d) => {
+              const hits = d ? list!.filter((e) => Number(dayNum(e.start, lang)) === d) : [];
+              const isToday = d === todayKey.d && m === todayKey.m && y === todayKey.y;
+              return d ? (
+                <div class={`relative min-h-[48px] rounded-xl p-1.5 text-left sm:min-h-[84px] sm:p-2 ${hits.length ? 'bg-[var(--bg-alt)]' : ''} ${isToday ? 'ring-2 ring-[var(--color-gold)]' : ''}`}>
+                  <p class={`t-num text-[15px] ${hits.length ? 'font-[700]' : 'text-soft'}`}>{d}</p>
+                  {hits.map((e) => {
+                    const isPast = new Date(e.start) < now;
+                    const tone = e.visibility === 'members' ? 'bg-[var(--line)]' : isPast ? 'bg-[var(--color-lions-sky)] text-white' : 'bg-[var(--color-lions)] text-white';
+                    return (
+                      <a href={lp(lang, `/events/${e.slug}`)} data-visibility={e.visibility} class="block" title={tr(lang, e.title)} aria-label={tr(lang, e.title)}>
+                        <span class={`absolute inset-0 sm:hidden`} aria-hidden="true"></span>
+                        <span class={`mt-1 block h-1.5 w-1.5 rounded-full sm:hidden ${isPast ? 'bg-[var(--color-lions-sky)]' : 'bg-[var(--color-lions)]'}`} aria-hidden="true"></span>
+                        <span class={`mt-1 hidden rounded-md px-1.5 py-1 text-[12px] font-[560] leading-[1.2] [overflow-wrap:anywhere] sm:block ${tone}`}>{tr(lang, e.title)}</span>
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : <div />;
+            })}
+          </div>
+          <ul class="mt-4 grid gap-2 sm:hidden">
+            {list!.map((e) => (
+              <li><a href={lp(lang, `/events/${e.slug}`)} class="flex items-baseline gap-3 rounded-xl bg-[var(--bg-alt)] px-4 py-3">
+                <span class="t-num w-6 shrink-0 text-[17px] font-[700]">{dayNum(e.start, lang)}</span>
+                <span class="text-[16px] font-[600]">{tr(lang, e.title)}</span>
+              </a></li>
+            ))}
+          </ul>
         </div>
-        <div class="grid grid-cols-7 gap-1">
-          {grid(key).map((d) => {
-            const hits = d ? list!.filter((e) => Number(dayNum(e.start, lang)) === d) : [];
-            return d ? (
-              <div class={`min-h-[78px] rounded-xl p-2 text-left ${hits.length ? 'bg-[var(--bg-alt)]' : ''}`}>
-                <p class={`t-num text-[15px] ${hits.length ? 'font-[700]' : 'text-soft'}`}>{d}</p>
-                {hits.map((e) => (
-                  <a href={lp(lang, `/events/${e.slug}`)} data-visibility={e.visibility} class={`mt-1 block truncate rounded-md px-1.5 py-0.5 text-[12px] font-[560] ${e.visibility === 'members' ? 'bg-[var(--line)]' : 'bg-[var(--color-lions)] text-white'}`} title={tr(lang, e.title)}>{tr(lang, e.title)}</a>
-                ))}
-              </div>
-            ) : <div />;
-          })}
-        </div>
-      </div>
-    ))}
+      );
+    })}
   </section>
 </Base>
 
@@ -108,10 +172,14 @@ function grid(key: string) {
   document.addEventListener('astro:page-load', () => {
     const tabs = document.querySelectorAll<HTMLButtonElement>('[data-view]');
     if (!tabs.length) return;
-    tabs.forEach((t) => t.addEventListener('click', () => {
-      tabs.forEach((x) => { const on = x === t; x.setAttribute('aria-selected', String(on)); x.classList.toggle('bg-[var(--surface)]', on); x.classList.toggle('shadow-sm', on); });
-      document.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== t.dataset.view));
-    }));
+    const show = (view: string) => {
+      tabs.forEach((x) => { const on = x.dataset.view === view; x.setAttribute('aria-selected', String(on)); x.classList.toggle('bg-[var(--surface)]', on); x.classList.toggle('shadow-sm', on); });
+      document.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== view));
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => { show(t.dataset.view!); history.replaceState(history.state, '', t.dataset.view === 'cal' ? '#calendar' : location.pathname); }));
+    if (location.hash === '#calendar') show('cal');
+    const sub = document.querySelector<HTMLDetailsElement>('[data-sub]');
+    if (sub) document.addEventListener('click', (e) => { if (sub.open && !sub.contains(e.target as Node)) sub.open = false; });
     const member = can.memberArea(getUser());
     let hiddenCount = 0;
     document.querySelectorAll<HTMLElement>('[data-visibility="members"]').forEach((el) => { el.hidden = !member; if (!member) hiddenCount++; });

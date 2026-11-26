@@ -9,10 +9,10 @@ interface Props { inverse?: boolean }
 const { inverse = false } = Astro.props;
 const lang = langFromUrl(Astro.url);
 ---
-<a href={lp(lang, '/')} class="flex items-center gap-3 leading-none" aria-label={lang === 'uk' ? `${club.name}, на головну` : `${club.name}, home`}>
-  {!inverse && <BrandAsset name="emblem" alt={lang === 'uk' ? 'Емблема Lions Clubs International' : 'Lions Clubs International emblem'} height={40} />}
+<a href={lp(lang, '/')} class="flex min-w-0 items-center gap-2 leading-none sm:gap-3" aria-label={lang === 'uk' ? `${club.name}, на головну` : `${club.name}, home`}>
+  {!inverse && <BrandAsset name="emblem" alt={lang === 'uk' ? 'Емблема Lions Clubs International' : 'Lions Clubs International emblem'} height={40} class="max-sm:!h-[34px]" />}
   <span class="flex flex-col">
     <span class={`text-[11.5px] font-[560] tracking-[0.01em] ${inverse ? 'text-white/70' : 'text-soft'}`}>Lions Club</span>
-    <span class={`whitespace-nowrap text-[16px] font-[760] tracking-[-0.02em] sm:text-[18px] ${inverse ? 'text-white' : ''}`} style="font-stretch:112%">{club.shortName}</span>
+    <span class={`whitespace-nowrap text-[15px] font-[760] tracking-[-0.02em] min-[400px]:text-[16px] sm:text-[18px] ${inverse ? 'text-white' : ''}`} style="font-stretch:112%">{club.shortName}</span>
   </span>
 </a>

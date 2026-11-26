@@ -125,6 +125,7 @@ body {
 .btn[disabled] { opacity: .5; cursor: not-allowed; }
 
 .link { color: var(--accent); font-weight: 560; text-decoration: none; }
+@media (pointer: coarse) { a.link.inline-block, a.link.block { padding-block: .35rem; } }
 .link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------------- Поверхні ---------------- */

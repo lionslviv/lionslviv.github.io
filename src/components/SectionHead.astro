@@ -9,5 +9,5 @@ const lang = langFromUrl(Astro.url);
     <h2 class="t-h2">{title}</h2>
     {lead && <p class="t-lead">{lead}</p>}
   </div>
-  {href && <a href={lp(lang, href)} class="link shrink-0 text-[17px]">{linkLabel}</a>}
+  {href && <a href={lp(lang, href)} class="link shrink-0 py-2 text-[17px]">{linkLabel}</a>}
 </div>

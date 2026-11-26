@@ -235,9 +235,6 @@ export const kindLabel: Record<Event['kind'], L> = {
 
 export type Album = { slug: string; title: L; date: string; eventSlug?: string; photos: Art[]; note?: L };
 
-const shots = (base: string, n: number, motif: Art['motif']): Art[] =>
-  Array.from({ length: n }, (_, i) => ({ seed: `${base}-${i}`, motif }));
-
 const real = (dir: string, files: [string, number, number][]): Art[] =>
   files.map(([f, w, h]) => ({ seed: `${dir}-${f}`, motif: 'event', src: `/gallery/${dir}/${f}`, w, h }));
 
@@ -245,9 +242,6 @@ export const albums: Album[] = [
   // Реальні альбоми: фото надав клуб (метадані й геолокацію прибрано)
   { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, date: '2026-11-19', eventSlug: 'druha-zustrich', photos: real('druha-zustrich', [['01.jpg', 1600, 900], ['02.jpg', 1200, 1600], ['03.jpg', 900, 1600], ['04.jpg', 1200, 1600], ['05.jpg', 1200, 1600]]) },
   { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, date: '2026-11-05', eventSlug: 'persha-zustrich', photos: real('persha-zustrich', [['01.jpg', 1600, 1200], ['02.jpg', 1600, 1200], ['03.jpg', 900, 1600], ['04.jpg', 900, 1600], ['05.jpg', 900, 1600], ['06.jpg', 900, 1600]]) },
-  { slug: 'zir-levandivka', title: { en: 'Eye screening, Levandivka', uk: 'Перевірка зору, Левандівка' }, date: '2026-11-07', photos: shots('lev', 12, 'people') },
-  { slug: 'heneratory', title: { en: 'Generators for communities', uk: 'Генератори для громад' }, date: '2026-10-24', photos: shots('gen', 7, 'care') },
-  { slug: 'aleia-pamiati', title: { en: 'Memorial alley in Sykhiv', uk: 'Алея пам’яті на Сихові' }, date: '2026-04-12', photos: shots('trees', 10, 'nature') },
 ];
 
 export type Member = { slug: string; name: L; role: L; since: number; field?: L; bio?: L; board: boolean; real?: boolean; photo?: string };

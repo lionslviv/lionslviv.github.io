@@ -5,7 +5,7 @@
 
 Сайт: **https://lionslviv.github.io/** (українська версія: https://lionslviv.github.io/uk/). Публікується автоматично з гілки `main` через GitHub Actions.
 
-Мови: **англійська основна** (`/`, `/about`, ...), **українська** під `/uk/` (`/uk/about`, ...). Перемикач EN/UA у шапці веде на ту саму сторінку іншою мовою; є hreflang, `og:locale`, окремі RSS (`/news.xml`, `/uk/news.xml`) і календарі (`/events.ics`, `/uk/events.ics`). Словник інтерфейсу: `src/i18n/index.ts` (сервер) і `src/scripts/i18n.ts` (браузерні скрипти). Контент у `src/data/*.ts` має поля `{ en, uk }`. Сторінки лежать у `src/pages/[...lang]/` і генеруються для обох мов через `getStaticPaths`.
+Мови: **англійська основна** (`/`, `/about`, ...), **українська** під `/uk/` (`/uk/about`, ...). Перемикач EN/UA у шапці веде на ту саму сторінку іншою мовою; є hreflang, `og:locale`, окремі календарі (`/events.ics`, `/uk/events.ics`). Словник інтерфейсу: `src/i18n/index.ts` (сервер) і `src/scripts/i18n.ts` (браузерні скрипти). Контент у `src/data/*.ts` має поля `{ en, uk }`. Сторінки лежать у `src/pages/[...lang]/` і генеруються для обох мов через `getStaticPaths`.
 
 Стан: **етап 1 (MVP) у демо-режимі.** Усі сторінки, дизайн-система і потоки адмінки працюють без бекенду: дані адмінки, коментарі й відгуки зберігаються в браузері (localStorage). Контент умовний і позначений як демо.
 
@@ -59,7 +59,7 @@ src/
   scripts/store.ts    демо-сховище (localStorage). Замінюється на Supabase-клієнт з тим самим API
   components/         Header, Footer, Skyline (силует Львова), Photo (плейсхолдери), Comments, ...
   layouts/Base.astro  мета-теги, schema.org, View Transitions
-  pages/              усі сторінки, /admin, /login, /account, events.ics, news.xml, sitemap.xml
+  pages/              усі сторінки, /admin, /login, /account, events.ics, sitemap.xml
   styles/global.css   дизайн-токени і компоненти
 supabase/migrations/  схема БД з RLS для етапу 2
 ```
