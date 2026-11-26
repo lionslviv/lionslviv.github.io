@@ -1,10 +1,13 @@
 name: CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,3 +17,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+  # Правила доступу Supabase для аноніма (нічого не створюють у базі).
+  # Тести для ролей: tests/rls_roles.sql у Supabase SQL Editor.
+  rls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test tests/

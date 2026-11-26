@@ -241,7 +241,7 @@ const inp = 'input';
     photosCache = ps;
     $('[data-mod-photos]').innerHTML = ps.map((p) => `
       <li class="overflow-hidden rounded-2xl border border-[var(--line)]">
-        <img src="${A.mediaUrl(p.storage_path)}" alt="" loading="lazy" class="aspect-square w-full object-cover" />
+        <img src="${A.esc(A.mediaUrl(p.storage_path))}" alt="" loading="lazy" class="aspect-square w-full object-cover" />
         <div class="grid gap-2 p-3">
           <p class="t-small">${badge(p.status)} ${A.esc(p.album_slug)}</p>
           <div class="flex flex-wrap gap-1.5">

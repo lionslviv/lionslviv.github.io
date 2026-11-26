@@ -41,7 +41,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
     q('[data-body]').innerHTML = paragraphs(pick(p.body_en, p.body_uk));
     // Якщо сторінка вже зібрана статично, ведемо на неї (там коментарі й гарна адреса)
     const c = document.querySelector<HTMLElement>('[data-comments]');
-    if (c) { c.setAttribute('data-comments', p.slug); }
+    if (c) { c.setAttribute('data-comments', p.slug); window.dispatchEvent(new CustomEvent('llp:change')); }
     void cprefix;
   });
 </script>

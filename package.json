@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "brand:import": "node scripts/import-brand-assets.mjs",
-    "brand:fetch": "bash scripts/fetch-brand-assets.sh"
+    "brand:fetch": "bash scripts/fetch-brand-assets.sh",
+    "test": "node --test tests/",
+    "test:ui": "python3 tests/smoke.py"
   },
   "dependencies": {
     "@fontsource-variable/roboto-flex": "^5.3.0",
