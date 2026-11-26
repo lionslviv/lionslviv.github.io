@@ -10,10 +10,10 @@ import { u } from '../../lib/url';
       <p class="text-[17px] font-[560] text-white/75">Lions Clubs International in Lviv, Ukraine</p>
       <h1 class="t-h1 mt-3 max-w-[18ch]">Serving the city of the lion.</h1>
       <p class="mt-5 max-w-[50ch] text-[clamp(1.1rem,1.8vw,1.3rem)] leading-[1.5] text-white/75">
-        Leopolis is the Latin name of Lviv. We are the city’s second Lions club, {club.district}. We run vision screenings for children, deliver generators to communities hit by power outages and mentor young leaders.
+        {club.aboutEn} We are the city’s second Lions club, {club.district}. Leopolis is the Latin name of Lviv, the city of the lion. Our meetings are held in English.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href={`mailto:${club.email}`} class="btn btn-gold">Partner with us</a>
+        <a href={`mailto:${club.email}`} class="btn btn-gold">Join a meeting</a>
         <a href={u('/')} class="btn btn-ghost text-white">Українською</a>
       </div>
     </div>
@@ -24,7 +24,12 @@ import { u } from '../../lib/url';
   </section>
   <section class="section-tight">
     <div class="wrap max-w-[760px]">
-      <p class="t-small">The full English version is planned for stage 3. Lions from other countries can reach us at <a class="link" href={`mailto:${club.email}`}>{club.email}</a>.</p>
+      <dl class="grid gap-6 text-[19px] sm:grid-cols-3">
+        <div><dt class="t-small">Email</dt><dd><a class="link" href={`mailto:${club.email}`}>{club.email}</a></dd></div>
+        <div><dt class="t-small">Phone</dt><dd><a class="link" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phone}</a></dd></div>
+        <div><dt class="t-small">Facebook</dt><dd><a class="link" href={club.social[0].href} target="_blank" rel="noopener">{club.facebookName}</a></dd></div>
+      </dl>
+      <p class="t-small mt-10">The full English version of the site is in progress.</p>
     </div>
   </section>
 </Base>

@@ -12,7 +12,7 @@ const board = members.filter((m) => m.board);
     <div class="wrap relative z-[2] pb-8 pt-[clamp(3rem,7vw,6rem)]">
       <h1 class="t-h1 max-w-[16ch]">Lions у місті лева</h1>
       <p class="mt-5 max-w-[48ch] text-[clamp(1.1rem,1.8vw,1.35rem)] leading-[1.5] text-white/75">
-        Lions Club Lviv Leopolis це другий клуб Lions International у Львові. Ми об’єднуємо людей, які хочуть служити місту системно: з планом, звітом і результатом.
+        Lions Club Lviv Leopolis це другий клуб Lions International у Львові і англомовна спільнота. Ми зосереджуємося на охороні здоров’я та гуманітарній допомозі і служимо місту системно: з планом, звітом і результатом.
       </p>
     </div>
     <div class="relative h-[clamp(7rem,16vw,13rem)]">
@@ -32,8 +32,18 @@ const board = members.filter((m) => m.board);
         <BrandAsset name="signature" alt="Lions International" height={52} />
         <h2 class="t-h2">Хто такі Lions</h2>
         <p class="text-[19px] leading-[1.6]">Lions Clubs International заснували 1917 року в Чикаго. Сьогодні це найбільша у світі мережа сервісних клубів: понад 1,4 мільйона людей у більш ніж 200 країнах і територіях. Девіз: We Serve, «Ми служимо».</p>
-        <p class="text-[19px] leading-[1.6]">Клуби в Україні входять до {club.district}. Ми співпрацюємо з іншими клубами дистрикту і з Lions з усієї Європи.</p>
+        <p class="text-[19px] leading-[1.6]">Клуби в Україні входять до {club.district}. На наших зустрічах бувають гості з інших клубів, зокрема з Lions Club «Kiev Ecology».</p>
       </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-[var(--color-lions)] text-white">
+    <div class="wrap grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end">
+      <div class="space-y-4">
+        <h2 class="t-h2">Англомовний клуб у Львові</h2>
+        <p class="max-w-[52ch] text-[19px] leading-[1.6] text-white/80">Ми спілкуємося англійською, тож до нас легко долучитися людям з різних країн, які живуть або працюють у Львові, і львів’янам, які хочуть служити в міжнародному колі.</p>
+      </div>
+      <p class="text-[19px] leading-[1.6] text-white/80 md:text-right"><span lang="en">{club.aboutEn}</span></p>
     </div>
   </section>
 
@@ -77,9 +87,10 @@ const board = members.filter((m) => m.board);
 
   <section class="section-tight bg-alt">
     <div class="wrap">
-      <h2 class="t-h2 mb-8">Наші пріоритети на 2026-2027</h2>
+      <h2 class="t-h2 mb-3">Наші пріоритети на 2026-2027</h2>
+      <p class="t-lead mb-8 max-w-[56ch]">Охорона здоров’я та гуманітарна допомога. Серед глобальних напрямів Lions це:</p>
       <ul class="flex flex-wrap gap-3">
-        {causes.filter((c) => ['vision', 'humanitarian', 'youth', 'environment'].includes(c.key)).map((c) => (
+        {causes.filter((c) => ['humanitarian', 'vision', 'diabetes', 'cancer'].includes(c.key)).map((c) => (
           <li class="rounded-full bg-[var(--surface)] px-5 py-3 text-[17px] font-[600]">{c.label}</li>
         ))}
       </ul>

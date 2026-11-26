@@ -55,8 +55,9 @@ const kindLabel = { meeting: 'Збори', service: 'Служіння', gala: '�
                   <p class="flex flex-wrap items-center gap-2">
                     <span class="text-[21px] font-[650] tracking-[-0.015em] group-hover:text-[var(--accent)]">{e.title}</span>
                     {e.visibility === 'members' && <span class="badge">для членів клубу</span>}
+                    {e.demo && <span class="badge badge-gold">демо</span>}
                   </p>
-                  <p class="text-soft">{time(e.start)}. {e.location}</p>
+                  <p class="text-soft">{e.timeUnknown ? '' : `${time(e.start)}. `}{e.location}</p>
                 </div>
                 <span class="badge badge-blue col-start-2 w-fit md:col-start-auto">{kindLabel[e.kind]}</span>
               </a>

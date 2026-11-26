@@ -22,7 +22,7 @@ const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
               <Photo art={n.cover} alt={n.title} ratio={i === 0 ? '16 / 10' : '3 / 2'} class="transition-transform duration-700 group-hover:scale-[1.03]" />
             </div>
             <div class="space-y-3">
-              <time class="t-small" datetime={n.date}>{dateLong(n.date)}</time>
+              <p class="flex flex-wrap items-center gap-2"><time class="t-small" datetime={n.date}>{dateLong(n.date)}</time>{n.demo && <span class="badge badge-gold">демо</span>}</p>
               <h2 class={`${i === 0 ? 't-h2' : 't-h3'} group-hover:text-[var(--accent)]`} transition:name={`title-${n.slug}`}>{n.title}</h2>
               <p class="text-soft">{n.excerpt}</p>
             </div>

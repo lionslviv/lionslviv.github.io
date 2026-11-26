@@ -18,6 +18,7 @@ const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
     {ev && <a class="link mt-4 inline-block" href={u(`/events/${ev.slug}`)}>Про подію</a>}
   </PageHead>
   <section class="wrap pb-16">
+    {a.note && <p class="panel mb-6 max-w-[70ch] p-5 text-[15px]">{a.note}</p>}
     <div class="columns-2 gap-3 md:columns-3 [&>*]:mb-3" data-gallery>
       {a.photos.map((p, i) => (
         <button type="button" class="block w-full overflow-hidden rounded-2xl focus-visible:outline-offset-2" data-index={i} aria-label={`Відкрити фото ${i + 1} з ${a.photos.length}`}>

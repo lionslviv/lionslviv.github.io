@@ -14,11 +14,14 @@ export type Post = {
   body: string[]; // абзаци; рядок, що починається з "## ", стає підзаголовком, з "> " цитатою
   stats?: { value: string; label: string }[];
   status?: 'active' | 'done';
+  demo?: boolean; // true = умовний контент для демонстрації
+  source?: string; // звідки взято реальний контент
 };
 
 export const projects: Post[] = [
   {
     slug: 'zir-dlia-ditei',
+    demo: true,
     type: 'project',
     title: 'Чіткий зір для кожної дитини',
     excerpt: 'Безкоштовні перевірки зору в школах Львова і окуляри для дітей, яким вони потрібні.',
@@ -42,6 +45,7 @@ export const projects: Post[] = [
   },
   {
     slug: 'svitlo-dlia-hromad',
+    demo: true,
     type: 'project',
     title: 'Світло для громад',
     excerpt: 'Генератори для шкіл, амбулаторій і пунктів незламності разом із Lions з Європи.',
@@ -61,6 +65,7 @@ export const projects: Post[] = [
   },
   {
     slug: 'derevo-za-kozhnoho',
+    demo: true,
     type: 'project',
     title: 'Дерево за кожного',
     excerpt: 'Висаджуємо алею пам’яті у парку на Сихові: одне дерево за кожного захисника з району.',
@@ -75,6 +80,7 @@ export const projects: Post[] = [
   },
   {
     slug: 'mentory-leo',
+    demo: true,
     type: 'project',
     title: 'Ментори для молоді',
     excerpt: 'Готуємо до запуску Leo-клуб: члени клубу менторять студентів у кар’єрі та волонтерстві.',
@@ -90,22 +96,23 @@ export const projects: Post[] = [
 
 export const news: Post[] = [
   {
-    slug: 'pershi-zbory-klubu',
+    slug: 'druha-zustrich-klubu',
     type: 'news',
-    title: 'Відбулися установчі збори клубу',
-    excerpt: 'Обрали правління, погодили назву Lviv Leopolis і перші три напрями служіння.',
-    date: '2026-11-18',
-    cover: { seed: 'founding', motif: 'event' },
+    title: 'Друга зустріч клубу: спільнота зростає',
+    excerpt: 'Зібралися вдруге у Львові разом з Lions Club «Kiev Ecology» та іншими гостями.',
+    date: '2026-11-23',
+    cover: { seed: 'second-meeting', motif: 'event' },
     tags: ['club'],
+    source: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/',
     body: [
-      'Установчі збори пройшли у форматі вечері. Ми затвердили статут, обрали правління на перший Lions-рік і погодили назву: Lions Club Lviv Leopolis.',
-      '## Чому Leopolis',
-      'Leopolis це латинська назва Львова, буквально "місто лева". Для клубу, що носить ім’я Lions, важко придумати точнішу назву.',
-      'Наступний крок: подання документів на чартер через District 134.',
+      'Відбулася друга зустріч нашого клубу у Львові, і спільнота продовжує зростати.',
+      'До нас долучилися друзі з Lions Club «Kiev Ecology» та інші гості.',
+      'Ми англомовна спільнота Lions, яка зосереджується на охороні здоров’я та гуманітарній допомозі. Якщо хочете долучитися до наступної зустрічі, напишіть нам.',
     ],
   },
   {
     slug: 'perevirka-zoru-shkola',
+    demo: true,
     type: 'news',
     title: '312 дітей перевірили зір за один день',
     excerpt: 'Виїзна перевірка в ліцеї на Левандівці: 41 дитині потрібні окуляри.',
@@ -119,6 +126,7 @@ export const news: Post[] = [
   },
   {
     slug: 'heneratory-zhovten',
+    demo: true,
     type: 'news',
     title: 'Ще 8 генераторів поїхали в громади області',
     excerpt: 'Партія від клубів Фінляндії та Німеччини вже працює у школах і амбулаторіях.',
@@ -131,6 +139,7 @@ export const news: Post[] = [
   },
   {
     slug: 'blahodiinyi-vechir-zyma',
+    demo: true,
     type: 'news',
     title: 'Анонс: зимовий благодійний вечір',
     excerpt: '13 грудня збираємо кошти на окуляри для дітей. Квитки обмежені.',
@@ -154,11 +163,14 @@ export type Event = {
   visibility: 'public' | 'members';
   kind: 'meeting' | 'service' | 'gala';
   description: string;
+  timeUnknown?: boolean; // відома лише дата
+  demo?: boolean;
 };
 
 export const events: Event[] = [
   {
     slug: 'zbory-2026-12-08',
+    demo: true,
     title: 'Регулярні збори клубу',
     start: '2026-12-08T19:00:00+02:00',
     end: '2026-12-08T21:00:00+02:00',
@@ -169,6 +181,7 @@ export const events: Event[] = [
   },
   {
     slug: 'zymovyi-vechir-2026',
+    demo: true,
     title: 'Зимовий благодійний вечір',
     start: '2026-12-13T18:30:00+02:00',
     end: '2026-12-13T22:30:00+02:00',
@@ -179,6 +192,7 @@ export const events: Event[] = [
   },
   {
     slug: 'perevirka-zoru-sykhiv',
+    demo: true,
     title: 'Перевірка зору в школі на Сихові',
     start: '2026-12-17T09:00:00+02:00',
     end: '2026-12-17T16:00:00+02:00',
@@ -189,6 +203,7 @@ export const events: Event[] = [
   },
   {
     slug: 'zbory-2026-12-22',
+    demo: true,
     title: 'Регулярні збори клубу',
     start: '2026-12-22T19:00:00+02:00',
     end: '2026-12-22T21:00:00+02:00',
@@ -199,6 +214,7 @@ export const events: Event[] = [
   },
   {
     slug: 'zbory-2027-01-12',
+    demo: true,
     title: 'Регулярні збори клубу',
     start: '2027-01-12T19:00:00+02:00',
     end: '2027-01-12T21:00:00+02:00',
@@ -209,6 +225,7 @@ export const events: Event[] = [
   },
   {
     slug: 'vidkrytyi-vechir-2027-01',
+    demo: true,
     title: 'Відкритий вечір для гостей',
     start: '2027-01-27T19:00:00+02:00',
     end: '2027-01-27T21:00:00+02:00',
@@ -218,24 +235,25 @@ export const events: Event[] = [
     description: 'Розповідаємо про клуб тим, хто думає долучитися. Запис через форму "Приєднатися".',
   },
   {
-    slug: 'ustanovchi-zbory',
-    title: 'Установчі збори клубу',
-    start: '2026-11-18T19:00:00+02:00',
-    end: '2026-11-18T22:00:00+02:00',
+    slug: 'druha-zustrich',
+    title: 'Друга зустріч клубу',
+    start: '2026-11-23T12:00:00+02:00',
+    end: '2026-11-23T14:00:00+02:00',
     location: 'Львів',
     visibility: 'public',
     kind: 'meeting',
-    description: 'Обрання правління і затвердження назви.',
+    description: 'Друга зустріч англомовної спільноти Lions у Львові, разом з Lions Club «Kiev Ecology» та гостями.',
+    timeUnknown: true,
   },
 ];
 
-export type Album = { slug: string; title: string; date: string; eventSlug?: string; photos: Art[] };
+export type Album = { slug: string; title: string; date: string; eventSlug?: string; photos: Art[]; note?: string };
 
 const shots = (base: string, n: number, motif: Art['motif']): Art[] =>
   Array.from({ length: n }, (_, i) => ({ seed: `${base}-${i}`, motif }));
 
 export const albums: Album[] = [
-  { slug: 'ustanovchi-zbory', title: 'Установчі збори', date: '2026-11-18', eventSlug: 'ustanovchi-zbory', photos: shots('found', 9, 'event') },
+  { slug: 'druha-zustrich', title: 'Друга зустріч клубу', date: '2026-11-23', eventSlug: 'druha-zustrich', photos: shots('found', 12, 'event'), note: 'Фото з цієї зустрічі є на сторінці клубу у Facebook. На сайт їх додамо після погодження з людьми в кадрі.' },
   { slug: 'zir-levandivka', title: 'Перевірка зору, Левандівка', date: '2026-11-07', photos: shots('lev', 12, 'people') },
   { slug: 'heneratory', title: 'Генератори для громад', date: '2026-10-24', photos: shots('gen', 7, 'care') },
   { slug: 'aleia-pamiati', title: 'Алея пам’яті на Сихові', date: '2026-04-12', photos: shots('trees', 10, 'nature') },

@@ -20,12 +20,12 @@ const ld = { '@context': 'https://schema.org', '@type': 'Event', name: e.title, 
     <div class="wrap grid gap-10 pb-16 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[1.5fr_1fr] md:items-end">
       <div>
         <a href={u('/events')} class="text-[15px] font-[560] text-white/70 hover:text-white">Усі події</a>
-        {e.visibility === 'members' && <p class="mt-6"><span class="badge">для членів клубу</span></p>}
+        {(e.visibility === 'members' || e.demo) && <p class="mt-6 flex gap-2">{e.visibility === 'members' && <span class="badge">для членів клубу</span>}{e.demo && <span class="badge badge-gold">демо-приклад</span>}</p>}
         <h1 class="t-h1 mt-5">{e.title}</h1>
         <p class="mt-5 max-w-[46ch] text-[19px] text-white/75">{e.description}</p>
       </div>
       <dl class="grid gap-5 text-[17px]">
-        <div><dt class="text-white/60">Коли</dt><dd class="text-[21px] font-[620] first-letter:uppercase">{weekday(e.start)}, {dateLong(e.start)}</dd><dd>{time(e.start)} до {time(e.end)}</dd></div>
+        <div><dt class="text-white/60">Коли</dt><dd class="text-[21px] font-[620] first-letter:uppercase">{weekday(e.start)}, {dateLong(e.start)}</dd>{!e.timeUnknown && <dd>{time(e.start)} до {time(e.end)}</dd>}</div>
         <div><dt class="text-white/60">Де</dt><dd class="text-[21px] font-[620]">{e.location}</dd></div>
       </dl>
     </div>

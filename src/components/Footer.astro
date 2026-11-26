@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
     <div class="space-y-5">
       <Wordmark inverse />
       <p class="max-w-[34ch] text-[15px] text-white/70">
-        Клуб Lions International у Львові. {club.district}. Ми служимо громаді там, де живемо.
+        {club.about} {club.district}.
       </p>
       <p class="text-[15px] text-white/70">{club.meetingRule}<br />{club.meetingPlace}</p>
     </div>
@@ -27,6 +27,7 @@ const year = new Date().getFullYear();
     <div class="grid content-start gap-2.5 text-[15px]">
       <p class="mb-1 font-[640] text-white">Зв’язок</p>
       <a class="text-white/70 hover:text-white" href={`mailto:${club.email}`}>{club.email}</a>
+      <a class="text-white/70 hover:text-white" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phoneDisplay}</a>
       {club.social.map((s) => <a class="text-white/70 hover:text-white" href={s.href} rel="noopener">{s.label}</a>)}
     </div>
   </div>

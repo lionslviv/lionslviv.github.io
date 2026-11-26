@@ -19,6 +19,7 @@ const base = post.type === 'project' ? '/projects' : '/news';
       <time class="t-small" datetime={post.date}>{dateLong(post.date)}</time>
       {post.tags.filter((t) => t !== 'club' && t !== 'event').map((t) => <span class="badge badge-blue">{causeIcon[t] && <BrandAsset name={causeIcon[t]} alt="" height={18} />}{causeLabel(t)}</span>)}
       {post.status === 'done' && <span class="badge">завершено</span>}
+      {post.demo && <span class="badge badge-gold">демо-приклад</span>}
     </div>
     <h1 class="t-h1 mt-4" transition:name={`title-${post.slug}`}>{post.title}</h1>
     <p class="t-lead mt-5">{post.excerpt}</p>
@@ -42,6 +43,7 @@ const base = post.type === 'project' ? '/projects' : '/news';
   )}
   <div class="wrap-narrow py-12">
     <PostBody body={post.body} />
+    {post.source && <p class="t-small mt-8">Джерело: <a class="link" href={post.source} target="_blank" rel="noopener">сторінка клубу у Facebook</a></p>}
     {post.type === 'project' && (
       <div class="panel mt-12 flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
         <p class="text-[19px] font-[620]">Хочете допомогти цьому проєкту?</p>

@@ -2,20 +2,26 @@
 // і позначки біля умовного контенту. Вимкнути перед релізом.
 export const DEMO = true;
 
+// Реальні дані: сторінка клубу у Facebook (перевірено 26.11.2026)
+// https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/
 export const club = {
   name: 'Lions Club Lviv Leopolis',
   shortName: 'Lviv Leopolis',
   lciRecord: 'Lviv (Leopolis)',
+  facebookName: 'Lviv International Lions Club',
   district: 'District 134, Україна',
   motto: 'We Serve',
   city: 'Львів',
-  email: 'hello@leopolislions.org.ua',
-  meetingPlace: 'Місце зустрічей уточнюється',
-  meetingRule: 'Кожен другий і четвертий вівторок, 19:00',
+  about: 'Англомовна спільнота Lions у Львові, що служить через охорону здоров’я та гуманітарну допомогу.',
+  aboutEn: 'English-speaking Lions community in Lviv, Ukraine, focusing on healthcare and humanitarian service.',
+  language: 'Зустрічі проходять англійською мовою',
+  email: 'lv@dba-Ukraine.com',
+  phone: '+380 67 674 6866',
+  phoneDisplay: '067 674 6866',
+  meetingPlace: 'Львів, місце зустрічей уточнюйте в організаторів',
+  meetingRule: 'Зустрічі англійською, розклад публікуємо в «Подіях»',
   social: [
-    { label: 'Facebook', href: 'https://www.facebook.com/' },
-    { label: 'Instagram', href: 'https://www.instagram.com/' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    { label: 'Facebook', href: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/' },
   ],
   bank: {
     recipient: 'ГО "Лайонс Клуб Львів Леополіс" (назва уточнюється)',
@@ -42,7 +48,7 @@ export const navSecondary = [
   { href: '/privacy', label: 'Конфіденційність' },
 ];
 
-// Цифри впливу редагуються в адмінці. Зараз умовні.
+// Цифри впливу редагуються в адмінці. Зараз умовні (демо).
 export const impact = [
   { value: '1 240', label: 'дітей пройшли перевірку зору', size: 'wide' },
   { value: '36', label: 'генераторів передали в громади', size: 'tall' },
