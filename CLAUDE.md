@@ -4,8 +4,11 @@
 Повне ТЗ: документ «ТЗ: сайт Lviv International Lions Club» (розділ 9 містить промпт).
 
 ## Стан
-- Етап 1 (MVP) зроблено в демо-режимі: Astro 7 + Tailwind 4, статична збірка, GitHub Pages.
-- `src/scripts/store.ts` імітує бекенд у localStorage. Етап 2: замінити на Supabase-клієнт з тим самим API, схема в `supabase/migrations`.
+- Astro 7 + Tailwind 4, статична збірка, GitHub Pages (https://lionslviv.github.io/).
+- Бекенд: Supabase (проєкт lyoicjdpqzvsfluromvo, організація lionslviv Org). Публічні параметри в `src/lib/supabase-config.ts`, схема і RLS у `supabase/migrations`.
+- Клієнтський API: `src/scripts/api.ts` (вхід за посиланням на email, профілі й ролі, новини, події, коментарі, відгуки, заявки, фото, журнал).
+- Збірка бере новини, події і схвалені фото з бази (`src/data/live.ts`), статичні дані в `src/data/content.ts` лише запасний варіант. GitHub Actions перезбирає сайт кожні 30 хвилин.
+- Ролі видаються через `role_invites` (адмінка → Учасники). Секретні ключі Supabase в репозиторій не додавати.
 
 ## Жорсткі правила
 - Емблему Lions не малювати і не генерувати. Лише офіційні файли в `public/brand/` (маніфест `src/data/brand-assets.ts`, вивід через `BrandAsset.astro`).

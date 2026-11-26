@@ -2,7 +2,7 @@
 // і позначки біля умовного контенту. Вимкнути перед релізом.
 import type { L, Lang } from '../i18n';
 import { tr } from '../i18n';
-export const DEMO = true;
+export const DEMO = false;
 
 // Реальні дані: сторінка клубу у Facebook (перевірено 26.11.2026)
 // https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/

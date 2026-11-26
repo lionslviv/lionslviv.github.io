@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Перезбирання кожні 30 хвилин: зміни з адмінки (Supabase) потрапляють у статичні сторінки
+  schedule:
+    - cron: '7,37 * * * *'
 
 permissions:
   contents: read

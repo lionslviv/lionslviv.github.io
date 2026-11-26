@@ -1,7 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import PageHead from '../../../components/PageHead.astro';
-import { events, kindLabel, albums } from '../../../data/content';
+import { kindLabel } from '../../../data/content';
+import { events, albums } from '../../../data/live';
 import { club } from '../../../data/site';
 import { u } from '../../../lib/url';
 import { dayNum, monthShort, weekday, time, monthTitle } from '../../../lib/format';
@@ -11,7 +12,7 @@ const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 
-const now = new Date('2026-11-26T12:00:00+02:00'); // демо-"сьогодні"; у продакшні new Date()
+const now = new Date(); // час збірки; сайт перезбирається за розкладом
 const sorted = [...events].sort((a, b) => a.start.localeCompare(b.start));
 const upcoming = sorted.filter((e) => new Date(e.start) >= now);
 const past = sorted.filter((e) => new Date(e.start) < now).reverse();
@@ -21,7 +22,8 @@ const monthKey = (iso: string) => iso.slice(0, 7);
 const groups = Object.entries(Object.groupBy(upcoming, (e) => monthKey(e.start)));
 // У календарі показуємо всі місяці з подіями, і минулими, і майбутніми
 const calMonths = Object.entries(Object.groupBy(sorted, (e) => monthKey(e.start)));
-const todayKey = { y: 2026, m: 11, d: 26 };
+const [ty, tm, td] = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(now).split('-').map(Number);
+const todayKey = { y: ty, m: tm, d: td };
 const wd = (iso: string) => (lang === 'uk' ? weekday(iso, lang).slice(0, 2) : weekday(iso, lang).slice(0, 3));
 const days = lang === 'uk' ? ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -63,7 +65,7 @@ const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be conf
     <p class="panel mb-10 p-5 text-[15px]" data-members-note hidden>
       {s('The schedule includes members-only meetings.', 'У розкладі є зустрічі лише для членів клубу.')} <a class="link" href={lp(lang, '/login')}>{T.signIn}</a> {s('to see them.', ', щоб їх бачити.')}
     </p>
-    <div data-local-events></div>
+    <div data-local-events data-known={JSON.stringify(events.map((e) => e.slug))}></div>
     {groups.length === 0 && <p class="t-lead mb-14">{s('New meetings will be announced here soon.', 'Нові зустрічі скоро з’являться тут.')}</p>}
     {groups.map(([key, list]) => (
       <div class="mb-14">
@@ -167,8 +169,8 @@ const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be conf
 </Base>
 
 <script>
-  import { getUser, can, demoEvents, esc } from '../../../scripts/store';
-  import { ct, clang } from '../../../scripts/i18n';
+  import { upcomingEvents, esc } from '../../../scripts/api';
+  import { ct, clang, cfmt } from '../../../scripts/i18n';
   document.addEventListener('astro:page-load', () => {
     const tabs = document.querySelectorAll<HTMLButtonElement>('[data-view]');
     if (!tabs.length) return;
@@ -180,16 +182,18 @@ const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be conf
     if (location.hash === '#calendar') show('cal');
     const sub = document.querySelector<HTMLDetailsElement>('[data-sub]');
     if (sub) document.addEventListener('click', (e) => { if (sub.open && !sub.contains(e.target as Node)) sub.open = false; });
-    const member = can.memberArea(getUser());
-    let hiddenCount = 0;
-    document.querySelectorAll<HTMLElement>('[data-visibility="members"]').forEach((el) => { el.hidden = !member; if (!member) hiddenCount++; });
-    const note = document.querySelector<HTMLElement>('[data-members-note]');
-    if (note) note.hidden = member || hiddenCount === 0;
-    const local = demoEvents().filter((e) => e.visibility === 'public' || member);
-    const fmt = new Intl.DateTimeFormat(clang() === 'uk' ? 'uk-UA' : 'en-GB', { dateStyle: 'long', timeStyle: 'short' });
+    // Нові події з адмінки (і закриті для членів клубу) показуємо одразу, до перезбирання сайту
     const box = document.querySelector<HTMLElement>('[data-local-events]');
-    if (box) box.innerHTML = local.length ? `<div class="mb-14"><h2 class="t-h3 mb-4">${ct().addedInAdmin}</h2><ul class="divide-y divide-[var(--line)] border-y border-[var(--line)]">${local.map((e) => `
-      <li class="py-6"><p class="text-[21px] font-[650]">${esc(e.title)} <span class="badge badge-gold ml-2">${ct().demo}</span></p>
-      <p class="text-soft">${fmt.format(new Date(e.start))}. ${esc(e.location)}</p></li>`).join('')}</ul></div>` : '';
+    if (!box) return;
+    const known: string[] = JSON.parse(box.dataset.known || '[]');
+    upcomingEvents().then((list) => {
+      const fresh = list.filter((e) => !known.includes(e.slug) && new Date(e.starts_at) > new Date());
+      const uk = clang() === 'uk';
+      const pick = (en: string | null, ukv: string | null) => (uk ? ukv || en : en || ukv) || '';
+      box.innerHTML = fresh.length ? `<div class="mb-14"><h2 class="t-h3 mb-4">${ct().addedInAdmin}</h2><ul class="divide-y divide-[var(--line)] border-y border-[var(--line)]">${fresh.map((e) => `
+        <li class="py-6"><p class="text-[21px] font-[650]">${esc(pick(e.title_en, e.title_uk))}${e.visibility === 'members' ? ` <span class="badge ml-1">${uk ? 'для членів клубу' : 'members only'}</span>` : ''}</p>
+        <p class="text-soft">${e.time_unknown ? cfmt(e.starts_at, { weekday: 'long', day: 'numeric', month: 'long' }) : cfmt(e.starts_at, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}. ${esc(pick(e.location_en, e.location_uk))}</p>
+        ${pick(e.description_en, e.description_uk) ? `<p class="mt-1 max-w-[60ch] text-[15px] text-soft">${esc(pick(e.description_en, e.description_uk))}</p>` : ''}</li>`).join('')}</ul></div>` : '';
+    }).catch(() => {});
   });
 </script>

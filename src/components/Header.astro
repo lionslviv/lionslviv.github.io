@@ -48,21 +48,21 @@ const otherHref = switchPath(path, other);
 </header>
 
 <script>
-  import { getUser, roleName, can } from '../scripts/store';
+  import { cachedProfile, getProfile, displayName, can } from '../scripts/api';
   import { ct, cprefix } from '../scripts/i18n';
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-  function paintAuth() {
-    const user = getUser();
+  function paintAuth(user = cachedProfile()) {
     const T = ct();
     const pre = cprefix();
     document.querySelectorAll<HTMLAnchorElement>('[data-auth-chip]').forEach((a) => {
-      if (!user) { a.textContent = T.signIn; a.href = `${pre}/login`; return; }
+      if (!user) { a.textContent = T.signIn; a.href = `${pre}/login`; a.removeAttribute('title'); return; }
       a.textContent = can.admin(user) ? T.admin : T.account;
       a.href = `${pre}${can.admin(user) ? '/admin' : '/account'}`;
-      a.title = `${user.name}: ${roleName(user.role)}`;
+      a.title = `${displayName(user)}: ${T.roles[user.role]}`;
     });
   }
+  const refreshAuth = () => getProfile().then((p) => paintAuth(p));
 
   function initMenu() {
     const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
@@ -89,6 +89,7 @@ const otherHref = switchPath(path, other);
 
   document.addEventListener('astro:page-load', () => {
     paintAuth();
+    refreshAuth();
     initMenu();
     paintSwitch();
     const menu = document.querySelector<HTMLElement>('[data-menu]');
@@ -102,5 +103,5 @@ const otherHref = switchPath(path, other);
       if (h && (p === h || p.startsWith(h + '/'))) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
   });
-  window.addEventListener('llp:change', paintAuth);
+  window.addEventListener('llp:change', () => paintAuth());
 </script>

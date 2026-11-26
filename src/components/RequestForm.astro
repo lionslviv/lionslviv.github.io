@@ -1,36 +1,44 @@
 ---
-// Форма заявки (приєднатися / контакт). Демо: localStorage.
-// Продакшн: Supabase Edge Function з перевіркою Cloudflare Turnstile.
+// Форма заявки (приєднатися / контакт): запис у Supabase (contact_requests), читають редактори в адмінці.
+// Від спаму: приховане поле-пастка; пізніше можна додати Cloudflare Turnstile.
 import { langFromUrl } from '../i18n';
 interface Props { kind: 'join' | 'contact'; submitLabel: string; messageLabel: string }
 const { kind, submitLabel, messageLabel } = Astro.props;
 const uk = langFromUrl(Astro.url) === 'uk';
 ---
-<form class="grid gap-5" data-request={kind} novalidate>
+<form class="relative grid gap-5" data-request={kind} novalidate>
   <div class="grid gap-5 sm:grid-cols-2">
     <div class="field"><label for={`${kind}-name`}>{uk ? 'Ім’я' : 'Name'}</label><input id={`${kind}-name`} name="name" class="input" autocomplete="name" required /></div>
     <div class="field"><label for={`${kind}-email`}>Email</label><input id={`${kind}-email`} name="email" type="email" class="input" autocomplete="email" required /></div>
   </div>
   <div class="field"><label for={`${kind}-msg`}>{messageLabel}</label><textarea id={`${kind}-msg`} name="message" class="textarea" required></textarea></div>
   <label class="check"><input type="checkbox" name="consent" required /> <span>{uk ? 'Погоджуюся на обробку персональних даних для відповіді на заявку.' : 'I agree to the processing of my personal data so the club can reply.'}</span></label>
-  <div class="rounded-xl border border-dashed border-[var(--line)] p-3 text-[13px] text-soft">{uk ? 'Тут буде Cloudflare Turnstile (захист від спаму без капчі).' : 'Cloudflare Turnstile goes here (spam protection without a captcha).'}</div>
+  <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] h-px w-px opacity-0" />
   <div class="flex flex-wrap items-center gap-4">
     <button class="btn btn-blue" type="submit">{submitLabel}</button>
     <p class="text-[15px]" role="status" data-status></p>
   </div>
 </form>
 <script>
-  import { addRequest } from '../scripts/store';
+  import { addRequest } from '../scripts/api';
   import { ct } from '../scripts/i18n';
   document.addEventListener('astro:page-load', () => {
     document.querySelectorAll<HTMLFormElement>('[data-request]').forEach((f) => {
       if (f.dataset.bound) return; f.dataset.bound = '1';
-      f.addEventListener('submit', (e) => {
+      f.addEventListener('submit', async (e) => {
         e.preventDefault();
         const st = f.querySelector<HTMLElement>('[data-status]')!;
         if (!f.checkValidity()) { st.textContent = ct().formInvalid; st.className = 'text-[15px] text-[#b42318]'; f.reportValidity(); return; }
         const d = new FormData(f);
-        addRequest({ kind: f.dataset.request as 'join' | 'contact', name: String(d.get('name')), email: String(d.get('email')), message: String(d.get('message')) });
+        if (String(d.get('website') || '')) { f.reset(); st.textContent = ct().contactSent; return; } // пастка для ботів
+        const btn = f.querySelector<HTMLButtonElement>('button[type=submit]')!;
+        btn.disabled = true;
+        try {
+          await addRequest({ kind: f.dataset.request as 'join' | 'contact', name: String(d.get('name')).trim(), email: String(d.get('email')).trim(), message: String(d.get('message')).trim() });
+        } catch {
+          st.className = 'text-[15px] text-[#b42318]'; st.textContent = ct().sendError; btn.disabled = false; return;
+        }
+        btn.disabled = false;
         f.reset();
         st.className = 'text-[15px] text-[#067647]';
         st.textContent = f.dataset.request === 'join' ? ct().joinSent : ct().contactSent;

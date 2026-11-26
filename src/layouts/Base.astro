@@ -68,9 +68,5 @@ const org = {
       <slot />
     </main>
     {!bare && <Footer />}
-    <script>
-      import { seed } from '../scripts/store';
-      document.addEventListener('astro:page-load', () => seed());
-    </script>
   </body>
 </html>

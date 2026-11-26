@@ -2,7 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import PageHead from '../../../components/PageHead.astro';
 import Photo from '../../../components/Photo.astro';
-import { news } from '../../../data/content';
+import { news } from '../../../data/live';
 import { dateLong } from '../../../lib/format';
 import { langPaths, langOf, lp, tr, t } from '../../../i18n';
 export const getStaticPaths = langPaths;
@@ -15,7 +15,7 @@ const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
   <PageHead title={T.nav.news} lead={s('Project reports, event announcements and stories of the people we work alongside.', 'Звіти про проєкти, анонси подій та історії людей, поруч з якими ми працюємо.')} />
   <section class="wrap pb-24">
     <!-- Пости, опубліковані в демо-адмінці, з’являються тут (localStorage) -->
-    <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2" data-local-posts hidden></ul>
+    <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2" data-local-posts data-known={JSON.stringify(list.map((n) => n.slug))} hidden></ul>
     <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2">
       {list.map((n, i) => (
         <li class={i === 0 ? 'md:col-span-2' : ''}>
@@ -36,20 +36,25 @@ const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
 </Base>
 
 <script>
-  import { posts, esc, fmtDate } from '../../../scripts/store';
-  import { ct, cprefix } from '../../../scripts/i18n';
-  document.addEventListener('astro:page-load', () => {
+  import { publishedPosts, esc, mediaUrl } from '../../../scripts/api';
+  import { ct, cprefix, cfmt, clang } from '../../../scripts/i18n';
+  document.addEventListener('astro:page-load', async () => {
     const ul = document.querySelector<HTMLElement>('[data-local-posts]');
     if (!ul) return;
-    const list = posts().filter((p) => p.status === 'published' && p.type === 'news');
-    ul.hidden = list.length === 0;
-    ul.classList.toggle('mb-14', list.length > 0);
-    ul.innerHTML = list.map((p) => `
-      <li><a href="${cprefix()}/news/post/?id=${p.id}" class="group block space-y-3 rounded-[22px] bg-[var(--bg-alt)] p-8">
-        <span class="badge badge-gold">${ct().fromAdmin}</span>
-        <p class="t-small">${fmtDate(p.at)}</p>
-        <h2 class="t-h3 group-hover:text-[var(--accent)]">${esc(p.title)}</h2>
-        <p class="text-soft">${esc(p.excerpt)}</p>
+    const known: string[] = JSON.parse(ul.dataset.known || '[]');
+    const fresh = (await publishedPosts()).filter((p) => !known.includes(p.slug));
+    ul.hidden = fresh.length === 0;
+    ul.classList.toggle('mb-14', fresh.length > 0);
+    const uk = clang() === 'uk';
+    const img = (u: string | null) => (!u ? '' : /^https?:/.test(u) ? u : u.startsWith('/') ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${u}` : mediaUrl(u));
+    ul.innerHTML = fresh.map((p) => `
+      <li><a href="${cprefix()}/news/post/?slug=${encodeURIComponent(p.slug)}" class="group grid gap-5">
+        ${p.cover_url ? `<div class="overflow-hidden rounded-[var(--radius-card)]"><img src="${img(p.cover_url)}" alt="" loading="lazy" class="aspect-[3/2] w-full object-cover" /></div>` : ''}
+        <div class="space-y-3">
+          <p class="flex flex-wrap items-center gap-2"><span class="t-small">${p.published_at ? cfmt(p.published_at) : ''}</span><span class="badge badge-gold">${ct().fromAdmin}</span></p>
+          <h2 class="t-h3 group-hover:text-[var(--accent)]">${esc((uk ? p.title_uk || p.title_en : p.title_en || p.title_uk) || '')}</h2>
+          <p class="text-soft">${esc((uk ? p.excerpt_uk || p.excerpt_en : p.excerpt_en || p.excerpt_uk) || '')}</p>
+        </div>
       </a></li>`).join('');
   });
 </script>

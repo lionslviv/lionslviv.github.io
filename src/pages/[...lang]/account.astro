@@ -1,13 +1,20 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { events, albums } from '../../data/live';
 import { langPaths, langOf, lp, tr, t } from '../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+// Куди можна додати фото: альбоми і події
+const targets = [
+  ...albums.map((a) => ({ slug: a.slug, title: tr(lang, a.title) })),
+  ...events.filter((e) => !albums.some((a) => a.slug === e.slug)).map((e) => ({ slug: e.slug, title: tr(lang, e.title) })),
+];
 ---
 <Base title={T.account} noindex>
   <section class="wrap pb-24 pt-[clamp(3rem,7vw,6rem)]" data-account>
+    <p class="text-soft" data-loading>{s('Loading…', 'Завантаження…')}</p>
     <div data-anon hidden class="space-y-5">
       <h1 class="t-h1">{T.account}</h1>
       <p class="t-lead">{s('Sign in to see your account.', 'Увійдіть, щоб побачити кабінет.')}</p>
@@ -16,62 +23,83 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
     <div data-auth hidden>
       <p class="text-soft" data-role></p>
       <h1 class="t-h1 mt-2" data-name></h1>
-      <div class="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
-        <form class="panel grid gap-5 p-8" data-profile>
+      <p class="panel mt-6 max-w-[60ch] p-5 text-[15px]" data-need-member hidden></p>
+      <div class="mt-10 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
+        <form class="panel grid gap-5 p-6 sm:p-8" data-profile>
           <h2 class="t-h3">{s('My profile', 'Мій профіль')}</h2>
-          <div class="field"><label for="p-name">{s('Full name', 'Ім’я та прізвище')}</label><input id="p-name" name="name" class="input" required /></div>
-          <div class="field"><label for="p-field">{s('Profession or field', 'Професія або сфера')}</label><input id="p-field" name="field" class="input" /></div>
+          <div class="field"><label for="p-name">{s('Full name', 'Ім’я та прізвище')}</label><input id="p-name" name="full_name" class="input" autocomplete="name" required /></div>
+          <div class="field"><label for="p-field">{s('Profession or field', 'Професія або сфера')}</label><input id="p-field" name="profession" class="input" /></div>
           <div class="field"><label for="p-bio">{s('About me', 'Коротко про себе')} <span class="text-soft">({s('up to 300 characters', 'до 300 символів')})</span></label><textarea id="p-bio" name="bio" class="textarea" maxlength="300"></textarea></div>
           <div class="field"><label for="p-quote">{s('Why I am a Lion', 'Чому я в Lions')}</label><input id="p-quote" name="quote" class="input" maxlength="140" /></div>
-          <label class="check"><input type="checkbox" name="isPublic" /> <span>{s('Show my profile on the website. Only club members see phone and email.', 'Показувати мій профіль на сайті. Телефон і email бачать лише члени клубу.')}</span></label>
-          <div class="flex items-center gap-4"><button class="btn btn-blue" type="submit">{s('Save profile', 'Зберегти профіль')}</button><p class="text-[15px]" role="status" data-saved></p></div>
+          <label class="check"><input type="checkbox" name="is_public" /> <span>{s('I agree to show my profile on the website.', 'Погоджуюся показувати мій профіль на сайті.')}</span></label>
+          <div class="flex flex-wrap items-center gap-4"><button class="btn btn-blue" type="submit">{s('Save profile', 'Зберегти профіль')}</button><p class="text-[15px]" role="status" data-saved></p></div>
         </form>
         <div class="grid content-start gap-6">
-          <div class="panel p-8" data-members-only>
-            <h2 class="t-h3">{s('My meetings', 'Мої зустрічі')}</h2>
-            <p class="mt-2 text-soft">{s('Members-only club meetings and your RSVPs.', 'Закриті збори клубу і ваші відповіді RSVP.')}</p>
+          <form class="panel p-6 sm:p-8" data-members-only data-upload-form>
+            <h2 class="t-h3">{s('Add photos', 'Додати фото')}</h2>
+            <p class="mt-2 text-soft">{s('Photos go to editors for moderation. We resize them and remove location data automatically.', 'Фото потрапляють редакторам на модерацію. Ми зменшуємо їх і автоматично прибираємо геолокацію.')}</p>
+            <div class="field mt-5"><label for="up-album">{s('Album or event', 'Альбом або подія')}</label>
+              <select id="up-album" name="album" class="select">{targets.map((x) => <option value={x.slug}>{x.title}</option>)}</select></div>
+            <label class="btn btn-quiet btn-sm mt-4 cursor-pointer">{s('Choose photos', 'Обрати фото')}<input type="file" accept="image/jpeg,image/png,image/webp" multiple class="sr-only" data-upload /></label>
+            <p class="t-small mt-3" role="status" data-upload-note></p>
+          </form>
+          <div class="panel p-6 sm:p-8" data-members-only>
+            <h2 class="t-h3">{s('Meetings', 'Зустрічі')}</h2>
+            <p class="mt-2 text-soft">{s('Mark “I’m going” on the event page.', 'Позначайте «Я буду» на сторінці події.')}</p>
             <a href={lp(lang, '/events')} class="btn btn-quiet btn-sm mt-5">{s('Event schedule', 'Розклад подій')}</a>
           </div>
-          <div class="panel p-8" data-members-only>
-            <h2 class="t-h3">{s('Add photos', 'Додати фото')}</h2>
-            <p class="mt-2 text-soft">{s('Event photos go to editors for moderation. We compress them and strip location data automatically.', 'Фото з події потрапляють редакторам на модерацію. Ми стискаємо їх і прибираємо геолокацію автоматично.')}</p>
-            <label class="btn btn-quiet btn-sm mt-5 cursor-pointer">{s('Choose photos', 'Обрати фото')}<input type="file" accept="image/*" multiple class="sr-only" data-upload /></label>
-            <p class="t-small mt-3" data-upload-note></p>
-          </div>
-          <button class="btn btn-ghost w-fit" data-logout>{s('Sign out', 'Вийти')}</button>
+          <button type="button" class="btn btn-ghost w-fit" data-logout>{s('Sign out', 'Вийти')}</button>
         </div>
       </div>
     </div>
   </section>
 </Base>
 <script>
-  import { getUser, updateUser, signOut, roleName, can } from '../../scripts/store';
+  import { getProfile, updateProfile, signOut, can, displayName, uploadPhotos } from '../../scripts/api';
   import { ct, cprefix } from '../../scripts/i18n';
-  document.addEventListener('astro:page-load', () => {
+  async function paint() {
     const root = document.querySelector<HTMLElement>('[data-account]');
     if (!root) return;
-    const user = getUser();
+    const user = await getProfile();
+    (root.querySelector('[data-loading]') as HTMLElement).hidden = true;
     (root.querySelector('[data-anon]') as HTMLElement).hidden = !!user;
     (root.querySelector('[data-auth]') as HTMLElement).hidden = !user;
     if (!user) return;
-    root.querySelector('[data-role]')!.textContent = roleName(user.role);
-    root.querySelector('[data-name]')!.textContent = user.name;
+    root.querySelector('[data-role]')!.textContent = `${ct().roles[user.role]}${user.email ? `, ${user.email}` : ''}`;
+    root.querySelector('[data-name]')!.textContent = displayName(user);
+    const need = root.querySelector<HTMLElement>('[data-need-member]')!;
+    need.hidden = can.memberArea(user); need.textContent = ct().needMember;
     root.querySelectorAll<HTMLElement>('[data-members-only]').forEach((el) => (el.hidden = !can.memberArea(user)));
     const f = root.querySelector<HTMLFormElement>('[data-profile]')!;
-    (f.elements.namedItem('name') as HTMLInputElement).value = user.name;
-    (f.elements.namedItem('field') as HTMLInputElement).value = user.field ?? '';
-    (f.elements.namedItem('bio') as HTMLTextAreaElement).value = user.bio ?? '';
-    (f.elements.namedItem('quote') as HTMLInputElement).value = user.quote ?? '';
-    (f.elements.namedItem('isPublic') as HTMLInputElement).checked = !!user.isPublic;
-    f.onsubmit = (e) => {
+    const set = (n: string, v: string) => ((f.elements.namedItem(n) as HTMLInputElement).value = v);
+    set('full_name', user.full_name ?? ''); set('profession', user.profession ?? ''); set('bio', user.bio ?? ''); set('quote', user.quote ?? '');
+    (f.elements.namedItem('is_public') as HTMLInputElement).checked = !!user.is_public;
+  }
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector<HTMLElement>('[data-account]');
+    if (!root) return;
+    paint();
+    const f = root.querySelector<HTMLFormElement>('[data-profile]')!;
+    f.onsubmit = async (e) => {
       e.preventDefault();
-      const d = new FormData(f);
-      updateUser({ name: String(d.get('name')), field: String(d.get('field')), bio: String(d.get('bio')), quote: String(d.get('quote')), isPublic: d.get('isPublic') === 'on' });
-      root.querySelector('[data-name]')!.textContent = String(d.get('name'));
-      root.querySelector('[data-saved]')!.textContent = ct().profileSaved;
+      const d = new FormData(f); const st = root.querySelector('[data-saved]')!;
+      try {
+        await updateProfile({ full_name: String(d.get('full_name')).trim(), profession: String(d.get('profession')).trim() || null, bio: String(d.get('bio')).trim() || null, quote: String(d.get('quote')).trim() || null, is_public: d.get('is_public') === 'on' });
+        st.textContent = ct().profileSaved;
+        root.querySelector('[data-name]')!.textContent = String(d.get('full_name'));
+      } catch (err) { st.textContent = `${ct().a.error}: ${(err as Error).message}`; }
     };
-    const up = root.querySelector<HTMLInputElement>('[data-upload]');
-    if (up) up.onchange = () => { root.querySelector('[data-upload-note]')!.textContent = ct().uploadSent(up.files?.length ?? 0); };
-    root.querySelector<HTMLButtonElement>('[data-logout]')!.onclick = () => { signOut(); location.href = `${cprefix()}/`; };
+    const up = root.querySelector<HTMLInputElement>('[data-upload]')!;
+    up.onchange = async () => {
+      const note = root.querySelector('[data-upload-note]')!;
+      const files = [...(up.files ?? [])];
+      if (!files.length) return;
+      const album = (root.querySelector('#up-album') as HTMLSelectElement).value;
+      note.textContent = ct().uploading;
+      try { note.textContent = ct().uploadSent(await uploadPhotos(album, files)); } catch (err) { note.textContent = `${ct().uploadError} (${(err as Error).message})`; }
+      up.value = '';
+    };
+    root.querySelector<HTMLButtonElement>('[data-logout]')!.onclick = async () => { await signOut(); location.href = `${cprefix()}/`; };
   });
+  window.addEventListener('llp:change', paint);
 </script>

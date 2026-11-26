@@ -28,24 +28,24 @@ const C = t(lang).comments;
 </section>
 
 <script>
-  import { getUser, comments, addComment, esc, fmtDate } from '../scripts/store';
-  import { ct } from '../scripts/i18n';
+  import { getProfile, comments, addComment, esc } from '../scripts/api';
+  import { ct, cfmt } from '../scripts/i18n';
 
-  function render(root: HTMLElement) {
+  async function render(root: HTMLElement) {
     const target = root.dataset.comments!;
-    const user = getUser();
-    const list = comments().filter((c) => c.target === target && (c.status === 'approved' || (user && c.author === user.name && c.status === 'pending')));
+    const [user, list] = await Promise.all([getProfile(), comments(target)]);
+    const visible = list.filter((c) => c.status === 'approved' || (user && c.author_id === user.id && c.status === 'pending'));
     const ol = root.querySelector('[data-list]')!;
-    ol.innerHTML = list.map((c) => `
+    ol.innerHTML = visible.map((c) => `
       <li class="grid grid-cols-[44px_1fr] gap-4">
-        <span class="grid h-11 w-11 place-items-center rounded-full bg-[var(--bg-alt)] text-[15px] font-[680] text-[var(--accent)]">${esc(c.author.slice(0, 1))}</span>
+        <span class="grid h-11 w-11 place-items-center rounded-full bg-[var(--bg-alt)] text-[15px] font-[680] text-[var(--accent)]">${esc((c.author_name || '?').slice(0, 1).toUpperCase())}</span>
         <div>
-          <p class="text-[15px]"><span class="font-[640]">${esc(c.author)}</span> <span class="text-soft">${fmtDate(c.at)}</span>
+          <p class="text-[15px]"><span class="font-[640]">${esc(c.author_name || '')}</span> <span class="text-soft">${cfmt(c.created_at)}</span>
           ${c.status === 'pending' ? `<span class="badge badge-gold ml-2">${ct().moderation}</span>` : ''}</p>
           <p class="mt-1 whitespace-pre-line">${esc(c.body)}</p>
         </div>
       </li>`).join('');
-    (root.querySelector('[data-empty]') as HTMLElement).hidden = list.length > 0;
+    (root.querySelector('[data-empty]') as HTMLElement).hidden = visible.length > 0;
     (root.querySelector('[data-guest]') as HTMLElement).hidden = !!user;
     (root.querySelector('[data-form]') as HTMLElement).hidden = !user;
   }
@@ -56,16 +56,20 @@ const C = t(lang).comments;
       const form = root.querySelector<HTMLFormElement>('[data-form]')!;
       if (form.dataset.bound) return;
       form.dataset.bound = '1';
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const body = (new FormData(form).get('body') as string).trim();
         if (body.length < 2) return;
-        const c = addComment(root.dataset.comments!, body);
-        form.reset();
-        root.querySelector('[data-note]')!.textContent = c.status === 'pending' ? ct().commentPending : ct().commentPublished;
-        render(root);
+        const note = root.querySelector('[data-note]')!;
+        try {
+          const st = await addComment(root.dataset.comments!, body);
+          form.reset();
+          note.textContent = st === 'pending' ? ct().commentPending : ct().commentPublished;
+          render(root);
+        } catch (err) { note.textContent = `${ct().sendError} (${(err as Error).message})`; }
       });
     });
   }
   document.addEventListener('astro:page-load', init);
+  window.addEventListener('llp:change', () => document.querySelectorAll<HTMLElement>('[data-comments]').forEach((r) => render(r)));
 </script>

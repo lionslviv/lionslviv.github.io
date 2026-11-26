@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { events } from '../../data/content';
+import { events } from '../../data/live';
 import { icsCalendar } from '../../lib/ics';
 import { langPaths, langOf, tr } from '../../i18n';
 export const getStaticPaths = langPaths;

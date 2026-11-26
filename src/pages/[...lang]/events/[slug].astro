@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { events, albums } from '../../../data/content';
+import { events, albums } from '../../../data/live';
 import { club } from '../../../data/site';
 import { dateLong, weekday, time } from '../../../lib/format';
 import { googleCalendarUrl, icsCalendar } from '../../../lib/ics';
@@ -19,7 +19,7 @@ const description = tr(lang, e.description);
 const ev = { uid: e.slug, title, start: e.start, end: e.end, location, description, allDay: e.timeUnknown };
 const ics = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsCalendar([ev]))}`;
 const album = albums.find((a) => a.eventSlug === e.slug);
-const isPast = new Date(e.start) < new Date('2026-11-26T12:00:00+02:00');
+const isPast = new Date(e.start) < new Date();
 const ld = { '@context': 'https://schema.org', '@type': 'Event', name: title, startDate: e.start, endDate: e.end, inLanguage: lang, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', location: { '@type': 'Place', name: location, address: s('Lviv, Ukraine', 'Львів, Україна') }, organizer: { '@type': 'NGO', name: club.name }, description };
 ---
 <Base title={title} description={description} jsonLd={ld}>
@@ -40,7 +40,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'Event', name: title, st
   <section class="wrap flex flex-wrap gap-3 py-10">
     {!isPast && <a href={googleCalendarUrl(ev)} target="_blank" rel="noopener" class="btn btn-blue">{s('Add to Google Calendar', 'Додати в Google Calendar')}</a>}
     {!isPast && <a href={ics} download={`${e.slug}.ics`} class="btn btn-quiet">{s('Download .ics (Apple, Outlook)', 'Завантажити .ics (Apple, Outlook)')}</a>}
-    {e.visibility === 'members' && !isPast && <button class="btn btn-gold" data-rsvp={e.slug}>{s('I’m going', 'Я буду')}</button>}
+    {!isPast && <button type="button" class="btn btn-gold" data-rsvp={e.slug} hidden>{s('I’m going', 'Я буду')}</button>}
     {album && <a href={lp(lang, `/gallery/${album.slug}`)} class="btn btn-quiet">{s('Event photos', 'Фото з події')}</a>}
   </section>
   <section class="wrap-narrow pb-24">
@@ -48,19 +48,21 @@ const ld = { '@context': 'https://schema.org', '@type': 'Event', name: title, st
   </section>
 </Base>
 <script>
-  import { getUser, can } from '../../../scripts/store';
+  import { getProfile, can, myRsvp, setRsvp } from '../../../scripts/api';
   import { ct } from '../../../scripts/i18n';
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:page-load', async () => {
     const btn = document.querySelector<HTMLButtonElement>('[data-rsvp]');
     if (!btn) return;
-    const key = `llp.rsvp.${btn.dataset.rsvp}`;
+    const p = await getProfile();
+    if (!can.memberArea(p)) return; // кнопку бачать лише члени клубу
+    btn.hidden = false;
+    const slug = btn.dataset.rsvp!;
     const note = document.querySelector<HTMLElement>('[data-rsvp-note]')!;
-    const paint = () => { const on = localStorage.getItem(key) === 'yes'; btn.textContent = on ? ct().rsvpYes : ct().rsvpGo; };
+    let going = !!(await myRsvp(slug));
+    const paint = () => { btn.textContent = going ? ct().rsvpYes : ct().rsvpGo; };
     paint();
-    btn.onclick = () => {
-      if (!can.memberArea(getUser())) { note.textContent = ct().rsvpMembers; return; }
-      localStorage.setItem(key, localStorage.getItem(key) === 'yes' ? 'no' : 'yes'); paint();
-      note.textContent = ct().rsvpSaved;
+    btn.onclick = async () => {
+      try { await setRsvp(slug, !going); going = !going; paint(); note.textContent = ct().rsvpSaved; } catch (err) { note.textContent = (err as Error).message; }
     };
   });
 </script>

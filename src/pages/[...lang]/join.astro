@@ -2,14 +2,14 @@
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import RequestForm from '../../components/RequestForm.astro';
-import { events } from '../../data/content';
+import { events } from '../../data/live';
 import { dateLong, time } from '../../lib/format';
 import { langPaths, langOf, lp, tr, t } from '../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
-const now = new Date('2026-11-26T12:00:00+02:00'); // демо-"сьогодні"; у продакшні new Date()
+const now = new Date(); // час збірки; сайт перезбирається за розкладом
 const openNight = events.filter((e) => e.kind === 'meeting' && e.visibility === 'public' && !e.demo && new Date(e.start) > now).sort((a, b) => a.start.localeCompare(b.start))[0];
 const when = (iso: string, unknown?: boolean) => (unknown ? dateLong(iso, lang) : `${dateLong(iso, lang)}, ${time(iso, lang)}`);
 const steps = [

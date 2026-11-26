@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { news, projects, events, albums, members } from '../data/content';
+import { projects, members } from '../data/content';
+import { news, events, albums } from '../data/live';
 
 // Карта сайту для обох мов з hreflang-альтернативами (EN основна, UK під /uk).
 export const GET: APIRoute = ({ site }) => {

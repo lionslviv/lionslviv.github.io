@@ -14,13 +14,15 @@ const tabs = [
   ['members', T.nav.members],
   ['audit', s('Log', 'Журнал')],
 ];
+const inp = 'input';
 ---
 <Base title={T.admin} noindex>
   <section class="wrap pb-24 pt-10" data-admin>
+    <p class="text-soft" data-loading>{s('Loading…', 'Завантаження…')}</p>
     <div data-denied hidden class="space-y-5 py-16">
       <h1 class="t-h1">{T.admin}</h1>
-      <p class="t-lead">{s('Editors and admins have access.', 'Доступ мають редактори та адміни.')}</p>
-      <a href={lp(lang, '/login')} class="btn btn-blue">{s('Sign in as an editor (demo)', 'Увійти як редактор (демо)')}</a>
+      <p class="t-lead" data-denied-text>{s('Editors and admins have access.', 'Доступ мають редактори та адміни.')}</p>
+      <a href={lp(lang, '/login')} class="btn btn-blue">{T.signIn}</a>
     </div>
 
     <div data-app hidden>
@@ -29,78 +31,106 @@ const tabs = [
           <p class="text-soft" data-who></p>
           <h1 class="t-h2 mt-1">{T.admin}</h1>
         </div>
-        <div class="flex gap-2">
-          <button class="btn btn-quiet btn-sm" data-reset title={s('Restore demo data to its initial state', 'Повернути демо-дані до початкового стану')}>{s('Reset demo', 'Скинути демо')}</button>
-          <button class="btn btn-ghost btn-sm" data-logout>{s('Sign out', 'Вийти')}</button>
-        </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-logout>{s('Sign out', 'Вийти')}</button>
       </div>
 
-      <nav class="mt-8 flex gap-1 overflow-x-auto rounded-full bg-[var(--bg-alt)] p-1" role="tablist" aria-label={s('Admin sections', 'Розділи адмінки')}>
+      <nav class="-mx-1 mt-8 flex gap-1 overflow-x-auto rounded-full bg-[var(--bg-alt)] p-1" role="tablist" aria-label={s('Admin sections', 'Розділи адмінки')}>
         {tabs.map(([k, l], i) => (
-          <button class="btn btn-sm shrink-0" role="tab" data-tab={k} aria-selected={i === 0 ? 'true' : 'false'}>{l}<span class="ml-1 hidden min-w-5 rounded-full bg-[var(--color-gold)] px-1.5 text-[12px] font-[700] text-[var(--color-lions-deep)]" data-count={k}></span></button>
+          <button type="button" class="btn btn-sm shrink-0" role="tab" data-tab={k} aria-selected={i === 0 ? 'true' : 'false'}>{l}<span class="ml-1 hidden min-w-5 rounded-full bg-[var(--color-gold)] px-1.5 text-[12px] font-[700] text-[var(--color-lions-deep)]" data-count={k}></span></button>
         ))}
       </nav>
 
       <!-- Огляд -->
       <div class="mt-10" data-pane="overview">
-        <div class="grid gap-4 md:grid-cols-4" data-kpis></div>
-        <div class="mt-10 grid gap-6 md:grid-cols-2">
-          <div class="panel p-7"><h2 class="t-h3">{s('Quick actions', 'Швидкі дії')}</h2>
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4" data-kpis></div>
+        <p class="t-small mt-4" data-live-note></p>
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          <div class="panel p-6 sm:p-7"><h2 class="t-h3">{s('Quick actions', 'Швидкі дії')}</h2>
             <div class="mt-5 flex flex-wrap gap-3">
-              <button class="btn btn-blue btn-sm" data-goto="posts">{s('Write news', 'Написати новину')}</button>
-              <button class="btn btn-quiet btn-sm" data-goto="events">{s('Add event', 'Додати подію')}</button>
-              <button class="btn btn-quiet btn-sm" data-goto="moderation">{s('Review queue', 'Перевірити чергу')}</button>
+              <button type="button" class="btn btn-blue btn-sm" data-goto="posts">{s('Write news', 'Написати новину')}</button>
+              <button type="button" class="btn btn-quiet btn-sm" data-goto="events">{s('Add event', 'Додати подію')}</button>
+              <button type="button" class="btn btn-quiet btn-sm" data-goto="moderation">{s('Review queue', 'Перевірити чергу')}</button>
             </div>
           </div>
-          <div class="panel p-7"><h2 class="t-h3">{s('Recent changes', 'Що змінилось')}</h2><ul class="mt-4 grid gap-2 text-[15px]" data-recent></ul></div>
+          <div class="panel p-6 sm:p-7"><h2 class="t-h3">{s('Recent changes', 'Що змінилось')}</h2><ul class="mt-4 grid gap-2 text-[15px]" data-recent></ul></div>
         </div>
       </div>
 
       <!-- Новини -->
-      <div class="mt-10 grid gap-10 lg:grid-cols-[1.2fr_1fr]" data-pane="posts" hidden>
-        <form class="panel grid gap-5 p-7 md:p-8" data-post-form>
-          <input type="hidden" name="id" />
-          <h2 class="t-h3" data-form-title>{s('New post', 'Нова публікація')}</h2>
-          <div class="grid gap-5 sm:grid-cols-[1fr_180px]">
-            <div class="field"><label for="pf-title">{s('Title', 'Заголовок')}</label><input id="pf-title" name="title" class="input" required maxlength="120" /></div>
-            <div class="field"><label for="pf-type">{s('Type', 'Тип')}</label><select id="pf-type" name="type" class="select"><option value="news">{s('News', 'Новина')}</option><option value="project">{s('Project', 'Проєкт')}</option></select></div>
+      <div class="mt-10 grid gap-10 xl:grid-cols-[1.4fr_1fr]" data-pane="posts" hidden>
+        <form class="panel grid gap-5 p-5 sm:p-8" data-post-form novalidate>
+          <input type="hidden" name="id" /><input type="hidden" name="cover_url" />
+          <h2 class="t-h3" data-post-title>{s('New post', 'Нова публікація')}</h2>
+          <div class="grid gap-5 md:grid-cols-2">
+            <fieldset class="grid gap-4"><legend class="mb-2 text-[15px] font-[640]">English</legend>
+              <div class="field"><label for="pf-ten">{s('Title', 'Заголовок')}</label><input id="pf-ten" name="title_en" class={inp} maxlength="160" /></div>
+              <div class="field"><label for="pf-een">{s('Summary', 'Короткий опис')}</label><textarea id="pf-een" name="excerpt_en" class="textarea min-h-[90px]" maxlength="300"></textarea></div>
+              <div class="field"><label for="pf-ben">{s('Text', 'Текст')}</label><textarea id="pf-ben" name="body_en" class="textarea min-h-[220px]"></textarea></div>
+            </fieldset>
+            <fieldset class="grid gap-4"><legend class="mb-2 text-[15px] font-[640]">Українською</legend>
+              <div class="field"><label for="pf-tuk">{s('Title', 'Заголовок')}</label><input id="pf-tuk" name="title_uk" class={inp} maxlength="160" /></div>
+              <div class="field"><label for="pf-euk">{s('Summary', 'Короткий опис')}</label><textarea id="pf-euk" name="excerpt_uk" class="textarea min-h-[90px]" maxlength="300"></textarea></div>
+              <div class="field"><label for="pf-buk">{s('Text', 'Текст')}</label><textarea id="pf-buk" name="body_uk" class="textarea min-h-[220px]"></textarea></div>
+            </fieldset>
           </div>
-          <div class="field"><label for="pf-ex">{s('Summary', 'Короткий опис')}</label><input id="pf-ex" name="excerpt" class="input" maxlength="200" /></div>
-          <div class="field"><label for="pf-body">{s('Text', 'Текст')} <span class="text-soft">({s('blank line between paragraphs; production uses the Tiptap editor', 'абзаци через порожній рядок; у робочій версії тут редактор Tiptap')})</span></label><textarea id="pf-body" name="body" class="textarea min-h-[220px]"></textarea></div>
-          <div class="field"><label>{s('Cover', 'Обкладинка')}</label><label class="btn btn-quiet btn-sm w-fit cursor-pointer">{s('Choose photo', 'Обрати фото')}<input type="file" accept="image/*" class="sr-only" /></label></div>
+          <p class="t-small">{s('Text: blank line between paragraphs; a line starting with "## " is a subheading, with "> " a quote.', 'Текст: порожній рядок між абзацами; рядок з "## " це підзаголовок, з "> " цитата.')}</p>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div class="field"><label for="pf-slug">{s('Web address (slug)', 'Адреса сторінки (slug)')}</label><input id="pf-slug" name="slug" class={inp} pattern="[a-z0-9-]+" placeholder="auto" /></div>
+            <div class="field"><label for="pf-date">{s('Publication date', 'Дата публікації')}</label><input id="pf-date" name="date" type="date" class={inp} /></div>
+          </div>
+          <div class="field"><span class="text-[15px] font-[560]">{s('Cover photo', 'Обкладинка')}</span>
+            <div class="flex flex-wrap items-center gap-3">
+              <img data-cover-preview alt="" class="hidden h-16 w-24 rounded-lg object-cover" />
+              <label class="btn btn-quiet btn-sm cursor-pointer">{s('Choose photo', 'Обрати фото')}<input type="file" accept="image/jpeg,image/png,image/webp" class="sr-only" data-cover-file /></label>
+              <span class="t-small" data-cover-note></span>
+            </div>
+          </div>
           <div class="flex flex-wrap gap-3">
             <button class="btn btn-blue" name="action" value="published" type="submit">{s('Publish', 'Опублікувати')}</button>
             <button class="btn btn-quiet" name="action" value="draft" type="submit">{s('Save draft', 'Зберегти чернетку')}</button>
-            <button class="btn btn-ghost" type="reset" data-cancel>{s('Clear', 'Очистити')}</button>
+            <button class="btn btn-ghost" type="reset">{s('Clear', 'Очистити')}</button>
           </div>
           <p class="text-[15px]" role="status" data-post-status></p>
         </form>
-        <div>
-          <h2 class="t-h3">{s('Posts from admin', 'Публікації з адмінки')}</h2>
-          <p class="t-small mt-1">{s('Static news from the repository are not shown here.', 'Статичні новини з репозиторію тут не показані.')}</p>
-          <ul class="mt-5 grid gap-3" data-post-list></ul>
-        </div>
+        <div><h2 class="t-h3">{T.nav.news}</h2><ul class="mt-5 grid gap-3" data-post-list></ul></div>
       </div>
 
       <!-- Події -->
-      <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_1fr]" data-pane="events" hidden>
-        <form class="panel grid gap-5 p-7 md:p-8" data-event-form>
-          <h2 class="t-h3">{s('New event', 'Нова подія')}</h2>
-          <div class="field"><label for="ef-title">{s('Title', 'Назва')}</label><input id="ef-title" name="title" class="input" required /></div>
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div class="field"><label for="ef-start">{s('Start', 'Початок')}</label><input id="ef-start" name="start" type="datetime-local" class="input" required /></div>
+      <div class="mt-10 grid gap-10 xl:grid-cols-[1.4fr_1fr]" data-pane="events" hidden>
+        <form class="panel grid gap-5 p-5 sm:p-8" data-event-form novalidate>
+          <input type="hidden" name="id" />
+          <h2 class="t-h3" data-event-title>{s('New event', 'Нова подія')}</h2>
+          <div class="grid gap-5 md:grid-cols-2">
+            <fieldset class="grid gap-4"><legend class="mb-2 text-[15px] font-[640]">English</legend>
+              <div class="field"><label for="ef-ten">{s('Title', 'Назва')}</label><input id="ef-ten" name="title_en" class={inp} /></div>
+              <div class="field"><label for="ef-len">{s('Venue', 'Місце')}</label><input id="ef-len" name="location_en" class={inp} value="Hotel Leopolis, 16 Teatralna St, Lviv" /></div>
+              <div class="field"><label for="ef-den">{s('Description', 'Опис')}</label><textarea id="ef-den" name="description_en" class="textarea min-h-[110px]"></textarea></div>
+            </fieldset>
+            <fieldset class="grid gap-4"><legend class="mb-2 text-[15px] font-[640]">Українською</legend>
+              <div class="field"><label for="ef-tuk">{s('Title', 'Назва')}</label><input id="ef-tuk" name="title_uk" class={inp} /></div>
+              <div class="field"><label for="ef-luk">{s('Venue', 'Місце')}</label><input id="ef-luk" name="location_uk" class={inp} value="Готель Leopolis, вул. Театральна, 16, Львів" /></div>
+              <div class="field"><label for="ef-duk">{s('Description', 'Опис')}</label><textarea id="ef-duk" name="description_uk" class="textarea min-h-[110px]"></textarea></div>
+            </fieldset>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-3">
+            <div class="field"><label for="ef-date">{s('Date', 'Дата')}</label><input id="ef-date" name="date" type="date" class={inp} required /></div>
+            <div class="field"><label for="ef-time">{s('Time (empty = to be confirmed)', 'Час (порожньо = уточнюється)')}</label><input id="ef-time" name="time" type="time" class={inp} /></div>
             <div class="field"><label for="ef-vis">{s('Visible to', 'Хто бачить')}</label><select id="ef-vis" name="visibility" class="select"><option value="public">{s('Everyone', 'Усі')}</option><option value="members">{s('Club members only', 'Лише члени клубу')}</option></select></div>
           </div>
-          <div class="field"><label for="ef-loc">{s('Venue', 'Місце')}</label><input id="ef-loc" name="location" class="input" /></div>
-          <label class="check"><input type="checkbox" disabled /> <span>{s('Repeat every 2 weeks (in production)', 'Повторювати кожні 2 тижні (у робочій версії)')}</span></label>
-          <button class="btn btn-blue w-fit" type="submit">{s('Add event', 'Додати подію')}</button>
+          <div class="field"><label for="ef-slug">{s('Web address (slug)', 'Адреса сторінки (slug)')}</label><input id="ef-slug" name="slug" class={inp} pattern="[a-z0-9-]+" placeholder="auto" /></div>
+          <div class="flex flex-wrap gap-3">
+            <button class="btn btn-blue" name="action" value="published" type="submit">{s('Save and publish', 'Зберегти й опублікувати')}</button>
+            <button class="btn btn-quiet" name="action" value="draft" type="submit">{s('Save as draft', 'Зберегти як чернетку')}</button>
+            <button class="btn btn-ghost" type="reset">{s('Clear', 'Очистити')}</button>
+          </div>
           <p class="text-[15px]" role="status" data-event-status></p>
         </form>
-        <div><h2 class="t-h3">{s('Added in admin', 'Додані в адмінці')}</h2><ul class="mt-5 grid gap-3" data-event-list></ul></div>
+        <div><h2 class="t-h3">{T.nav.events}</h2><ul class="mt-5 grid gap-3" data-event-list></ul></div>
       </div>
 
       <!-- Модерація -->
       <div class="mt-10 grid gap-12" data-pane="moderation" hidden>
+        <div><h2 class="t-h3">{s('Photos', 'Фото')}</h2><ul class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" data-mod-photos></ul></div>
         <div><h2 class="t-h3">{T.comments.title}</h2><ul class="mt-5 grid gap-3" data-mod-comments></ul></div>
         <div><h2 class="t-h3">{T.nav.reviews}</h2><ul class="mt-5 grid gap-3" data-mod-reviews></ul></div>
       </div>
@@ -109,18 +139,26 @@ const tabs = [
       <div class="mt-10" data-pane="requests" hidden><ul class="grid gap-3" data-requests></ul></div>
 
       <!-- Учасники -->
-      <div class="mt-10" data-pane="members" hidden>
-        <p class="panel p-5 text-[15px]" data-members-locked>{s('Only an admin can manage roles.', 'Керувати ролями може лише адмін.')}</p>
-        <div data-members-ui>
-          <form class="flex flex-wrap items-end gap-3" data-invite>
-            <div class="field min-w-[260px] flex-1"><label for="inv">{s('Invite a club member by email', 'Запросити члена клубу за email')}</label><input id="inv" type="email" name="email" class="input" required placeholder="name@example.com" /></div>
-            <button class="btn btn-blue" type="submit">{s('Send invitation', 'Надіслати запрошення')}</button>
+      <div class="mt-10 grid gap-10" data-pane="members" hidden>
+        <div data-admin-only>
+          <h2 class="t-h3">{s('Give access by email', 'Надати доступ за email')}</h2>
+          <p class="mt-2 max-w-[60ch] text-soft">{s('Add a person’s email and role. When they sign in (or if they already have), the role is applied automatically.', 'Додайте email і роль людини. Коли вона увійде (або якщо вже входила), роль застосується автоматично.')}</p>
+          <form class="mt-5 flex flex-wrap items-end gap-3" data-invite>
+            <div class="field min-w-[240px] flex-1"><label for="inv">Email</label><input id="inv" type="email" name="email" class={inp} required placeholder="name@example.com" /></div>
+            <div class="field"><label for="inv-role">{s('Role', 'Роль')}</label><select id="inv-role" name="role" class="select"><option value="member">{s('Club member', 'Член клубу')}</option><option value="editor">{s('Editor', 'Редактор')}</option><option value="admin">{s('Admin', 'Адмін')}</option></select></div>
+            <button class="btn btn-blue" type="submit">{s('Give access', 'Надати доступ')}</button>
           </form>
-          <p class="t-small mt-2" data-invite-status></p>
-          <table class="mt-8 w-full text-left text-[15px]">
-            <thead class="text-soft"><tr><th class="py-2 font-[560]">{s('Member', 'Учасник')}</th><th class="py-2 font-[560]">{s('Role', 'Роль')}</th></tr></thead>
-            <tbody data-member-rows></tbody>
-          </table>
+          <p class="t-small mt-2" role="status" data-invite-status></p>
+          <ul class="mt-5 grid gap-2" data-invites></ul>
+        </div>
+        <div>
+          <h2 class="t-h3">{s('Registered people', 'Зареєстровані')}</h2>
+          <div class="mt-5 overflow-x-auto">
+            <table class="w-full min-w-[520px] text-left text-[15px]">
+              <thead class="text-soft"><tr><th class="py-2 font-[560]">{s('Name', 'Ім’я')}</th><th class="py-2 font-[560]">Email</th><th class="py-2 font-[560]">{s('Role', 'Роль')}</th></tr></thead>
+              <tbody data-member-rows></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -131,145 +169,274 @@ const tabs = [
 </Base>
 
 <script>
-  import * as S from '../../../scripts/store';
-  import { ct, cprefix, clang } from '../../../scripts/i18n';
-  const A = () => ct().a;
-  const loc = () => (clang() === 'uk' ? 'uk-UA' : 'en-GB');
-  const $ = <T extends HTMLElement = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s)!;
-  const statusBadge = (s: string) => (A().st[s] ? `<span class="badge ${s === 'pending' ? 'badge-gold' : s === 'approved' ? 'badge-blue' : ''}">${A().st[s]}</span>` : '');
-  const kinds = () => ct().kinds;
+  import * as A from '../../../scripts/api';
+  import { ct, cprefix, cfmt, clang } from '../../../scripts/i18n';
+  const L = () => ct().a;
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const fmtLong = (iso: string) => cfmt(iso, { dateStyle: 'medium', timeStyle: 'short' });
+  const badge = (st: string) => `<span class="badge ${st === 'pending' ? 'badge-gold' : st === 'approved' ? 'badge-blue' : ''}">${L().st[st] ?? st}</span>`;
+  const empty = (t: string) => `<li class="text-soft">${t}</li>`;
+  const pick = (r: Record<string, string | null>, base: string) => (clang() === 'uk' ? r[`${base}_uk`] || r[`${base}_en`] : r[`${base}_en`] || r[`${base}_uk`]) || '';
+  let me: A.Profile | null = null;
+  let postsCache: A.DbPost[] = [];
+  let eventsCache: A.DbEvent[] = [];
+  let photosCache: A.DbPhoto[] = [];
 
-  function render() {
-    const user = S.getUser();
-    const comments = S.comments(), reviews = S.reviews(), posts = S.posts(), evs = S.demoEvents(), reqs = S.requests();
-    const pendC = comments.filter((c) => c.status === 'pending'), pendR = reviews.filter((r) => r.status === 'pending');
+  // Київський час для дати й часу події
+  function kyivIso(date: string, time: string) {
+    const probe = new Date(`${date}T${time}:00Z`);
+    const off = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Kyiv', timeZoneName: 'longOffset' }).formatToParts(probe).find((p) => p.type === 'timeZoneName')?.value.replace('GMT', '') || '+02:00';
+    return `${date}T${time}:00${off === '' ? '+00:00' : off}`;
+  }
+  const kyivParts = (iso: string) => {
+    const d = new Date(iso);
+    const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(d);
+    const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Kyiv', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
+    return { date, time };
+  };
 
-    const setCount = (k: string, n: number) => { const el = $(`[data-count="${k}"]`); el.textContent = String(n); el.classList.toggle('hidden', n === 0); el.classList.toggle('inline-block', n > 0); };
-    setCount('moderation', pendC.length + pendR.length);
-    setCount('requests', reqs.length);
+  function setCount(k: string, n: number) { const el = $(`[data-count="${k}"]`); el.textContent = String(n); el.classList.toggle('hidden', n === 0); el.classList.toggle('inline-block', n > 0); }
 
-    $('[data-kpis]').innerHTML = [
-      [A().pending, pendC.length + pendR.length], [A().posts, posts.length], [A().events, evs.length], [A().requests, reqs.length],
-    ].map(([l, v]) => `<div class="panel p-6"><p class="t-num text-[44px] font-[760] leading-none tracking-[-0.04em]">${v}</p><p class="t-small mt-2">${l}</p></div>`).join('');
-    $('[data-recent]').innerHTML = S.audit().slice(0, 6).map((a) => `<li><span class="text-soft">${S.fmtDate(a.at)}</span> ${S.esc(a.who)}: ${S.esc(a.what)}</li>`).join('') || `<li class="text-soft">${A().nothing}</li>`;
-
-    $('[data-post-list]').innerHTML = posts.map((p) => `
-      <li class="rounded-2xl border border-[var(--line)] p-5">
-        <div class="flex flex-wrap items-center gap-2">${p.status === 'published' ? `<span class="badge badge-blue">${A().published}</span>` : `<span class="badge">${A().draft}</span>`}<span class="t-small">${S.fmtDate(p.at)}</span></div>
-        <p class="mt-2 text-[17px] font-[640]">${S.esc(p.title)}</p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <button class="btn btn-quiet btn-sm" data-edit="${p.id}">${A().edit}</button>
-          ${p.status === 'published' ? `<a class="btn btn-quiet btn-sm" href="${cprefix()}/news/post/?id=${p.id}">${A().view}</a>` : ''}
-          <button class="btn btn-ghost btn-sm" data-del="${p.id}">${A().del}</button>
-        </div>
-      </li>`).join('') || `<li class="text-soft">${A().postsEmpty}</li>`;
-
-    $('[data-event-list]').innerHTML = evs.map((e) => `<li class="flex items-start justify-between gap-4 rounded-2xl border border-[var(--line)] p-5"><div><p class="font-[640]">${S.esc(e.title)}</p><p class="t-small">${new Intl.DateTimeFormat(loc(), { dateStyle: 'long', timeStyle: 'short' }).format(new Date(e.start))}${e.visibility === 'members' ? A().membersOnly : ''}</p></div><button class="btn btn-ghost btn-sm" data-del-ev="${e.id}">${A().del}</button></li>`).join('') || `<li class="text-soft">${A().eventsEmpty}</li>`;
-
-    $('[data-mod-comments]').innerHTML = comments.slice().reverse().map((c) => `
-      <li class="rounded-2xl border border-[var(--line)] p-5">
-        <div class="flex flex-wrap items-center gap-2">${statusBadge(c.status)}<span class="t-small">${S.esc(c.author)}, ${S.fmtDate(c.at)}, ${A().to} «${S.esc(c.target)}»</span></div>
-        <p class="mt-2">${S.esc(c.body)}</p>
-        <div class="mt-3 flex gap-2">
-          ${c.status !== 'approved' ? `<button class="btn btn-blue btn-sm" data-c="${c.id}" data-s="approved">${A().publish}</button>` : ''}
-          ${c.status !== 'hidden' ? `<button class="btn btn-quiet btn-sm" data-c="${c.id}" data-s="hidden">${A().hide}</button>` : ''}
-        </div>
-      </li>`).join('') || `<li class="text-soft">${A().commentsEmpty}</li>`;
-
-    $('[data-mod-reviews]').innerHTML = reviews.slice().reverse().map((r) => `
-      <li class="rounded-2xl border border-[var(--line)] p-5">
-        <div class="flex flex-wrap items-center gap-2">${statusBadge(r.status)}<span class="t-small">${S.esc(r.author)}, ${kinds()[r.kind] ?? ''}, ${S.fmtDate(r.at)}</span>${r.consent ? '' : `<span class="badge">${A().noConsent}</span>`}</div>
-        <p class="mt-2">${S.esc(r.text)}</p>
-        <div class="mt-3 flex flex-wrap gap-2">
-          ${r.status !== 'approved' && r.consent ? `<button class="btn btn-blue btn-sm" data-r="${r.id}" data-s="approved">${A().publish}</button>` : ''}
-          ${r.status !== 'private' ? `<button class="btn btn-quiet btn-sm" data-r="${r.id}" data-s="private">${A().toBoard}</button>` : ''}
-          ${r.status !== 'hidden' ? `<button class="btn btn-ghost btn-sm" data-r="${r.id}" data-s="hidden">${A().hide}</button>` : ''}
-        </div>
-      </li>`).join('') || `<li class="text-soft">${A().reviewsEmpty}</li>`;
-
-    $('[data-requests]').innerHTML = reqs.map((r) => `<li class="rounded-2xl border border-[var(--line)] p-5"><p><span class="badge ${r.kind === 'join' ? 'badge-gold' : ''}">${r.kind === 'join' ? A().join : A().contact}</span> <span class="t-small">${S.fmtDate(r.at)}</span></p><p class="mt-2 font-[640]">${S.esc(r.name)} <span class="font-normal text-soft">${S.esc(r.email)}</span></p><p class="mt-1">${S.esc(r.message)}</p></li>`).join('') || `<li class="text-soft">${A().requestsEmpty}</li>`;
-
-    const admin = S.can.manageRoles(user);
-    $('[data-members-locked]').hidden = admin;
-    $('[data-members-ui]').hidden = !admin;
-    const roster = A().roster;
-    $('[data-member-rows]').innerHTML = roster.map(([n, r]) => `<tr class="border-t border-[var(--line)]"><td class="py-3">${n}</td><td class="py-3"><select class="select max-w-[200px] !py-2" aria-label="${A().roleOf}: ${n}">${(['user', 'member', 'editor', 'admin'] as S.Role[]).map((x) => `<option value="${x}" ${x === r ? 'selected' : ''}>${S.roleName(x)}</option>`).join('')}</select></td></tr>`).join('');
-
-    $('[data-audit]').innerHTML = S.audit().map((a) => `<li class="border-b border-[var(--line)] py-2"><span class="text-soft">${new Intl.DateTimeFormat(loc(), { dateStyle: 'short', timeStyle: 'short' }).format(new Date(a.at))}</span> ${S.esc(a.who)}: ${S.esc(a.what)}</li>`).join('') || `<li class="text-soft">${A().auditEmpty}</li>`;
+  async function renderOverview() {
+    const [cs, rs, ps, reqs, log] = await Promise.all([A.allComments(), A.allReviews(), A.allPhotos(), A.requests(), A.audit(8)]);
+    const pend = cs.filter((c) => c.status === 'pending').length + rs.filter((r) => r.status === 'pending').length + ps.filter((p) => p.status === 'pending').length;
+    setCount('moderation', pend); setCount('requests', reqs.length);
+    const upcoming = eventsCache.filter((e) => new Date(e.starts_at) > new Date()).length;
+    $('[data-kpis]').innerHTML = [[L().pending, pend], [L().posts, postsCache.length], [L().events, upcoming], [L().requests, reqs.length]]
+      .map(([l, v]) => `<div class="panel p-5 sm:p-6"><p class="t-num text-[40px] font-[760] leading-none tracking-[-0.04em]">${v}</p><p class="t-small mt-2">${l}</p></div>`).join('');
+    $('[data-live-note]').textContent = L().liveNote;
+    $('[data-recent]').innerHTML = log.map((a) => `<li><span class="text-soft">${fmtLong(a.at)}</span> ${A.esc(a.actor_name || '')}: ${A.esc(a.action)}</li>`).join('') || empty(L().nothing);
   }
 
-  function showTab(k: string) {
+  async function renderPosts() {
+    postsCache = await A.allPosts();
+    $('[data-post-list]').innerHTML = postsCache.map((p) => `
+      <li class="rounded-2xl border border-[var(--line)] p-4 sm:p-5">
+        <div class="flex flex-wrap items-center gap-2">${p.status === 'published' ? `<span class="badge badge-blue">${L().published}</span>` : `<span class="badge">${L().draft}</span>`}<span class="t-small">${p.published_at ? cfmt(p.published_at) : ''}</span></div>
+        <p class="mt-2 text-[17px] font-[640]">${A.esc(pick(p as never, 'title'))}</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <button type="button" class="btn btn-quiet btn-sm" data-edit-post="${p.id}">${L().edit}</button>
+          ${p.status === 'published' ? `<a class="btn btn-quiet btn-sm" href="${cprefix()}/news/post/?slug=${encodeURIComponent(p.slug)}">${L().view}</a>` : ''}
+          <button type="button" class="btn btn-ghost btn-sm" data-del-post="${p.id}">${L().del}</button>
+        </div>
+      </li>`).join('') || empty(L().postsEmpty);
+  }
+
+  async function renderEvents() {
+    eventsCache = await A.allEvents();
+    $('[data-event-list]').innerHTML = eventsCache.map((e) => `
+      <li class="rounded-2xl border border-[var(--line)] p-4 sm:p-5">
+        <div class="flex flex-wrap items-center gap-2">${e.status === 'published' ? `<span class="badge badge-blue">${L().published}</span>` : `<span class="badge">${L().draft}</span>`}</div>
+        <p class="mt-2 text-[17px] font-[640]">${A.esc(pick(e as never, 'title'))}</p>
+        <p class="t-small">${e.time_unknown ? cfmt(e.starts_at) + L().timeTbc : fmtLong(e.starts_at)}${e.visibility === 'members' ? L().membersOnly : ''}</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <button type="button" class="btn btn-quiet btn-sm" data-edit-event="${e.id}">${L().edit}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-del-event="${e.id}">${L().del}</button>
+        </div>
+      </li>`).join('') || empty(L().eventsEmpty);
+  }
+
+  async function renderModeration() {
+    const [cs, rs, ps] = await Promise.all([A.allComments(), A.allReviews(), A.allPhotos()]);
+    photosCache = ps;
+    $('[data-mod-photos]').innerHTML = ps.map((p) => `
+      <li class="overflow-hidden rounded-2xl border border-[var(--line)]">
+        <img src="${A.mediaUrl(p.storage_path)}" alt="" loading="lazy" class="aspect-square w-full object-cover" />
+        <div class="grid gap-2 p-3">
+          <p class="t-small">${badge(p.status)} ${A.esc(p.album_slug)}</p>
+          <div class="flex flex-wrap gap-1.5">
+            ${p.status !== 'approved' ? `<button type="button" class="btn btn-blue btn-sm" data-photo="${p.id}" data-s="approved">${L().publish}</button>` : ''}
+            ${p.status !== 'hidden' ? `<button type="button" class="btn btn-quiet btn-sm" data-photo="${p.id}" data-s="hidden">${L().hide}</button>` : ''}
+            <button type="button" class="btn btn-ghost btn-sm" data-del-photo="${p.id}">${L().del}</button>
+          </div>
+        </div>
+      </li>`).join('') || empty(L().photosEmpty);
+    $('[data-mod-comments]').innerHTML = cs.map((c) => `
+      <li class="rounded-2xl border border-[var(--line)] p-4 sm:p-5">
+        <div class="flex flex-wrap items-center gap-2">${badge(c.status)}<span class="t-small">${A.esc(c.author_name)}, ${fmtLong(c.created_at)}, ${L().to} «${A.esc(c.target)}»</span></div>
+        <p class="mt-2 whitespace-pre-line">${A.esc(c.body)}</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          ${c.status !== 'approved' ? `<button type="button" class="btn btn-blue btn-sm" data-c="${c.id}" data-s="approved">${L().publish}</button>` : ''}
+          ${c.status !== 'hidden' ? `<button type="button" class="btn btn-quiet btn-sm" data-c="${c.id}" data-s="hidden">${L().hide}</button>` : ''}
+        </div>
+      </li>`).join('') || empty(L().commentsEmpty);
+    $('[data-mod-reviews]').innerHTML = rs.map((r) => `
+      <li class="rounded-2xl border border-[var(--line)] p-4 sm:p-5">
+        <div class="flex flex-wrap items-center gap-2">${badge(r.status)}<span class="t-small">${A.esc(r.author_name)}, ${ct().kinds[r.author_kind] ?? ''}, ${fmtLong(r.created_at)}${r.email ? `, ${A.esc(r.email)}` : ''}</span>${r.consent_publish ? '' : `<span class="badge">${L().noConsent}</span>`}</div>
+        <p class="mt-2 whitespace-pre-line">${A.esc(r.body)}</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          ${r.status !== 'approved' && r.consent_publish ? `<button type="button" class="btn btn-blue btn-sm" data-r="${r.id}" data-s="approved">${L().publish}</button>` : ''}
+          ${r.status !== 'private' ? `<button type="button" class="btn btn-quiet btn-sm" data-r="${r.id}" data-s="private">${L().toBoard}</button>` : ''}
+          ${r.status !== 'hidden' ? `<button type="button" class="btn btn-ghost btn-sm" data-r="${r.id}" data-s="hidden">${L().hide}</button>` : ''}
+        </div>
+      </li>`).join('') || empty(L().reviewsEmpty);
+  }
+
+  async function renderRequests() {
+    const reqs = await A.requests();
+    $('[data-requests]').innerHTML = reqs.map((r) => `
+      <li class="rounded-2xl border border-[var(--line)] p-4 sm:p-5">
+        <p><span class="badge ${r.kind === 'join' ? 'badge-gold' : ''}">${r.kind === 'join' ? L().join : L().contact}</span> <span class="t-small">${fmtLong(r.created_at)}</span></p>
+        <p class="mt-2 font-[640]">${A.esc(r.name)} <a class="link font-normal" href="mailto:${A.esc(r.email)}">${A.esc(r.email)}</a></p>
+        <p class="mt-1 whitespace-pre-line">${A.esc(r.message)}</p>
+        <button type="button" class="btn btn-ghost btn-sm mt-3" data-del-req="${r.id}">${L().del}</button>
+      </li>`).join('') || empty(L().requestsEmpty);
+  }
+
+  async function renderMembers() {
+    const admin = A.can.manageRoles(me);
+    document.querySelectorAll<HTMLElement>('[data-admin-only]').forEach((el) => (el.hidden = !admin));
+    const people = await A.profiles();
+    const roles: A.Role[] = ['user', 'member', 'editor', 'admin'];
+    $('[data-member-rows]').innerHTML = people.map((p) => `
+      <tr class="border-t border-[var(--line)]">
+        <td class="py-3 pr-3">${A.esc(p.full_name || '')}${p.id === me?.id ? ` <span class="t-small">(${L().you})</span>` : ''}</td>
+        <td class="py-3 pr-3">${A.esc(p.email || '')}</td>
+        <td class="py-3">${admin && p.id !== me?.id
+          ? `<select class="select max-w-[200px] !py-2" aria-label="${L().roleOf}: ${A.esc(p.email || '')}" data-role-for="${p.id}" data-who="${A.esc(p.email || p.full_name)}">${roles.map((x) => `<option value="${x}" ${x === p.role ? 'selected' : ''}>${ct().roles[x]}</option>`).join('')}</select>`
+          : ct().roles[p.role]}</td>
+      </tr>`).join('');
+    if (admin) {
+      const inv = await A.invites();
+      $('[data-invites]').innerHTML = inv.map((i) => `<li class="flex flex-wrap items-center gap-3 text-[15px]"><span>${A.esc(i.email)}</span><span class="badge">${ct().roles[i.role]}</span><button type="button" class="link text-[14px]" data-del-invite="${A.esc(i.email)}">${L().del}</button></li>`).join('');
+    }
+  }
+
+  async function renderAudit() {
+    const log = await A.audit(150);
+    $('[data-audit]').innerHTML = log.map((a) => `<li class="border-b border-[var(--line)] py-2"><span class="text-soft">${fmtLong(a.at)}</span> ${A.esc(a.actor_name || '')}: ${A.esc(a.action)}</li>`).join('') || empty(L().auditEmpty);
+  }
+
+  const renderers: Record<string, () => Promise<void>> = { overview: renderOverview, posts: renderPosts, events: renderEvents, moderation: renderModeration, requests: renderRequests, members: renderMembers, audit: renderAudit };
+  async function showTab(k: string) {
+    if (!renderers[k]) k = 'overview';
     document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((t) => { const on = t.dataset.tab === k; t.setAttribute('aria-selected', String(on)); t.classList.toggle('bg-[var(--surface)]', on); t.classList.toggle('shadow-sm', on); });
     document.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== k));
-    history.replaceState(null, '', `#${k}`);
+    history.replaceState(history.state, '', `#${k}`);
+    try { await renderers[k](); } catch (err) { console.error(err); }
   }
 
-  document.addEventListener('astro:page-load', () => {
+  function confirmInline(b: HTMLElement) {
+    if (b.dataset.armed) return true;
+    b.dataset.armed = '1'; b.textContent = L().sure;
+    setTimeout(() => { delete b.dataset.armed; b.textContent = L().del; }, 3000);
+    return false;
+  }
+
+  function resetPostForm(f: HTMLFormElement) {
+    f.reset(); (f.elements.namedItem('id') as HTMLInputElement).value = ''; (f.elements.namedItem('cover_url') as HTMLInputElement).value = '';
+    const img = $<HTMLImageElement>('[data-cover-preview]'); img.classList.add('hidden'); img.removeAttribute('src');
+    $('[data-cover-note]').textContent = ''; $('[data-post-title]').textContent = L().newPost;
+  }
+  function resetEventForm(f: HTMLFormElement) { f.reset(); (f.elements.namedItem('id') as HTMLInputElement).value = ''; $('[data-event-title]').textContent = L().newEvent; }
+  const coverPreview = (url: string) => { const img = $<HTMLImageElement>('[data-cover-preview]'); if (!url) { img.classList.add('hidden'); return; } img.src = /^https?:/.test(url) ? url : url.startsWith('/') ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${url}` : A.mediaUrl(url); img.classList.remove('hidden'); };
+
+  document.addEventListener('astro:page-load', async () => {
     const root = document.querySelector<HTMLElement>('[data-admin]');
     if (!root) return;
-    const user = S.getUser();
-    $('[data-denied]').hidden = S.can.admin(user);
-    $('[data-app]').hidden = !S.can.admin(user);
-    if (!S.can.admin(user)) return;
-    $('[data-who]').textContent = `${A().signedInAs}: ${S.roleName(user!.role).toLowerCase()}`;
-    render();
+    me = await A.getProfile();
+    $('[data-loading]').hidden = true;
+    const ok = A.can.admin(me);
+    $('[data-denied]').hidden = ok; $('[data-app]').hidden = !ok;
+    if (me && !ok) $('[data-denied-text]').textContent = `${ct().roles[me.role]}. ${$('[data-denied-text]').textContent}`;
+    if (!ok) return;
+    $('[data-who]').textContent = `${L().signedInAs}: ${A.displayName(me)}, ${ct().roles[me!.role].toLowerCase()}`;
+    [postsCache, eventsCache] = await Promise.all([A.allPosts(), A.allEvents()]);
     showTab(location.hash.slice(1) || 'overview');
 
-    root.addEventListener('click', (e) => {
+    root.addEventListener('click', async (e) => {
       const t = e.target as HTMLElement;
-      const tab = t.closest<HTMLElement>('[data-tab]'); if (tab) return showTab(tab.dataset.tab!);
-      const go = t.closest<HTMLElement>('[data-goto]'); if (go) return showTab(go.dataset.goto!);
-      if (t.dataset.c) { S.setCommentStatus(t.dataset.c, t.dataset.s as S.Status); return render(); }
-      if (t.dataset.r) { S.setReviewStatus(t.dataset.r, t.dataset.s as S.Status); return render(); }
-      if (t.dataset.delEv) { S.deleteEvent(t.dataset.delEv); return render(); }
-      if (t.dataset.del) { if (confirmInline(t)) { S.deletePost(t.dataset.del); render(); } return; }
-      if (t.dataset.edit) {
-        const p = S.posts().find((x) => x.id === t.dataset.edit)!; const f = $<HTMLFormElement>('[data-post-form]');
-        (f.elements.namedItem('id') as HTMLInputElement).value = p.id;
-        (f.elements.namedItem('title') as HTMLInputElement).value = p.title;
-        (f.elements.namedItem('type') as HTMLSelectElement).value = p.type;
-        (f.elements.namedItem('excerpt') as HTMLInputElement).value = p.excerpt;
-        (f.elements.namedItem('body') as HTMLTextAreaElement).value = p.body;
-        $('[data-form-title]').textContent = A().editing;
+      const tab = t.closest<HTMLElement>('[data-tab]'); if (tab) return void showTab(tab.dataset.tab!);
+      const go = t.closest<HTMLElement>('[data-goto]'); if (go) return void showTab(go.dataset.goto!);
+      try {
+        if (t.dataset.c) { await A.setCommentStatus(t.dataset.c, t.dataset.s as A.Status); return void renderModeration(); }
+        if (t.dataset.r) { await A.setReviewStatus(t.dataset.r, t.dataset.s as A.Status); return void renderModeration(); }
+        if (t.dataset.photo) { await A.setPhotoStatus(t.dataset.photo, t.dataset.s as A.Status); return void renderModeration(); }
+        if (t.dataset.delPhoto) { if (confirmInline(t)) { await A.deletePhoto(photosCache.find((p) => p.id === t.dataset.delPhoto)!); renderModeration(); } return; }
+        if (t.dataset.delReq) { if (confirmInline(t)) { await A.deleteRequest(t.dataset.delReq); renderRequests(); } return; }
+        if (t.dataset.delInvite) { await A.deleteInvite(t.dataset.delInvite); return void renderMembers(); }
+        if (t.dataset.delPost) { if (confirmInline(t)) { const p = postsCache.find((x) => x.id === t.dataset.delPost)!; await A.deletePost(p.id, p.title_en || p.title_uk); renderPosts(); } return; }
+        if (t.dataset.delEvent) { if (confirmInline(t)) { const ev = eventsCache.find((x) => x.id === t.dataset.delEvent)!; await A.deleteEvent(ev.id, ev.title_en || ev.title_uk); renderEvents(); } return; }
+      } catch (err) { alertInline(t, err); return; }
+      if (t.dataset.editPost) {
+        const p = postsCache.find((x) => x.id === t.dataset.editPost)!; const f = $<HTMLFormElement>('[data-post-form]');
+        for (const k of ['id', 'slug', 'title_en', 'title_uk', 'excerpt_en', 'excerpt_uk', 'body_en', 'body_uk', 'cover_url'] as const) (f.elements.namedItem(k) as HTMLInputElement).value = (p as unknown as Record<string, string | null>)[k] ?? '';
+        (f.elements.namedItem('date') as HTMLInputElement).value = p.published_at ? kyivParts(p.published_at).date : '';
+        coverPreview(p.cover_url ?? ''); $('[data-post-title]').textContent = L().editing; $('[data-post-status]').textContent = '';
+        f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (t.dataset.editEvent) {
+        const ev = eventsCache.find((x) => x.id === t.dataset.editEvent)!; const f = $<HTMLFormElement>('[data-event-form]');
+        for (const k of ['id', 'slug', 'title_en', 'title_uk', 'description_en', 'description_uk', 'location_en', 'location_uk', 'visibility'] as const) (f.elements.namedItem(k) as HTMLInputElement).value = (ev as unknown as Record<string, string | null>)[k] ?? '';
+        const parts = kyivParts(ev.starts_at);
+        (f.elements.namedItem('date') as HTMLInputElement).value = parts.date;
+        (f.elements.namedItem('time') as HTMLInputElement).value = ev.time_unknown ? '' : parts.time;
+        $('[data-event-title]').textContent = L().editingEvent; $('[data-event-status]').textContent = '';
         f.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
+    function alertInline(t: HTMLElement, err: unknown) { const n = document.createElement('span'); n.className = 't-small ml-2 text-[#b42318]'; n.textContent = `${L().error}: ${(err as Error).message}`; t.after(n); setTimeout(() => n.remove(), 6000); }
 
-    // Видалення з підтвердженням у самій кнопці (без браузерних діалогів)
-    function confirmInline(b: HTMLElement) {
-      if (b.dataset.armed) return true;
-      b.dataset.armed = '1'; b.textContent = A().sure;
-      setTimeout(() => { delete b.dataset.armed; b.textContent = A().del; }, 3000);
-      return false;
-    }
+    root.addEventListener('change', async (e) => {
+      const t = e.target as HTMLSelectElement;
+      if (t.dataset.roleFor) {
+        try { await A.setRole(t.dataset.roleFor, t.value as A.Role, t.dataset.who || ''); t.insertAdjacentHTML('afterend', `<span class="t-small ml-2">${L().saved}</span>`); }
+        catch (err) { alertInline(t, err); }
+      }
+    });
 
+    // Обкладинка новини: завантаження одразу при виборі
     const pf = $<HTMLFormElement>('[data-post-form]');
-    pf.onsubmit = (e) => {
+    $<HTMLInputElement>('[data-cover-file]').onchange = async (e) => {
+      const input = e.target as HTMLInputElement; const file = input.files?.[0]; if (!file) return;
+      const note = $('[data-cover-note]'); note.textContent = ct().uploading;
+      try { const path = await A.uploadImage('posts', file); (pf.elements.namedItem('cover_url') as HTMLInputElement).value = path; coverPreview(path); note.textContent = ''; }
+      catch (err) { note.textContent = `${ct().uploadError} (${(err as Error).message})`; }
+      input.value = '';
+    };
+    pf.addEventListener('reset', () => setTimeout(() => resetPostForm(pf)));
+    pf.onsubmit = async (e) => {
       e.preventDefault();
       const action = ((e as SubmitEvent).submitter as HTMLButtonElement)?.value as 'draft' | 'published';
-      const d = new FormData(pf);
-      const title = String(d.get('title')).trim();
-      if (!title) { $('[data-post-status]').textContent = A().addTitle; return; }
-      S.savePost({ id: String(d.get('id')) || undefined, title, type: d.get('type') as 'news', excerpt: String(d.get('excerpt')), body: String(d.get('body')), status: action });
-      pf.reset(); (pf.elements.namedItem('id') as HTMLInputElement).value = ''; $('[data-form-title]').textContent = A().newPost;
-      $('[data-post-status]').innerHTML = action === 'published' ? `${A().publishedMsg} <a class="link" href="${cprefix()}/news">${A().seeNews}</a>` : A().draftSaved;
-      render();
+      const d = Object.fromEntries(new FormData(pf)) as Record<string, string>;
+      const st = $('[data-post-status]');
+      if (!d.title_en.trim() && !d.title_uk.trim()) { st.textContent = L().addTitle; return; }
+      const slug = d.slug.trim() || A.slugify(d.title_en || d.title_uk);
+      const existing = postsCache.find((p) => p.id === d.id);
+      const published_at = d.date ? kyivIso(d.date, '12:00') : existing?.published_at || null;
+      try {
+        await A.savePost({ id: d.id || undefined, slug, title_en: d.title_en.trim(), title_uk: d.title_uk.trim(), excerpt_en: d.excerpt_en.trim() || null, excerpt_uk: d.excerpt_uk.trim() || null, body_en: d.body_en.trim() || null, body_uk: d.body_uk.trim() || null, cover_url: d.cover_url || null, status: action, published_at });
+        resetPostForm(pf);
+        st.innerHTML = action === 'published' ? `${L().publishedMsg} <a class="link" href="${cprefix()}/news/post/?slug=${encodeURIComponent(slug)}">${L().seeNews}</a>` : L().draftSaved;
+        renderPosts();
+      } catch (err) { st.textContent = `${L().error}: ${(err as Error).message}`; }
     };
-    pf.addEventListener('reset', () => { $('[data-form-title]').textContent = A().newPost; (pf.elements.namedItem('id') as HTMLInputElement).value = ''; });
 
     const ef = $<HTMLFormElement>('[data-event-form]');
-    ef.onsubmit = (e) => {
-      e.preventDefault(); const d = new FormData(ef);
-      S.addEvent({ title: String(d.get('title')), start: new Date(String(d.get('start'))).toISOString(), location: String(d.get('location')), visibility: d.get('visibility') as 'public' });
-      ef.reset(); $('[data-event-status]').innerHTML = `${A().eventAdded} <a class="link" href="${cprefix()}/events">${A().openSchedule}</a>`; render();
+    ef.addEventListener('reset', () => setTimeout(() => resetEventForm(ef)));
+    ef.onsubmit = async (e) => {
+      e.preventDefault();
+      const action = ((e as SubmitEvent).submitter as HTMLButtonElement)?.value as 'draft' | 'published';
+      const d = Object.fromEntries(new FormData(ef)) as Record<string, string>;
+      const st = $('[data-event-status]');
+      if (!d.title_en.trim() && !d.title_uk.trim()) { st.textContent = L().addTitle; return; }
+      if (!d.date) { ef.reportValidity(); return; }
+      const slug = d.slug.trim() || A.slugify(d.title_en || d.title_uk) + '-' + d.date;
+      try {
+        await A.saveEvent({ id: d.id || undefined, slug, title_en: d.title_en.trim(), title_uk: d.title_uk.trim(), description_en: d.description_en.trim() || null, description_uk: d.description_uk.trim() || null, location_en: d.location_en.trim() || null, location_uk: d.location_uk.trim() || null, starts_at: kyivIso(d.date, d.time || '18:00'), time_unknown: !d.time, visibility: d.visibility as 'public' | 'members', status: action });
+        resetEventForm(ef);
+        st.innerHTML = `${L().eventSaved} <a class="link" href="${cprefix()}/events/">${L().openSchedule}</a>`;
+        renderEvents();
+      } catch (err) { st.textContent = `${L().error}: ${(err as Error).message}`; }
     };
 
-    $<HTMLFormElement>('[data-invite]').onsubmit = (e) => {
-      e.preventDefault(); const f = e.target as HTMLFormElement;
-      $('[data-invite-status]').textContent = A().invite(String(new FormData(f).get('email'))); f.reset();
+    $<HTMLFormElement>('[data-invite]').onsubmit = async (e) => {
+      e.preventDefault(); const f = e.target as HTMLFormElement; const d = new FormData(f);
+      const email = String(d.get('email')).trim();
+      try { await A.addInvite(email, d.get('role') as A.Role); $('[data-invite-status]').textContent = L().inviteSaved(email); f.reset(); renderMembers(); }
+      catch (err) { $('[data-invite-status]').textContent = `${L().error}: ${(err as Error).message}`; }
     };
 
-    $('[data-reset]').onclick = () => { S.resetDemo(); S.signIn(user!.role); location.reload(); };
-    $('[data-logout]').onclick = () => { S.signOut(); location.href = `${cprefix()}/`; };
+    $('[data-logout]').onclick = async () => { await A.signOut(); location.href = `${cprefix()}/`; };
   });
 </script>

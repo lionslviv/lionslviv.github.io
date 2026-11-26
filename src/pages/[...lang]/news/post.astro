@@ -12,6 +12,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 <Base title={s('News', 'Новина')} noindex>
   <article class="wrap-narrow pb-16 pt-[clamp(3rem,7vw,6rem)]" data-local-post>
     <a href={lp(lang, '/news')} class="link text-[15px]">{T.allNews}</a>
+    <img data-cover alt="" class="mt-8 hidden aspect-[21/9] w-full rounded-[var(--radius-card)] object-cover" />
     <p class="t-small mt-6" data-date></p>
     <h1 class="t-h1 mt-3" data-title>{s('Loading…', 'Завантаження…')}</h1>
     <p class="t-lead mt-5" data-excerpt></p>
@@ -20,20 +21,27 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
   <Comments target="local-post" />
 </Base>
 <script>
-  import { posts, esc, fmtDate } from '../../../scripts/store';
-  import { ct } from '../../../scripts/i18n';
-  document.addEventListener('astro:page-load', () => {
+  import { postBySlug, paragraphs, mediaUrl } from '../../../scripts/api';
+  import { ct, cfmt, clang, cprefix } from '../../../scripts/i18n';
+  document.addEventListener('astro:page-load', async () => {
     const root = document.querySelector<HTMLElement>('[data-local-post]');
     if (!root) return;
-    const id = new URLSearchParams(location.search).get('id');
-    const p = posts().find((x) => x.id === id);
+    const slug = new URLSearchParams(location.search).get('slug') || '';
     const q = (s: string) => root.querySelector<HTMLElement>(s)!;
+    const p = slug ? await postBySlug(slug) : null;
     if (!p) { q('[data-title]').textContent = ct().notFound; q('[data-excerpt]').textContent = ct().notFoundText; return; }
-    document.title = `${p.title} | Lviv International Lions Club`;
-    q('[data-date]').textContent = fmtDate(p.at);
-    q('[data-title]').textContent = p.title;
-    q('[data-excerpt]').textContent = p.excerpt;
-    q('[data-body]').innerHTML = p.body.split(/\n{2,}/).map((b) => `<p>${esc(b)}</p>`).join('');
-    document.querySelector<HTMLElement>('[data-comments]')?.setAttribute('data-comments', `local-${p.id}`);
+    const uk = clang() === 'uk';
+    const pick = (en: string | null, ukv: string | null) => (uk ? ukv || en : en || ukv) || '';
+    const title = pick(p.title_en, p.title_uk);
+    document.title = `${title} | Lviv International Lions Club`;
+    if (p.cover_url) { const img = q('[data-cover]') as HTMLImageElement; const u = p.cover_url; img.src = /^https?:/.test(u) ? u : u.startsWith('/') ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${u}` : mediaUrl(u); img.classList.remove('hidden'); }
+    q('[data-date]').textContent = p.published_at ? cfmt(p.published_at) : '';
+    q('[data-title]').textContent = title;
+    q('[data-excerpt]').textContent = pick(p.excerpt_en, p.excerpt_uk);
+    q('[data-body]').innerHTML = paragraphs(pick(p.body_en, p.body_uk));
+    // Якщо сторінка вже зібрана статично, ведемо на неї (там коментарі й гарна адреса)
+    const c = document.querySelector<HTMLElement>('[data-comments]');
+    if (c) { c.setAttribute('data-comments', p.slug); }
+    void cprefix;
   });
 </script>

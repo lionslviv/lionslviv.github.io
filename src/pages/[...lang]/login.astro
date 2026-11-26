@@ -1,62 +1,69 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { langPaths, langOf, lp, tr, t } from '../../i18n';
+import { langPaths, langOf, t } from '../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
-const roles = [
-  { role: 'user', title: s('a user', 'користувач'), text: s('Comments on news and albums. The first comment goes to moderation.', 'Коментує новини й альбоми. Перший коментар іде на модерацію.') },
-  { role: 'member', title: s('a club member', 'член клубу'), text: s('Sees members-only meetings, RSVPs, edits their profile.', 'Бачить закриті збори, відмічає RSVP, редагує свій профіль.') },
-  { role: 'editor', title: s('an editor', 'редактор'), text: s('Publishes news and events, moderates comments and reviews.', 'Публікує новини й події, модерує коментарі та відгуки.') },
-  { role: 'admin', title: s('an admin', 'адмін'), text: s('Everything an editor can do, plus member roles and the activity log.', 'Усе, що редактор, плюс ролі учасників і журнал дій.') },
-];
 ---
 <Base title={T.signIn} noindex>
-  <section class="wrap grid gap-14 pb-24 pt-[clamp(3rem,7vw,6rem)] lg:grid-cols-[1fr_1.2fr]">
-    <div class="space-y-6">
+  <section class="wrap grid gap-12 pb-24 pt-[clamp(3rem,7vw,6rem)] lg:grid-cols-[1fr_1fr]">
+    <div class="space-y-5">
       <h1 class="t-h1">{T.signIn}</h1>
-      <p class="t-lead">{s('In production you sign in with Google, Apple or an email link. No passwords.', 'У робочій версії вхід через Google, Apple або посилання на email. Паролів немає.')}</p>
-      <div class="grid max-w-[380px] gap-3">
-        <button class="btn btn-quiet w-full" disabled>{s('Continue with Google', 'Продовжити з Google')}</button>
-        <button class="btn btn-quiet w-full" disabled>{s('Continue with Apple', 'Продовжити з Apple')}</button>
-        <div class="field mt-3"><label for="ml">Email</label><input id="ml" class="input" type="email" placeholder="you@example.com" disabled /></div>
-        <button class="btn btn-blue w-full" disabled>{s('Send sign-in link', 'Надіслати посилання для входу')}</button>
-        <p class="t-small">{s('These buttons will work once Supabase Auth is connected.', 'Ці кнопки запрацюють після підключення Supabase Auth.')}</p>
-      </div>
+      <p class="t-lead max-w-[36ch]">{s('No passwords: enter your email and we will send you a sign-in link.', 'Без паролів: введіть email, і ми надішлемо посилання для входу.')}</p>
+      <p class="text-soft max-w-[44ch]">{s('Club members and editors get their access automatically after the first sign-in, if the admin has added their email.', 'Члени клубу й редактори отримують доступ автоматично після першого входу, якщо адмін додав їхній email.')}</p>
     </div>
-    <div class="panel p-8 md:p-10">
-      <h2 class="t-h3">{s('Demo: choose a role', 'Демо: оберіть роль')}</h2>
-      <p class="mt-2 text-soft">{s('Sign-in is simulated in the browser to show what each role sees.', 'Вхід імітується в браузері, щоб показати, що бачить кожна роль.')}</p>
-      <ul class="mt-8 grid gap-3">
-        {roles.map((r) => (
-          <li>
-            <button class="group w-full rounded-[18px] bg-[var(--surface)] p-5 text-left ring-1 ring-[var(--line)] transition hover:ring-2 hover:ring-[var(--color-lions-sky)]" data-role={r.role}>
-              <span class="text-[19px] font-[650] group-hover:text-[var(--accent)]">{s('Sign in as', 'Увійти як')} {r.title}</span>
-              <span class="mt-1 block text-[15px] text-soft">{r.text}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      <p class="mt-6 text-[15px]" data-current></p>
+    <div class="panel p-6 sm:p-8 md:p-10">
+      <div data-current hidden class="space-y-4">
+        <p class="text-[17px]" data-who></p>
+        <div class="flex flex-wrap gap-3">
+          <a class="btn btn-blue" data-go></a>
+          <button type="button" class="btn btn-ghost" data-out>{s('Sign out', 'Вийти')}</button>
+        </div>
+      </div>
+      <form class="grid gap-4" data-login novalidate>
+        <div class="field"><label for="ml">Email</label><input id="ml" name="email" class="input" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required /></div>
+        <button class="btn btn-blue w-full sm:w-auto" type="submit">{s('Send sign-in link', 'Надіслати посилання для входу')}</button>
+        <p class="text-[15px]" role="status" data-status></p>
+      </form>
     </div>
   </section>
 </Base>
 <script>
-  import { signIn, signOut, getUser, roleName, can, type Role } from '../../scripts/store';
+  import { getProfile, signInWithEmail, signOut, can, displayName } from '../../scripts/api';
   import { ct, cprefix } from '../../scripts/i18n';
-  import { navigate } from 'astro:transitions/client';
-  document.addEventListener('astro:page-load', () => {
-    const cur = document.querySelector<HTMLElement>('[data-current]');
-    if (!cur) return;
-    const u0 = getUser();
-    if (u0) {
-      cur.innerHTML = `${ct().current}: <b>${roleName(u0.role)}</b>. <button class="link" data-out>${ct().signOut}</button>`;
-      cur.querySelector('[data-out]')!.addEventListener('click', () => { signOut(); location.reload(); });
+  async function paint() {
+    const box = document.querySelector<HTMLElement>('[data-current]');
+    const form = document.querySelector<HTMLFormElement>('[data-login]');
+    if (!box || !form) return;
+    const p = await getProfile();
+    box.hidden = !p; form.hidden = !!p;
+    if (p) {
+      box.querySelector('[data-who]')!.innerHTML = `${ct().current}: <b></b> (${ct().roles[p.role]})`;
+      box.querySelector('[data-who] b')!.textContent = displayName(p);
+      const go = box.querySelector<HTMLAnchorElement>('[data-go]')!;
+      go.href = `${cprefix()}${can.admin(p) ? '/admin' : '/account'}`;
+      go.textContent = can.admin(p) ? ct().admin : ct().account;
     }
-    document.querySelectorAll<HTMLButtonElement>('[data-role]').forEach((b) => b.addEventListener('click', () => {
-      const user = signIn(b.dataset.role as Role);
-      navigate(`${cprefix()}${can.admin(user) ? '/admin' : '/account'}`);
-    }));
+  }
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector<HTMLFormElement>('[data-login]');
+    if (!form) return;
+    paint();
+    document.querySelector<HTMLButtonElement>('[data-out]')!.onclick = async () => { await signOut(); paint(); };
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const st = form.querySelector<HTMLElement>('[data-status]')!;
+      const email = String(new FormData(form).get('email') || '').trim();
+      if (!form.checkValidity() || !email) { form.reportValidity(); return; }
+      const btn = form.querySelector<HTMLButtonElement>('button')!; btn.disabled = true;
+      try {
+        await signInWithEmail(email, `${location.origin}${cprefix()}/account/`);
+        st.className = 'text-[15px] text-[#067647]'; st.textContent = ct().linkSent(email);
+      } catch (err) {
+        st.className = 'text-[15px] text-[#b42318]'; st.textContent = `${ct().linkError} (${(err as Error).message})`;
+      } finally { btn.disabled = false; }
+    };
   });
+  window.addEventListener('llp:change', paint);
 </script>
