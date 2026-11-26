@@ -10,7 +10,7 @@ export const GET: APIRoute = ({ site, params }) => {
   const pre = `${import.meta.env.BASE_URL.replace(/\/$/, '')}${lang === 'uk' ? '/uk' : ''}`;
   const body = icsCalendar(
     events.filter((e) => e.visibility === 'public').map((e) => ({
-      uid: e.slug, title: tr(lang, e.title), start: e.start, end: e.end, location: tr(lang, e.location), description: tr(lang, e.description),
+      uid: e.slug, title: tr(lang, e.title), start: e.start, end: e.end, location: tr(lang, e.location), description: tr(lang, e.description), allDay: e.timeUnknown,
       url: new URL(`${pre}/events/${e.slug}`, site).toString(),
     })),
   );

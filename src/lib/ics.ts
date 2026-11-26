@@ -7,9 +7,11 @@ export type IcsEvent = {
   start: string; // ISO
   end: string; // ISO
   url?: string;
+  allDay?: boolean; // відома лише дата
 };
 
 const stamp = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+const day = (iso: string, plus = 0) => { const d = new Date(new Date(iso).toLocaleString('en-US', { timeZone: 'Europe/Kyiv' })); d.setDate(d.getDate() + plus); return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`; };
 const esc = (s = '') => s.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
 
 export function icsEvent(e: IcsEvent): string {
@@ -17,8 +19,8 @@ export function icsEvent(e: IcsEvent): string {
     'BEGIN:VEVENT',
     `UID:${e.uid}@lviv-international-lions`,
     `DTSTAMP:${stamp(new Date().toISOString())}`,
-    `DTSTART:${stamp(e.start)}`,
-    `DTEND:${stamp(e.end)}`,
+    e.allDay ? `DTSTART;VALUE=DATE:${day(e.start)}` : `DTSTART:${stamp(e.start)}`,
+    e.allDay ? `DTEND;VALUE=DATE:${day(e.start, 1)}` : `DTEND:${stamp(e.end)}`,
     `SUMMARY:${esc(e.title)}`,
     e.description ? `DESCRIPTION:${esc(e.description)}` : '',
     e.location ? `LOCATION:${esc(e.location)}` : '',
@@ -44,7 +46,7 @@ export function googleCalendarUrl(e: IcsEvent): string {
   const p = new URLSearchParams({
     action: 'TEMPLATE',
     text: e.title,
-    dates: `${stamp(e.start)}/${stamp(e.end)}`,
+    dates: e.allDay ? `${day(e.start)}/${day(e.start, 1)}` : `${stamp(e.start)}/${stamp(e.end)}`,
     details: e.description ?? '',
     location: e.location ?? '',
     ctz: 'Europe/Kyiv',

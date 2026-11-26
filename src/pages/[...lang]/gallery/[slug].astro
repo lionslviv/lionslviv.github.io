@@ -26,7 +26,7 @@ const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
     <div class="columns-2 gap-3 md:columns-3 [&>*]:mb-3" data-gallery>
       {a.photos.map((p, i) => (
         <button type="button" class="block w-full overflow-hidden rounded-2xl focus-visible:outline-offset-2" data-index={i} aria-label={s(`Open photo ${i + 1} of ${a.photos.length}`, `Відкрити фото ${i + 1} з ${a.photos.length}`)}>
-          <Photo art={p} alt={`${title}, ${T.photos} ${i + 1}`} ratio={ratios[i % ratios.length]} class="transition-transform duration-500 hover:scale-[1.02]" />
+          <Photo art={p} alt={`${title}, ${T.photos} ${i + 1}`} ratio={p.w && p.h ? `${p.w} / ${p.h}` : ratios[i % ratios.length]} class="transition-transform duration-500 hover:scale-[1.02]" />
         </button>
       ))}
     </div>
@@ -58,9 +58,18 @@ const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
 
     const show = (i: number) => {
       idx = (i + items.length) % items.length;
-      const ph = items[idx].querySelector('.ph')!.cloneNode(true) as HTMLElement;
-      ph.style.aspectRatio = '3 / 2'; ph.classList.remove('hover:scale-[1.02]');
-      stage.replaceChildren(ph);
+      const img = items[idx].querySelector<HTMLImageElement>('.ph img');
+      if (img) {
+        // Справжнє фото показуємо повністю, без обрізання
+        const big = document.createElement('img');
+        big.src = img.currentSrc || img.src; big.alt = img.alt;
+        big.className = 'mx-auto block h-auto max-h-[80vh] w-auto max-w-full';
+        stage.replaceChildren(big);
+      } else {
+        const ph = items[idx].querySelector('.ph')!.cloneNode(true) as HTMLElement;
+        ph.style.aspectRatio = '3 / 2'; ph.classList.remove('hover:scale-[1.02]');
+        stage.replaceChildren(ph);
+      }
       caption.textContent = ct().photoOf(idx + 1, items.length);
     };
     const open = (i: number) => { opener = document.activeElement as HTMLElement; show(i); lb.dataset.open = 'true'; document.body.style.overflow = 'hidden'; lb.querySelector<HTMLElement>('[data-lb-close]')!.focus(); };

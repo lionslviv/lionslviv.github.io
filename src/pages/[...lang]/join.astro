@@ -9,9 +9,11 @@ export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
-const openNight = events.find((e) => e.slug.startsWith('vidkrytyi-vechir'));
+const now = new Date('2026-11-26T12:00:00+02:00'); // демо-"сьогодні"; у продакшні new Date()
+const openNight = events.filter((e) => e.kind === 'meeting' && e.visibility === 'public' && !e.demo && new Date(e.start) > now).sort((a, b) => a.start.localeCompare(b.start))[0];
+const when = (iso: string, unknown?: boolean) => (unknown ? dateLong(iso, lang) : `${dateLong(iso, lang)}, ${time(iso, lang)}`);
 const steps = [
-  [s('Come to an open evening', 'Прийдіть на відкритий вечір'), openNight ? s(`Next one: ${dateLong(openNight.start, lang)}, ${time(openNight.start, lang)}.`, `Найближчий: ${dateLong(openNight.start, lang)}, ${time(openNight.start, lang)}.`) : s('We will announce the date in Events.', 'Дату оголосимо в розділі «Події».')],
+  [s('Come to a club meeting', 'Прийдіть на зустріч клубу'), openNight ? s(`Next one: ${when(openNight.start, openNight.timeUnknown)}. Write to us to get the details.`, `Найближча: ${when(openNight.start, openNight.timeUnknown)}. Напишіть нам, щоб отримати деталі.`) : s('We will announce the date in Events.', 'Дату оголосимо в розділі «Події».')],
   [s('Try service', 'Спробуйте служіння'), s('Volunteer on one of our projects to see how we work.', 'Долучіться волонтером до одного з проєктів, щоб відчути, як ми працюємо.')],
   [s('Get a sponsor', 'Отримайте рекомендацію'), s('A club member sponsors you, the board approves, and you take the Lions oath.', 'Член клубу рекомендує вас, правління погоджує, і ви складаєте присягу Lions.')],
 ];
@@ -35,7 +37,7 @@ const steps = [
         <h2 class="t-h2">{s('Send a request', 'Залиште заявку')}</h2>
         <p class="t-lead">{s('Tell us briefly about yourself and what interests you: membership, volunteering or partnership.', 'Розкажіть коротко про себе і що вам цікаво: членство, волонтерство чи партнерство.')}</p>
         <p class="text-soft">{s('We will explain membership dues and what is expected of members at the first meeting.', 'Членський внесок і очікування від членів клубу пояснимо на першій зустрічі.')}</p>
-        {openNight && <a href={lp(lang, `/events/${openNight.slug}`)} class="link inline-block">{s('About the open evening', 'Про відкритий вечір')}</a>}
+        {openNight && <a href={lp(lang, `/events/${openNight.slug}`)} class="link inline-block">{s('About the next meeting', 'Про найближчу зустріч')}</a>}
       </div>
       <RequestForm kind="join" submitLabel={s('Send request', 'Надіслати заявку')} messageLabel={s('About you and how you would like to help', 'Про себе і чим хочете долучитися')} />
     </div>

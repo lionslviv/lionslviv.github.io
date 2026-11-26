@@ -2,7 +2,8 @@
 // Реальні дані позначені коментарями з джерелом.
 import type { L } from '../i18n';
 
-export type Art = { seed: string; motif?: 'city' | 'people' | 'event' | 'nature' | 'care' };
+// src = справжнє фото з public/ (без EXIF), w/h = його розміри; без src показується плейсхолдер
+export type Art = { seed: string; motif?: 'city' | 'people' | 'event' | 'nature' | 'care'; src?: string; w?: number; h?: number };
 export type LList = { en: string[]; uk: string[] };
 
 export type Post = {
@@ -117,25 +118,57 @@ export const projects: Post[] = [
 
 export const news: Post[] = [
   {
-    // Реальна новина: сторінка клубу у Facebook, допис 23.11.2026
+    // Реальна новина: текст клубу (допис про першу зустріч), фото надав клуб
+    slug: 'persha-zustrich-klubu',
+    type: 'news',
+    title: { en: 'A new beginning: our first club meeting', uk: 'Новий початок: перша зустріч клубу' },
+    excerpt: { en: 'On 5 November, Lviv International Lions Club held its very first meeting at Hotel Leopolis.', uk: '5 листопада Lviv International Lions Club провів свою першу зустріч у готелі Leopolis.' },
+    date: '2026-11-05',
+    cover: { seed: 'first-meeting', motif: 'event', src: '/gallery/persha-zustrich/01.jpg', w: 1600, h: 1200 },
+    tags: ['club'],
+    body: {
+      en: [
+        'A new beginning. A shared purpose. A new Lions family in Lviv!',
+        'On 5 November, Lviv International Lions Club held its very first meeting at the beautiful Hotel Leopolis, marking the beginning of an exciting journey of friendship, humanitarian service and positive change.',
+        'We started with a lovely dinner, getting to know each other and building new connections. During the meeting, we introduced our members, discussed the Club’s structure and future development, and presented our active humanitarian project.',
+        'We were also delighted to welcome Roman Monastyrskyy from Lions Club Lviv as our special guest.',
+        'Looking ahead, members shared their ideas for future humanitarian projects, giving us inspiration and direction for the work we will develop together.',
+        'A special moment was presenting each member with a commemorative diploma, celebrating the beginning of our journey as a new Lions Club.',
+        'What made this evening truly special was the warm and friendly atmosphere, the enthusiasm and the shared desire to make a difference.',
+        '> This is just the beginning. Together, we are ready to turn ideas into action and make a meaningful impact in our community. We Serve!',
+      ],
+      uk: [
+        'Новий початок. Спільна мета. Нова родина Lions у Львові!',
+        '5 листопада Lviv International Lions Club провів свою першу зустріч у чудовому готелі Leopolis. Так почалася наша подорож дружби, гуманітарного служіння і позитивних змін.',
+        'Ми почали з теплої вечері: знайомилися і налагоджували нові зв’язки. На зустрічі представили членів клубу, обговорили його структуру і подальший розвиток, а також презентували наш чинний гуманітарний проєкт.',
+        'Особливим гостем вечора був Роман Монастирський з Lions Club Lviv.',
+        'Члени клубу поділилися ідеями майбутніх гуманітарних проєктів, і це дало нам натхнення та напрям для спільної роботи.',
+        'Окремим моментом стало вручення кожному члену клубу пам’ятного диплома на честь початку нашого шляху як нового Lions клубу.',
+        'Вечір був по-справжньому особливим завдяки теплій і дружній атмосфері, ентузіазму та спільному бажанню змінювати життя на краще.',
+        '> Це лише початок. Разом ми готові перетворювати ідеї на дії і робити вагомий внесок у життя нашої громади. We Serve!',
+      ],
+    },
+  },
+  {
+    // Реальна новина: сторінка клубу у Facebook; дата зустрічі 19.11.2026 (підтвердив клуб)
     slug: 'druha-zustrich-klubu',
     type: 'news',
     title: { en: 'Our second club meeting: the community is growing', uk: 'Друга зустріч клубу: спільнота зростає' },
-    excerpt: { en: 'We met for the second time in Lviv, joined by Lions Club “Kiev Ecology” and other guests.', uk: 'Зібралися вдруге у Львові разом з Lions Club «Kiev Ecology» та іншими гостями.' },
-    date: '2026-11-23',
+    excerpt: { en: 'On 19 November we met for the second time in Lviv, joined by Lions Club “Kiev Ecology” and other guests.', uk: '19 листопада зібралися вдруге у Львові разом з Lions Club «Kiev Ecology» та іншими гостями.' },
+    date: '2026-11-19',
     cover: { seed: 'second-meeting', motif: 'event' },
     tags: ['club'],
     source: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/',
     body: {
       en: [
-        'Our club held its second meeting in Lviv, and the community keeps growing.',
+        'On 19 November our club held its second meeting in Lviv, and the community keeps growing.',
         'Friends from Lions Club “Kiev Ecology” and other guests joined us.',
-        'We are an English-speaking Lions community focusing on healthcare and humanitarian service. If you would like to join our next meeting, get in touch.',
+        'We are an English-speaking Lions community focusing on healthcare and humanitarian service. Our next meeting is on 3 December. If you would like to join, get in touch.',
       ],
       uk: [
-        'Відбулася друга зустріч нашого клубу у Львові, і спільнота продовжує зростати.',
+        '19 листопада відбулася друга зустріч нашого клубу у Львові, і спільнота продовжує зростати.',
         'До нас долучилися друзі з Lions Club «Kiev Ecology» та інші гості.',
-        'Ми англомовна спільнота Lions, яка зосереджується на охороні здоров’я та гуманітарній допомозі. Якщо хочете долучитися до наступної зустрічі, напишіть нам.',
+        'Ми англомовна спільнота Lions, яка зосереджується на охороні здоров’я та гуманітарній допомозі. Наступна зустріч 3 грудня. Якщо хочете долучитися, напишіть нам.',
       ],
     },
   },
@@ -167,20 +200,6 @@ export const news: Post[] = [
       uk: ['Генератори прибули через логістичний хаб у Польщі. Розподіл погоджували з місцевими адміністраціями через District 134.'],
     },
   },
-  {
-    slug: 'blahodiinyi-vechir-zyma',
-    demo: true,
-    type: 'news',
-    title: { en: 'Coming up: winter charity evening', uk: 'Анонс: зимовий благодійний вечір' },
-    excerpt: { en: 'On 13 December we raise funds for children’s glasses. Tickets are limited.', uk: '13 грудня збираємо кошти на окуляри для дітей. Квитки обмежені.' },
-    date: '2026-11-21',
-    cover: { seed: 'winter-gala', motif: 'event' },
-    tags: ['event'],
-    body: {
-      en: ['Music, an auction of works by Lviv artists and a conversation about what we achieved in our first season.', 'All proceeds go to the “Clear vision for every child” project.'],
-      uk: ['Музика, аукціон робіт львівських художників і розмова про те, що ми встигли за перший сезон.', 'Усі кошти підуть на проєкт "Чіткий зір для кожної дитини".'],
-    },
-  },
 ];
 
 export type Event = {
@@ -196,24 +215,20 @@ export type Event = {
   demo?: boolean;
 };
 
-const tbc: L = { en: 'Venue to be confirmed', uk: 'Місце уточнюється' };
-const regular: L = { en: 'Regular club meeting', uk: 'Регулярні збори клубу' };
-
 export const events: Event[] = [
-  { slug: 'zbory-2026-12-08', demo: true, title: regular, start: '2026-12-08T19:00:00+02:00', end: '2026-12-08T21:00:00+02:00', location: tbc, visibility: 'members', kind: 'meeting', description: { en: 'Project reports, December planning, vote on the evening budget.', uk: 'Звіт проєктів, планування грудня, голосування за бюджет вечора.' } },
-  { slug: 'zymovyi-vechir-2026', demo: true, title: { en: 'Winter charity evening', uk: 'Зимовий благодійний вечір' }, start: '2026-12-13T18:30:00+02:00', end: '2026-12-13T22:30:00+02:00', location: { en: 'Lviv city centre, venue to be confirmed', uk: 'Центр Львова, зал уточнюється' }, visibility: 'public', kind: 'gala', description: { en: 'Music, an auction and a first-season report. Proceeds fund children’s glasses.', uk: 'Музика, аукціон, звіт першого сезону. Кошти на окуляри для дітей.' } },
+  // Реальний розклад клубу (підтвердив клуб 26.11.2026). Час і місце, де невідомі, уточнюються.
+  { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, start: '2026-11-05T18:00:00+02:00', end: '2026-11-05T21:00:00+02:00', location: { en: 'Hotel Leopolis, Lviv', uk: 'Готель Leopolis, Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'The first meeting and the start of Lviv International Lions Club: dinner, member introductions, club structure, humanitarian projects and commemorative diplomas.', uk: 'Перша зустріч і старт роботи Lviv International Lions Club: вечеря, знайомство членів клубу, структура клубу, гуманітарні проєкти і пам’ятні дипломи.' }, timeUnknown: true },
+  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: { en: 'Lviv', uk: 'Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'The second meeting of the English-speaking Lions community in Lviv, with Lions Club “Kiev Ecology” and guests.', uk: 'Друга зустріч англомовної спільноти Lions у Львові, разом з Lions Club «Kiev Ecology» та гостями.' }, timeUnknown: true },
+  { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: { en: 'Lviv, venue to be confirmed', uk: 'Львів, місце уточнюється' }, visibility: 'public', kind: 'meeting', description: { en: 'Our regular club meeting. Guests interested in joining are welcome: write to us to get the details.', uk: 'Чергова зустріч клубу. Гості, які думають долучитися, запрошені: напишіть нам, щоб отримати деталі.' }, timeUnknown: true },
+  { slug: 'novorichna-zustrich-2026', title: { en: 'New Year club gathering', uk: 'Новорічна зустріч клубу' }, start: '2026-12-12T18:00:00+02:00', end: '2026-12-12T22:00:00+02:00', location: { en: 'Lviv, venue to be confirmed', uk: 'Львів, місце уточнюється' }, visibility: 'public', kind: 'gala', description: { en: 'A festive New Year gathering of club members to celebrate the start of our journey together.', uk: 'Святкова новорічна зустріч членів клубу, щоб разом відзначити початок нашого шляху.' }, timeUnknown: true },
+  // Демо-приклад акції служіння
   { slug: 'perevirka-zoru-sykhiv', demo: true, title: { en: 'Eye screening at a Sykhiv school', uk: 'Перевірка зору в школі на Сихові' }, start: '2026-12-17T09:00:00+02:00', end: '2026-12-17T16:00:00+02:00', location: { en: 'A school in Sykhiv', uk: 'Школа на Сихові' }, visibility: 'public', kind: 'service', description: { en: 'We need 6 volunteers for registration and to accompany children.', uk: 'Потрібні 6 волонтерів для реєстрації та супроводу дітей.' } },
-  { slug: 'zbory-2026-12-22', demo: true, title: regular, start: '2026-12-22T19:00:00+02:00', end: '2026-12-22T21:00:00+02:00', location: tbc, visibility: 'members', kind: 'meeting', description: { en: 'Year in review, Christmas greetings for partners.', uk: 'Підсумки року, різдвяні привітання для партнерів.' } },
-  { slug: 'zbory-2027-01-12', demo: true, title: regular, start: '2027-01-12T19:00:00+02:00', end: '2027-01-12T21:00:00+02:00', location: tbc, visibility: 'members', kind: 'meeting', description: { en: 'Plan for the second half of the Lions year.', uk: 'План на другу половину Lions-року.' } },
-  { slug: 'vidkrytyi-vechir-2027-01', demo: true, title: { en: 'Open evening for guests', uk: 'Відкритий вечір для гостей' }, start: '2027-01-27T19:00:00+02:00', end: '2027-01-27T21:00:00+02:00', location: tbc, visibility: 'public', kind: 'meeting', description: { en: 'An introduction to the club for anyone thinking of joining. Sign up via the Join form.', uk: 'Розповідаємо про клуб тим, хто думає долучитися. Запис через форму "Приєднатися".' } },
-  // Реальна подія: допис у Facebook 23.11.2026 (відома лише дата)
-  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-23T12:00:00+02:00', end: '2026-11-23T14:00:00+02:00', location: { en: 'Lviv', uk: 'Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'The second meeting of the English-speaking Lions community in Lviv, with Lions Club “Kiev Ecology” and guests.', uk: 'Друга зустріч англомовної спільноти Lions у Львові, разом з Lions Club «Kiev Ecology» та гостями.' }, timeUnknown: true },
 ];
 
 export const kindLabel: Record<Event['kind'], L> = {
   meeting: { en: 'Meeting', uk: 'Збори' },
   service: { en: 'Service', uk: 'Служіння' },
-  gala: { en: 'Charity evening', uk: 'Благодійний вечір' },
+  gala: { en: 'Celebration', uk: 'Свято' },
 };
 
 export type Album = { slug: string; title: L; date: string; eventSlug?: string; photos: Art[]; note?: L };
@@ -221,8 +236,13 @@ export type Album = { slug: string; title: L; date: string; eventSlug?: string; 
 const shots = (base: string, n: number, motif: Art['motif']): Art[] =>
   Array.from({ length: n }, (_, i) => ({ seed: `${base}-${i}`, motif }));
 
+const real = (dir: string, files: [string, number, number][]): Art[] =>
+  files.map(([f, w, h]) => ({ seed: `${dir}-${f}`, motif: 'event', src: `/gallery/${dir}/${f}`, w, h }));
+
 export const albums: Album[] = [
-  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, date: '2026-11-23', eventSlug: 'druha-zustrich', photos: shots('found', 12, 'event'), note: { en: 'Photos from this meeting are on the club’s Facebook page. We will add them here once the people in them agree.', uk: 'Фото з цієї зустрічі є на сторінці клубу у Facebook. На сайт їх додамо після погодження з людьми в кадрі.' } },
+  // Реальний альбом: фото надав клуб (метадані й геолокацію прибрано)
+  { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, date: '2026-11-05', eventSlug: 'persha-zustrich', photos: real('persha-zustrich', [['01.jpg', 1600, 1200], ['02.jpg', 1600, 1200], ['03.jpg', 900, 1600], ['04.jpg', 900, 1600], ['05.jpg', 900, 1600], ['06.jpg', 900, 1600]]) },
+  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, date: '2026-11-19', eventSlug: 'druha-zustrich', photos: shots('found', 12, 'event'), note: { en: 'Photos from this meeting are on the club’s Facebook page. We will add them here once the people in them agree.', uk: 'Фото з цієї зустрічі є на сторінці клубу у Facebook. На сайт їх додамо після погодження з людьми в кадрі.' } },
   { slug: 'zir-levandivka', title: { en: 'Eye screening, Levandivka', uk: 'Перевірка зору, Левандівка' }, date: '2026-11-07', photos: shots('lev', 12, 'people') },
   { slug: 'heneratory', title: { en: 'Generators for communities', uk: 'Генератори для громад' }, date: '2026-10-24', photos: shots('gen', 7, 'care') },
   { slug: 'aleia-pamiati', title: { en: 'Memorial alley in Sykhiv', uk: 'Алея пам’яті на Сихові' }, date: '2026-04-12', photos: shots('trees', 10, 'nature') },

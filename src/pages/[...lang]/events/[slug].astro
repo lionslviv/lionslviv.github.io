@@ -16,7 +16,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 const title = tr(lang, e.title);
 const location = tr(lang, e.location);
 const description = tr(lang, e.description);
-const ev = { uid: e.slug, title, start: e.start, end: e.end, location, description };
+const ev = { uid: e.slug, title, start: e.start, end: e.end, location, description, allDay: e.timeUnknown };
 const ics = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsCalendar([ev]))}`;
 const album = albums.find((a) => a.eventSlug === e.slug);
 const isPast = new Date(e.start) < new Date('2026-11-26T12:00:00+02:00');

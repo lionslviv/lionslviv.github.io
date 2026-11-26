@@ -3,8 +3,10 @@
 // Замінюється справжнім <img> з Supabase Storage, коли є фото.
 import type { Art } from '../data/content';
 import { langFromUrl } from '../i18n';
+import { u } from '../lib/url';
 interface Props { art: Art; alt: string; class?: string; ratio?: string; src?: string }
-const { art, alt, class: cls = '', ratio = '4 / 3', src } = Astro.props;
+const { art, alt, class: cls = '', ratio = '4 / 3', src: srcProp } = Astro.props;
+const src = srcProp ?? (art.src ? u(art.src) : undefined);
 const lang = langFromUrl(Astro.url);
 
 function hash(s: string) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
