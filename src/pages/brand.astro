@@ -91,15 +91,16 @@ const okCount = assets.filter((a) => a.ok).length;
         <h2 class="t-h2">Офіційні файли на сайті</h2>
         <p class="text-soft">{okCount} з {assets.length} додано</p>
       </div>
-      <p class="t-lead mt-3 max-w-[60ch]">Емблема, підписи та іконки напрямів служіння з lionsclubs.org. Публічно ми їх не роздаємо: завантажувати офіційні файли можуть члени Lions на сайті організації.</p>
+      <p class="t-lead mt-3 max-w-[60ch]">Емблема, підписи Lions International та іконки напрямів служіння з lionsclubs.org. Оригінали (PNG, JPG CMYK, EPS для друку) зберігаються в проєкті. Публічно ми їх не роздаємо: завантажувати офіційні файли можуть члени Lions на сайті організації.</p>
       <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {assets.map((a) => (
           <li class="flex flex-col rounded-[var(--radius-card)] bg-[var(--surface)] p-5">
-            <div class={`grid h-28 place-items-center rounded-2xl ${a.key.endsWith('white') ? 'bg-[var(--color-lions-deep)]' : 'bg-[var(--bg-alt)]'}`}>
-              <BrandAsset name={a.key} alt={a.title} height={a.key.startsWith('signature') ? 40 : 64} clearSpace showMissing />
+            <div class={`grid h-32 place-items-center rounded-2xl ${a.dark ? 'bg-[var(--color-lions-deep)]' : 'bg-[var(--bg-alt)]'}`}>
+              <BrandAsset name={a.key} alt={a.title} height={a.key === 'signature' || a.key === 'signature-white' ? 34 : a.key.startsWith('signature') ? 72 : 64} clearSpace showMissing />
             </div>
             <p class="mt-4 font-[640] leading-tight">{a.title}</p>
             <p class="t-small mt-1">{a.source}</p>
+            {a.file && <p class="t-small mt-1 break-all">Оригінал: docs/brand/logos/{a.file}</p>}
             <p class="t-small mt-auto pt-3">{a.ok ? <span class="text-[var(--color-green)]">Додано.</span> : <span>Ще немає.</span>} {a.where}</p>
           </li>
         ))}

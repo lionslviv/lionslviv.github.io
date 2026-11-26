@@ -20,19 +20,21 @@ PDF-копії: запустіть `bash scripts/fetch-brand-assets.sh`. Фай�
 3. Те, що скрипт не розпізнав, перейменовується вручну за таблицею нижче.
 4. `npm run build`. Сторінка `/brand` показує, скільки файлів додано.
 
-| Файл у `public/brand/` | Що завантажити на lionsclubs.org/en/logos | Де з’являється на сайті |
+Додано 26.11.2026 з lionsclubs.org/en/logos (оригінали в `docs/brand/logos/`, веб-копії в `public/brand/`):
+
+| Файл у `public/brand/` | Оригінал | Де на сайті |
 | --- | --- | --- |
-| `emblem.svg` | Lions Emblems → Two Color | Шапка, сторінка «Бренд» |
-| `emblem-white.svg` | Lions Emblems → One Color, White | Hero головної, футер, обкладинка для соцмереж |
-| `signature-lci.svg` | Lions Clubs International Signatures → Horizontal, Two Color | «Про клуб» |
-| `signature-lci-white.svg` | Lions Clubs International Signatures → Horizontal, One Color, White | Футер |
-| `icon-vision.svg` | Service Icons → Vision, Full Color | Напрями служіння, теги проєктів |
-| `icon-hunger.svg` | Service Icons → Hunger, Full Color | Напрями служіння |
-| `icon-environment.svg` | Service Icons → Environment, Full Color | Напрями служіння, теги проєктів |
-| `icon-diabetes.svg` | Service Icons → Diabetes, Full Color | Напрями служіння |
-| `icon-cancer.svg` | Service Icons → Childhood Cancer, Full Color | Напрями служіння |
-| `icon-humanitarian.svg` | Service Icons → LCIF Humanitarian Efforts, Full Color | Напрями служіння, теги проєктів |
-| `icon-youth.svg` | Service Icons → LCIF Youth, Full Color | Напрями служіння, теги проєктів |
+| `emblem.png` | `LCI_emblem_2color_web.png` (Lions Emblems, Two Color) | Шапка |
+| `emblem-blue.png` | `LCI_emblem_blue.png` (One Color, Blue) | Сторінка «Бренд», документи |
+| `signature.png` | `Logo_rgb_LI_Signature_Horz1_2C_BlueText.png` | «Про клуб» |
+| `signature-white.png` | `Logo_rgb_LI_Signature_Horz1_1C_White.png` | Hero головної, футер |
+| `signature-vertical.png` | `Logo_rgb_LI_Signature_Vert1_3C.png` | Сторінка «Бренд» |
+| `signature-vertical-white.png` | `Logo_rgb_LI_Signature_Vert1_1C_White.png` | Обкладинка для соцмереж |
+| `icon-*.svg` (7 шт.) | Service Icons, Full Color | Напрями служіння, теги проєктів. **Ще не додано** |
+
+Веб-копії: ті самі PNG без змін, обрізано лише прозорі поля; емблему зменшено до 240 px заввишки для швидкого завантаження.
+Для друку (буклети, банери, бейджі) беріть файли з `docs/brand/logos/`: EPS (вектор, CMYK) і JPG CMYK. Чорно-біла емблема: `lionlogo_bw.jpg`.
+Іконки напрямів: завантажте Service Icons з lionsclubs.org/en/logos і виконайте `npm run brand:import -- <папка>`.
 
 Умови Lions: файли завантажують члени Lions; клуби мають ліцензію використовувати емблему на вебсторінках; емблему не можна ставити на речі, що продаються. Тому на сайті файли емблем для публічного завантаження не викладаємо.
 

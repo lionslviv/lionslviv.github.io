@@ -17,7 +17,7 @@ const out = path.resolve('public/brand');
 fs.mkdirSync(out, { recursive: true });
 
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
-const files = walk(src).filter((f) => /\.(svg|png)$/i.test(f));
+const files = walk(src).filter((f) => /\.(svg|png)$/i.test(f)); // JPG/EPS лишаються для друку
 const norm = (f) => path.basename(f).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
 
 const has = (n, ...words) => words.every((w) => new RegExp(w).test(n));
@@ -25,10 +25,12 @@ const not = (n, ...words) => words.every((w) => !new RegExp(w).test(n));
 const icon = (topic) => (n) => has(n, topic) && not(n, 'one colou?r', 'white', 'black', 'b w');
 
 const rules = {
-  'emblem-white': (n) => has(n, 'emblem', 'white') && not(n, 'signature', 'lcif', 'foundation', 'leo'),
-  'emblem': (n) => has(n, 'emblem') && has(n, '(two|2) ?colou?r|2c|full colou?r') && not(n, 'white', 'black', 'b w', 'signature', 'lcif', 'leo'),
-  'signature-lci-white': (n) => has(n, 'signature|lci|clubs international') && has(n, 'white') && not(n, 'lcif', 'foundation', 'vertical', 'leo'),
-  'signature-lci': (n) => has(n, 'signature|lci|clubs international') && has(n, 'horizontal') && not(n, 'white', 'black', 'b w', 'lcif', 'foundation', 'leo'),
+  'emblem': (n) => has(n, 'emblem') && has(n, '(two|2) ?colou?r|2c|2color') && not(n, 'white', 'black', 'b w', 'signature', 'lcif', 'leo'),
+  'emblem-blue': (n) => has(n, 'emblem') && has(n, 'blue') && not(n, 'signature', 'lcif', 'leo'),
+  'signature-white': (n) => has(n, 'signature') && has(n, 'horz|horizontal') && has(n, 'white') && not(n, 'lcif', 'leo'),
+  'signature': (n) => has(n, 'signature') && has(n, 'horz|horizontal') && has(n, '2c|two colou?r|3c|three colou?r') && not(n, 'white', 'black', 'lcif', 'leo', 'cmyk'),
+  'signature-vertical-white': (n) => has(n, 'signature') && has(n, 'vert') && has(n, 'white') && not(n, 'lcif', 'leo'),
+  'signature-vertical': (n) => has(n, 'signature') && has(n, 'vert') && has(n, '3c|three colou?r') && not(n, 'white', 'black', 'lcif', 'leo', 'cmyk'),
   'icon-vision': icon('vision|sight'),
   'icon-hunger': icon('hunger'),
   'icon-environment': icon('environment'),
