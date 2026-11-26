@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Skyline from '../../components/Skyline.astro';
 import BrandAsset from '../../components/BrandAsset.astro';
-import { club, causes } from '../../data/site';
+import { club } from '../../data/site';
 import { members } from '../../data/content';
 import { langPaths, langOf, lp, tr, t } from '../../i18n';
 export const getStaticPaths = langPaths;
@@ -101,13 +101,8 @@ const steps = lang === 'uk'
 
   <section class="section-tight bg-alt">
     <div class="wrap">
-      <h2 class="t-h2 mb-3">{s('Our priorities for 2026-2027', 'Наші пріоритети на 2026-2027')}</h2>
-      <p class="t-lead mb-8 max-w-[56ch]">{s('Healthcare and humanitarian aid. Among the Lions global causes, these are:', 'Охорона здоров’я та гуманітарна допомога. Серед глобальних напрямів Lions це:')}</p>
-      <ul class="flex flex-wrap gap-3">
-        {causes.filter((c) => ['humanitarian', 'vision', 'diabetes', 'cancer'].includes(c.key)).map((c) => (
-          <li class="rounded-full bg-[var(--surface)] px-5 py-3 text-[17px] font-[600]">{tr(lang, c.label)}</li>
-        ))}
-      </ul>
+      <h2 class="t-h2 mb-3">{s('Our priorities and goals', 'Наші пріоритети та цілі')}</h2>
+      <p class="t-lead max-w-[56ch]">{s('Healthcare and humanitarian aid. Details of the club’s priorities, goals and projects will be added soon.', 'Охорона здоров’я та гуманітарна допомога. Інформацію про пріоритети, цілі та проєкти клубу буде додано згодом.')}</p>
     </div>
   </section>
 </Base>
