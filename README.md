@@ -62,7 +62,8 @@ supabase/migrations/  схема БД з RLS для етапу 2
 
 ## Бренд
 
-- Кольори і шрифт за Lions International Brand Guidelines: Lions Blue `#00338D`, Lions Yellow `#EBB700` (звірити з актуальним PDF), Cool Gray 11, шрифт Roboto Flex.
+- Дизайн-система за Lions International Brand Guidelines V4.0 (05/23): Blue `#00338D`, Yellow `#EBB700`, Purple `#7A2582`, Navy `#0D2240`, Cool Gray 11 `#55565A`, цифровий шрифт Roboto (на сайті Roboto Flex). Конспект: `docs/brand/README.md`.
+- Офіційні PDF брендбуків: `bash scripts/fetch-brand-assets.sh` (кладе їх у `public/brand/` і `docs/brand/`). Сторінка сайту `/brand` покаже кнопки завантаження.
 - **Емблему Lions не малюємо.** Завантажте офіційний SVG з lionsclubs.org (розділ Logos) і покладіть у `public/brand/emblem.svg`: він автоматично з’явиться в шапці.
 - Перевірка дизайну: сторінка `/styleguide`.
 

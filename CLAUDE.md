@@ -17,6 +17,7 @@
 - Без cookies-аналітики, без секретів у репо (репо публічне).
 
 ## Дизайн
+- Бренд: Lions International Brand Guidelines V4.0 (05/23), конспект у `docs/brand/README.md`, дані в `src/data/brand.ts`. Лише кольори палітри бренду.
 - Roboto Flex, широкі заголовки (font-stretch 110-128%), токени в `src/styles/global.css`.
 - Один «гучний» момент: слово Leopolis у hero між шарами силуету Львова (scroll-driven).
 - Без великих літер у мітках, без стрілок у кнопках, без однакових карток-шаблонів.

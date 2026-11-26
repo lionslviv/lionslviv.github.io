@@ -7,18 +7,23 @@
    Жовтий звірити з актуальним PDF бренду перед релізом.
 ------------------------------------------------------------------- */
 @theme {
-  --color-lions: #00338d;
-  --color-lions-deep: #001a4d;
-  --color-lions-night: #000f2e;
-  --color-lions-sky: #407cca;
-  --color-gold: #ebb700;
+  /* Основна палітра (Brand Guidelines V4.0, 05/23, розд. 3.1) */
+  --color-lions: #00338d;       /* Blue, Pantone 287 */
+  --color-gold: #ebb700;        /* Yellow, Pantone 7406 */
+  --color-plum: #7a2582;        /* Purple, Pantone 2612 */
+  /* Вторинна палітра: акценти, ощадно */
+  --color-lions-sky: #407cca;   /* Pantone 660 */
+  --color-lions-deep: #0d2240;  /* Navy, Pantone 289 */
+  --color-stone: #55565a;       /* Cool Gray 11 */
+  --color-stone-soft: #b3b2b1;  /* Cool Gray 5 */
+  --color-green: #00ab68;       /* Pantone 3405 */
+  --color-coral: #ff5b35;       /* Pantone 171 */
+  /* Похідні службові відтінки сайту (не брендові) */
+  --color-lions-night: #081629;
   --color-gold-soft: #fff4cc;
-  --color-stone: #53565a;
-  --color-stone-soft: #8a8d91;
   --color-mist: #f2f4f8;
   --color-line: #dfe3ea;
   --color-ink: #14171c;
-  --color-plum: #7a2582;
 
   --font-sans: "Roboto Flex Variable", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 
@@ -160,7 +165,14 @@ body {
 .nav-link[aria-current="page"] { font-weight: 640; }
 
 /* ---------------- Hero ---------------- */
-.hero { background: var(--color-lions-deep); color: #fff; position: relative; overflow: hidden; isolation: isolate; }
+.hero {
+  /* Градієнт з палітри бренду (розд. 3.2): Purple 2612, Blue 287, Navy 289 */
+  background:
+    radial-gradient(ellipse 70% 60% at 88% -10%, color-mix(in srgb, var(--color-plum) 38%, transparent), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 0% 0%, color-mix(in srgb, var(--color-lions) 55%, transparent), transparent 70%),
+    var(--color-lions-deep);
+  color: #fff; position: relative; overflow: hidden; isolation: isolate;
+}
 .hero-word {
   font-size: clamp(4.2rem, 17.5vw, 17rem);
   line-height: .82; font-weight: 800; letter-spacing: -0.045em;

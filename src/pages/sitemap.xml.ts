@@ -4,7 +4,7 @@ import { news, projects, events, albums, members } from '../data/content';
 export const GET: APIRoute = ({ site }) => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const paths = [
-    '/', '/about', '/projects', '/news', '/events', '/gallery', '/members', '/support', '/join', '/reviews', '/contacts', '/privacy', '/en',
+    '/', '/about', '/projects', '/news', '/events', '/gallery', '/members', '/support', '/join', '/reviews', '/contacts', '/privacy', '/brand', '/en',
     ...projects.map((p) => `/projects/${p.slug}`),
     ...news.map((p) => `/news/${p.slug}`),
     ...events.filter((e) => e.visibility === 'public').map((e) => `/events/${e.slug}`),

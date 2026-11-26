@@ -2,19 +2,13 @@
 import Base from '../layouts/Base.astro';
 import Photo from '../components/Photo.astro';
 import Skyline from '../components/Skyline.astro';
-const colors = [
-  ['Lions Blue', '#00338D', 'Pantone 287. Заголовки, посилання, основні кнопки.'],
-  ['Deep Blue', '#001A4D', 'Hero, футер, темні секції.'],
-  ['Lions Yellow', '#EBB700', 'Pantone 7406. Лише кнопки дії та акценти. Не для тексту на білому.'],
-  ['Sky', '#407CCA', 'Вторинний. Фокус полів, ілюстрації.'],
-  ['Cool Gray 11', '#53565A', 'Другорядний текст.'],
-  ['Mist', '#F2F4F8', 'Фон панелей і секцій.'],
-];
+import { brandColors } from '../data/brand';
+const colors = brandColors.map((c) => [c.name, c.hex, `${c.pantone}. ${c.role === 'primary' ? 'Основний' : 'Вторинний'}. ${c.use}`]);
 ---
 <Base title="Стайлгайд" noindex>
   <section class="wrap py-16">
     <h1 class="t-h1">Дизайн-система</h1>
-    <p class="t-lead mt-4 max-w-[52ch]">Токени і компоненти сайту. Кольори за Lions International Brand Guidelines, шрифт Roboto Flex (веб-шрифт бренду Lions) зі змінною шириною.</p>
+    <p class="t-lead mt-4 max-w-[52ch]">Токени і компоненти сайту. Кольори за Lions International Brand Guidelines V4.0 (05/23), шрифт Roboto Flex (цифровий шрифт бренду Lions) зі змінною шириною. Повні правила: сторінка «Бренд і матеріали».</p>
 
     <h2 class="t-h3 mt-16">Кольори</h2>
     <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -64,8 +58,8 @@ const colors = [
     <h2 class="t-h3 mt-16">Силует Львова</h2>
     <div class="mt-6 overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-lions-deep)]">
       <div class="relative h-56">
-        <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[#0b3b94]" />
-        <Skyline layer="near" class="absolute inset-x-0 bottom-0 h-[45%] w-full text-[#000f2e]" />
+        <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[var(--color-lions)]" />
+        <Skyline layer="near" class="absolute inset-x-0 bottom-0 h-[45%] w-full text-[var(--color-lions-night)]" />
       </div>
     </div>
   </section>

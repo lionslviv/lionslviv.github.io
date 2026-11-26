@@ -38,6 +38,7 @@ export const navSecondary = [
   { href: '/reviews', label: 'Відгуки' },
   { href: '/join', label: 'Приєднатися' },
   { href: '/contacts', label: 'Контакти' },
+  { href: '/brand', label: 'Бренд і матеріали' },
   { href: '/privacy', label: 'Конфіденційність' },
 ];
 
