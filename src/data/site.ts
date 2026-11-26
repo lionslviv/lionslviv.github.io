@@ -23,7 +23,7 @@ export const club = {
   email: 'lv@dba-Ukraine.com',
   phone: '+380 67 674 6866',
   phoneDisplay: '067 674 6866',
-  meetingPlace: { en: 'Lviv, ask the organisers for the venue', uk: 'Львів, місце зустрічей уточнюйте в організаторів' } as L,
+  meetingPlace: { en: 'Hotel Leopolis, 16 Teatralna St, Lviv', uk: 'Готель Leopolis, вул. Театральна, 16, Львів' } as L,
   meetingRule: { en: 'Meetings in English, schedule in Events', uk: 'Зустрічі англійською, розклад публікуємо в «Подіях»' } as L,
   social: [
     { label: 'Facebook', href: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/' },

@@ -47,8 +47,8 @@ export const can = {
 export function seed() {
   if (read(K.seeded, false)) return;
   write(K.comments, [
-    { id: uid(), target: 'perevirka-zoru-shkola', author: 'Site guest (demo)', body: 'Can our school apply for a screening too?', status: 'approved', at: '2026-11-08T10:12:00Z' },
-    { id: uid(), target: 'perevirka-zoru-shkola', author: 'Новий користувач (демо)', body: 'Перший коментар нового користувача чекає модерації.', status: 'pending', at: '2026-11-09T18:40:00Z' },
+    { id: uid(), target: 'zir-dlia-ditei', author: 'Site guest (demo)', body: 'Can our school apply for a screening too?', status: 'approved', at: '2026-11-08T10:12:00Z' },
+    { id: uid(), target: 'zir-dlia-ditei', author: 'Новий користувач (демо)', body: 'Перший коментар нового користувача чекає модерації.', status: 'pending', at: '2026-11-09T18:40:00Z' },
   ]);
   write(K.reviews, [
     { id: uid(), author: 'Review in moderation (demo)', kind: 'guest', text: 'This is how a review waiting for editor approval looks.', consent: true, status: 'pending', at: '2026-11-20T09:00:00Z' },

@@ -118,6 +118,32 @@ export const projects: Post[] = [
 
 export const news: Post[] = [
   {
+    // Реальний анонс від клубу (26.11.2026)
+    slug: 'zustrichi-hrudnia',
+    type: 'news',
+    title: { en: 'Coming up in December: club meeting on 3 December and New Year gathering on 12 December', uk: 'Грудень у клубі: зустріч 3 грудня і новорічна зустріч 12 грудня' },
+    excerpt: { en: 'Our next meeting is on 3 December with talks by Lars Vestbjerg and Oleksiy Druhov. On 12 December we celebrate the New Year together. Both at Hotel Leopolis.', uk: 'Наступна зустріч 3 грудня, на ній виступлять Lars Vestbjerg і Олексій Другов. 12 грудня разом святкуємо Новий рік. Обидві зустрічі в готелі Leopolis.' },
+    date: '2026-11-26',
+    cover: { seed: 'december-meetings', motif: 'event', src: '/gallery/persha-zustrich/02.jpg', w: 1600, h: 1200 },
+    tags: ['club'],
+    body: {
+      en: [
+        '## 3 December: third club meeting',
+        'Our next meeting will feature talks by our Club President Lars Vestbjerg and Vice President Oleksiy Druhov.',
+        '## 12 December: New Year gathering',
+        'We will end our first year together with a festive New Year gathering of club members.',
+        'Both meetings take place at Hotel Leopolis, 16 Teatralna Street, Lviv. If you would like to join us as a guest, get in touch via the Contact page.',
+      ],
+      uk: [
+        '## 3 грудня: третя зустріч клубу',
+        'На наступній зустрічі виступлять президент клубу Lars Vestbjerg і віцепрезидент Олексій Другов.',
+        '## 12 грудня: новорічна зустріч',
+        'Завершимо наш перший рік разом святковою новорічною зустріччю членів клубу.',
+        'Обидві зустрічі відбудуться в готелі Leopolis, вул. Театральна, 16, Львів. Якщо хочете долучитися як гість, напишіть нам через сторінку «Контакти».',
+      ],
+    },
+  },
+  {
     // Реальна новина: текст клубу (допис про першу зустріч), фото надав клуб
     slug: 'persha-zustrich-klubu',
     type: 'news',
@@ -175,34 +201,6 @@ export const news: Post[] = [
     },
   },
 
-  {
-    slug: 'perevirka-zoru-shkola',
-    demo: true,
-    type: 'news',
-    title: { en: '312 children screened in a single day', uk: '312 дітей перевірили зір за один день' },
-    excerpt: { en: 'A mobile screening at a Levandivka lyceum: 41 children need glasses.', uk: 'Виїзна перевірка в ліцеї на Левандівці: 41 дитині потрібні окуляри.' },
-    date: '2026-11-07',
-    cover: { seed: 'vision-day', motif: 'people' },
-    tags: ['vision'],
-    body: {
-      en: ['A team of six optometrists and eight club volunteers worked from 9:00 to 17:00. Parents received the results the same day.', 'Glasses for 41 children will be ready by the end of the month, paid for by the club.'],
-      uk: ['Команда з шести оптометристів і восьми волонтерів клубу працювала з 9:00 до 17:00. Батьки отримали результати в той самий день.', 'Окуляри для 41 дитини виготовлять до кінця місяця, їх оплачує клуб.'],
-    },
-  },
-  {
-    slug: 'heneratory-zhovten',
-    demo: true,
-    type: 'news',
-    title: { en: 'Eight more generators delivered across the region', uk: 'Ще 8 генераторів поїхали в громади області' },
-    excerpt: { en: 'A shipment from clubs in Finland and Germany is already powering schools and clinics.', uk: 'Партія від клубів Фінляндії та Німеччини вже працює у школах і амбулаторіях.' },
-    date: '2026-10-24',
-    cover: { seed: 'gen-oct', motif: 'care' },
-    tags: ['humanitarian'],
-    body: {
-      en: ['The generators arrived via a logistics hub in Poland. Distribution was agreed with local administrations through District 134.'],
-      uk: ['Генератори прибули через логістичний хаб у Польщі. Розподіл погоджували з місцевими адміністраціями через District 134.'],
-    },
-  },
 ];
 
 export type Event = {
@@ -218,14 +216,15 @@ export type Event = {
   demo?: boolean;
 };
 
+// Усі зустрічі клубу відбуваються в готелі Leopolis
+export const leopolis: L = { en: 'Hotel Leopolis, 16 Teatralna St, Lviv', uk: 'Готель Leopolis, вул. Театральна, 16, Львів' };
+
 export const events: Event[] = [
   // Реальний розклад клубу (підтвердив клуб 26.11.2026). Час і місце, де невідомі, уточнюються.
-  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: { en: 'Lviv', uk: 'Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'Our second meeting, with special guest Lion Serhii Denisenko from Lions Club Kyiv Ecology: the structure, history and projects of Lions Clubs International, new members and collaboration between Lions clubs.', uk: 'Друга зустріч клубу з особливим гостем Lion Сергієм Денисенком з Lions Club Kyiv Ecology: структура, історія і проєкти Lions Clubs International, нові члени клубу та співпраця між Lions клубами.' }, timeUnknown: true },
-  { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, start: '2026-11-05T18:00:00+02:00', end: '2026-11-05T21:00:00+02:00', location: { en: 'Hotel Leopolis, Lviv', uk: 'Готель Leopolis, Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'The first meeting and the start of Lviv International Lions Club: dinner, member introductions, club structure, humanitarian projects and commemorative diplomas.', uk: 'Перша зустріч і старт роботи Lviv International Lions Club: вечеря, знайомство членів клубу, структура клубу, гуманітарні проєкти і пам’ятні дипломи.' }, timeUnknown: true },
-  { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: { en: 'Lviv, venue to be confirmed', uk: 'Львів, місце уточнюється' }, visibility: 'public', kind: 'meeting', description: { en: 'Our regular club meeting. Guests interested in joining are welcome: write to us to get the details.', uk: 'Чергова зустріч клубу. Гості, які думають долучитися, запрошені: напишіть нам, щоб отримати деталі.' }, timeUnknown: true },
-  { slug: 'novorichna-zustrich-2026', title: { en: 'New Year club gathering', uk: 'Новорічна зустріч клубу' }, start: '2026-12-12T18:00:00+02:00', end: '2026-12-12T22:00:00+02:00', location: { en: 'Lviv, venue to be confirmed', uk: 'Львів, місце уточнюється' }, visibility: 'public', kind: 'gala', description: { en: 'A festive New Year gathering of club members to celebrate the start of our journey together.', uk: 'Святкова новорічна зустріч членів клубу, щоб разом відзначити початок нашого шляху.' }, timeUnknown: true },
-  // Демо-приклад акції служіння
-  { slug: 'perevirka-zoru-sykhiv', demo: true, title: { en: 'Eye screening at a Sykhiv school', uk: 'Перевірка зору в школі на Сихові' }, start: '2026-12-17T09:00:00+02:00', end: '2026-12-17T16:00:00+02:00', location: { en: 'A school in Sykhiv', uk: 'Школа на Сихові' }, visibility: 'public', kind: 'service', description: { en: 'We need 6 volunteers for registration and to accompany children.', uk: 'Потрібні 6 волонтерів для реєстрації та супроводу дітей.' } },
+  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our second meeting, with special guest Lion Serhii Denisenko from Lions Club Kyiv Ecology: the structure, history and projects of Lions Clubs International, new members and collaboration between Lions clubs.', uk: 'Друга зустріч клубу з особливим гостем Lion Сергієм Денисенком з Lions Club Kyiv Ecology: структура, історія і проєкти Lions Clubs International, нові члени клубу та співпраця між Lions клубами.' }, timeUnknown: true },
+  { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, start: '2026-11-05T18:00:00+02:00', end: '2026-11-05T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'The first meeting and the start of Lviv International Lions Club: dinner, member introductions, club structure, humanitarian projects and commemorative diplomas.', uk: 'Перша зустріч і старт роботи Lviv International Lions Club: вечеря, знайомство членів клубу, структура клубу, гуманітарні проєкти і пам’ятні дипломи.' }, timeUnknown: true },
+  { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our next club meeting with talks by Club President Lars Vestbjerg and Vice President Oleksiy Druhov. Guests interested in joining are welcome: write to us to get the details.', uk: 'Наступна зустріч клубу, на якій виступлять президент клубу Lars Vestbjerg і віцепрезидент Олексій Другов. Гості, які думають долучитися, запрошені: напишіть нам, щоб отримати деталі.' }, timeUnknown: true },
+  { slug: 'novorichna-zustrich-2026', title: { en: 'New Year club gathering', uk: 'Новорічна зустріч клубу' }, start: '2026-12-12T18:00:00+02:00', end: '2026-12-12T22:00:00+02:00', location: leopolis, visibility: 'public', kind: 'gala', description: { en: 'A festive New Year gathering of club members to celebrate the start of our journey together.', uk: 'Святкова новорічна зустріч членів клубу, щоб разом відзначити початок нашого шляху.' }, timeUnknown: true },
 ];
 
 export const kindLabel: Record<Event['kind'], L> = {
