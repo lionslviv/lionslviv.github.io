@@ -4,7 +4,7 @@ import { members } from '../../../data/content';
 import { u } from '../../../lib/url';
 import { langOf, lp, tr, t } from '../../../i18n';
 export function getStaticPaths() {
-  return [undefined, 'uk'].flatMap((lang) => members.filter((m) => m.board).map((m) => ({ params: { lang, slug: m.slug }, props: { m } })));
+  return [undefined, 'uk'].flatMap((lang) => members.filter((m) => m.board || m.real).map((m) => ({ params: { lang, slug: m.slug }, props: { m } })));
 }
 const { m } = Astro.props;
 const lang = langOf(Astro.params.lang);

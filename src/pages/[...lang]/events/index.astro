@@ -21,7 +21,12 @@ const albumOf = (slug: string) => albums.find((a) => a.eventSlug === slug);
 const monthKey = (iso: string) => iso.slice(0, 7);
 const groups = Object.entries(Object.groupBy(upcoming, (e) => monthKey(e.start)));
 // У календарі показуємо всі місяці з подіями, і минулими, і майбутніми
-const calMonths = Object.entries(Object.groupBy(sorted, (e) => monthKey(e.start)));
+const calStart = [sorted[0] ? monthKey(sorted[0].start) : '', `${new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(now).slice(0, 7)}`].filter(Boolean).sort()[0];
+const birthdays = birthdaysBetween(calStart);
+const bdOf = (key: string) => birthdays.filter((b) => b.date.startsWith(key));
+const calMonths = [...new Set([...sorted.map((e) => monthKey(e.start)), ...birthdays.map((b) => b.date.slice(0, 7))])]
+  .sort()
+  .map((key) => [key, sorted.filter((e) => monthKey(e.start) === key)] as const);
 const [ty, tm, td] = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(now).split('-').map(Number);
 const todayKey = { y: ty, m: tm, d: td };
 const wd = (iso: string) => (lang === 'uk' ? weekday(iso, lang).slice(0, 2) : weekday(iso, lang).slice(0, 3));
@@ -42,6 +47,7 @@ const icsAbs = new URL(icsPath, Astro.site).toString();
 const webcal = icsAbs.replace(/^https?:/, 'webcal:');
 const googleSub = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
 const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be confirmed', 'Час уточнюється') : time(e.start, lang));
+import { birthdaysBetween } from '../../../lib/birthdays';
 ---
 <Base title={T.nav.events} description={s('Meetings and events of Lviv International Lions Club.', 'Розклад зустрічей і подій Lviv International Lions Club.')}>
   <PageHead title={s('Events and meetings', 'Події та зустрічі')} lead={s(`Our meetings are held in English at ${tr('en', club.meetingPlace)}. Guests are welcome: write to us before you come.`, `Зустрічі проходять англійською в готелі Leopolis, вул. Театральна, 16, Львів. Гості запрошені: напишіть нам перед візитом.`)}>
@@ -135,10 +141,11 @@ const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be conf
           <div class="grid grid-cols-7 gap-1">
             {grid(key).map((d) => {
               const hits = d ? list!.filter((e) => Number(dayNum(e.start, lang)) === d) : [];
+              const bds = d ? bdOf(key).filter((b) => Number(b.date.slice(8)) === d) : [];
               const isToday = d === todayKey.d && m === todayKey.m && y === todayKey.y;
               return d ? (
-                <div class={`relative min-h-[48px] rounded-xl p-1.5 text-left sm:min-h-[84px] sm:p-2 ${hits.length ? 'bg-[var(--bg-alt)]' : ''} ${isToday ? 'ring-2 ring-[var(--color-gold)]' : ''}`}>
-                  <p class={`t-num text-[15px] ${hits.length ? 'font-[700]' : 'text-soft'}`}>{d}</p>
+                <div class={`relative min-h-[48px] rounded-xl p-1.5 text-left sm:min-h-[84px] sm:p-2 ${hits.length || bds.length ? 'bg-[var(--bg-alt)]' : ''} ${isToday ? 'ring-2 ring-[var(--color-gold)]' : ''}`}>
+                  <p class={`t-num text-[15px] ${hits.length || bds.length ? 'font-[700]' : 'text-soft'}`}>{d}</p>
                   {hits.map((e) => {
                     const isPast = new Date(e.start) < now;
                     const tone = e.visibility === 'members' ? 'bg-[var(--line)]' : isPast ? 'bg-[var(--color-lions-sky)] text-white' : 'bg-[var(--color-lions)] text-white';
@@ -150,11 +157,24 @@ const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be conf
                       </a>
                     );
                   })}
+                  {bds.map((b) => (
+                    <a href={lp(lang, `/members/${b.slug}`)} class="block" title={`${s('Birthday', 'День народження')}: ${tr(lang, b.name)}`} aria-label={`${s('Birthday', 'День народження')}: ${tr(lang, b.name)}`} data-birthday>
+                      <span class="absolute inset-0 sm:hidden" aria-hidden="true"></span>
+                      <span class="mt-1 block h-1.5 w-1.5 rounded-full bg-[var(--color-gold)] sm:hidden" aria-hidden="true"></span>
+                      <span class="mt-1 hidden rounded-md bg-[var(--color-gold-soft)] px-1.5 py-1 text-[12px] font-[560] leading-[1.2] text-[var(--color-lions-deep)] [overflow-wrap:anywhere] sm:block"><span aria-hidden="true">🎂</span> {tr(lang, b.name).split(' ')[0]}</span>
+                    </a>
+                  ))}
                 </div>
               ) : <div />;
             })}
           </div>
           <ul class="mt-4 grid gap-2 sm:hidden">
+            {bdOf(key).map((b) => (
+              <li><a href={lp(lang, `/members/${b.slug}`)} class="flex items-baseline gap-3 rounded-xl bg-[var(--color-gold-soft)] px-4 py-3 text-[var(--color-lions-deep)]">
+                <span class="t-num w-6 shrink-0 text-[17px] font-[700]">{Number(b.date.slice(8))}</span>
+                <span class="text-[16px] font-[600]">{s('Birthday', 'День народження')}: {tr(lang, b.name)}</span>
+              </a></li>
+            ))}
             {list!.map((e) => (
               <li><a href={lp(lang, `/events/${e.slug}`)} class="flex items-baseline gap-3 rounded-xl bg-[var(--bg-alt)] px-4 py-3">
                 <span class="t-num w-6 shrink-0 text-[17px] font-[700]">{dayNum(e.start, lang)}</span>

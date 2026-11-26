@@ -8,6 +8,7 @@ export type IcsEvent = {
   end: string; // ISO
   url?: string;
   allDay?: boolean; // відома лише дата
+  yearly?: boolean; // повторюється щороку (дні народження)
 };
 
 const stamp = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -21,6 +22,7 @@ export function icsEvent(e: IcsEvent): string {
     `DTSTAMP:${stamp(new Date().toISOString())}`,
     e.allDay ? `DTSTART;VALUE=DATE:${day(e.start)}` : `DTSTART:${stamp(e.start)}`,
     e.allDay ? `DTEND;VALUE=DATE:${day(e.start, 1)}` : `DTEND:${stamp(e.end)}`,
+    e.yearly ? 'RRULE:FREQ=YEARLY' : '',
     `SUMMARY:${esc(e.title)}`,
     e.description ? `DESCRIPTION:${esc(e.description)}` : '',
     e.location ? `LOCATION:${esc(e.location)}` : '',

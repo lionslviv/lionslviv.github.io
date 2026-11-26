@@ -152,9 +152,9 @@ export const albums: Album[] = [
   { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, date: '2026-11-05', eventSlug: 'persha-zustrich', photos: real('persha-zustrich', [['01.jpg', 1600, 1200], ['02.jpg', 1600, 1200], ['03.jpg', 900, 1600], ['04.jpg', 900, 1600], ['05.jpg', 900, 1600], ['06.jpg', 900, 1600]]) },
 ];
 
-export type Member = { slug: string; name: L; role: L; since: number; field?: L; bio?: L; board: boolean; real?: boolean; photo?: string };
+// birthday: 'MM-DD' без року; показується в календарі подій і в ICS-фіді.
+export type Member = { slug: string; name: L; role: L; since: number; field?: L; bio?: L; board: boolean; real?: boolean; photo?: string; birthday?: string };
 
-const pending: L = { en: 'Profile in progress', uk: 'Профіль заповнюється' };
 
 // Реальні профілі: відкриті професійні дані з Facebook (26.11.2026), фото надав клуб.
 // Остаточні тексти погоджують самі члени правління.
@@ -169,7 +169,7 @@ export const members: Member[] = [
       en: 'Danish entrepreneur based in Lviv. Founder and CEO of Vestbjerg Invest ApS, works with the Danish Business Association. Former Chairman of the Board of the European Business Association in Ukraine (2004-2007, 2009).',
       uk: 'Данський підприємець, який живе у Львові. Засновник і CEO Vestbjerg Invest ApS, працює в Danish Business Association. Очолював правління European Business Association в Україні (2004-2007, 2009).',
     },
-    board: true, real: true, photo: '/members/lars-vestbjerg.jpg',
+    board: true, real: true, photo: '/members/lars-vestbjerg.jpg', birthday: '01-31',
   },
   {
     slug: 'oleksiy-druhov',
@@ -181,7 +181,7 @@ export const members: Member[] = [
       en: 'CEO of the Academy for Heroes in Lviv and a member of staff at Lviv Polytechnic National University. Vice-rector of the University of Banking from 2001 to 2019.',
       uk: 'CEO Академії для Героїв у Львові, працює в Національному університеті «Львівська політехніка». У 2001-2019 роках проректор Університету банківської справи.',
     },
-    board: true, real: true, photo: '/members/oleksiy-druhov.jpg',
+    board: true, real: true, photo: '/members/oleksiy-druhov.jpg', birthday: '01-04',
   },
   {
     slug: 'iryna-melnyk',
@@ -193,13 +193,22 @@ export const members: Member[] = [
       en: 'Club secretary. Graduate in International Relations from Ivan Franko National University of Lviv.',
       uk: 'Секретар клубу. За освітою фахівчиня з міжнародних відносин, випускниця Львівського національного університету імені Івана Франка.',
     },
-    board: true, real: true, photo: '/members/iryna-melnyk.jpg',
+    board: true, real: true, photo: '/members/iryna-melnyk.jpg', birthday: '01-09',
   },
-  { slug: 'treasurer', name: { en: 'Club Treasurer', uk: 'Скарбник клубу' }, role: { en: 'Treasurer', uk: 'Скарбник' }, since: 2026, field: pending, board: true },
-  { slug: 'membership', name: { en: 'Membership Chair', uk: 'Директор з членства' }, role: { en: 'Membership Chair', uk: 'Директор з членства' }, since: 2026, field: pending, board: true },
-  { slug: 'service', name: { en: 'Service Chair', uk: 'Координатор служіння' }, role: { en: 'Service Chair', uk: 'Координатор служіння' }, since: 2026, field: pending, board: true },
-  { slug: 'marketing', name: { en: 'Communications Chair', uk: 'Координатор комунікацій' }, role: { en: 'Communications', uk: 'Комунікації' }, since: 2026, field: pending, board: true },
-  ...Array.from({ length: 5 }, (_, i) => ({ slug: `member-${i + 1}`, name: { en: 'Club member', uk: 'Член клубу' }, role: { en: 'Club member', uk: 'Член клубу' }, since: 2026, board: false })),
+  {
+    slug: 'viktor-kloba',
+    name: { en: 'Viktor Kloba', uk: 'Віктор Кльоба' },
+    role: { en: 'Club member', uk: 'Член клубу' },
+    since: 2026,
+    field: { en: 'AI transformation, Raiffeisen Bank Ukraine', uk: 'AI-трансформація, Райффайзен Банк' },
+    bio: {
+      en: 'Senior Innovation Implementation Manager at Raiffeisen Bank Ukraine, where he leads the bank’s AI transformation and founded an AI community of more than 250 colleagues. Holds a PhD and an MBA with distinction. Volunteers as an AI instructor for children at the Academy for Heroes, runs a student AI club at IT Step University and gives guest lectures at Ukrainian universities.',
+      uk: 'Senior Innovation Implementation Manager у Райффайзен Банку, де очолює AI-трансформацію банку і заснував AI-спільноту з понад 250 колег. Має ступінь PhD і MBA з відзнакою. Волонтерить як AI-інструктор для дітей в Академії для Героїв, веде студентський AI-клуб в IT Step University і читає гостьові лекції в українських університетах.',
+    },
+    board: false, real: true, photo: '/members/viktor-kloba.jpg', birthday: '06-14',
+  },
+  // Вільні місця: ролі розподіляються на зустрічі 3 грудня 2026
+  ...Array.from({ length: 4 }, (_, i) => ({ slug: `member-${i + 1}`, name: { en: 'Club member', uk: 'Член клубу' }, role: { en: 'Club member', uk: 'Член клубу' }, since: 2026, board: false })),
 ];
 
 export type Review = { id: string; author: L; kind: 'partner' | 'beneficiary' | 'volunteer' | 'guest'; text: L; date: string };
