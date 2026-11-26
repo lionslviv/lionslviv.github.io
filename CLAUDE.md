@@ -1,7 +1,7 @@
 # Контекст для Claude Code
 
-Сайт Lions Club Lviv Leopolis (офіційний запис LCI: Lviv (Leopolis)). Другий Lions club у Львові: ніколи не позиціонуй його як єдиний чи головний.
-Повне ТЗ: документ «ТЗ: сайт Lions Club Lviv Leopolis» (розділ 9 містить промпт).
+Сайт Lions Club Leopolis (офіційний запис LCI: Lviv (Leopolis)). Другий Lions club у Львові: ніколи не позиціонуй його як єдиний чи головний.
+Повне ТЗ: документ «ТЗ: сайт Lions Club Leopolis» (розділ 9 містить промпт).
 
 ## Стан
 - Етап 1 (MVP) зроблено в демо-режимі: Astro 7 + Tailwind 4, статична збірка, GitHub Pages.

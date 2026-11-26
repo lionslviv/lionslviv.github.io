@@ -24,7 +24,7 @@ import { u } from '../../lib/url';
     const p = posts().find((x) => x.id === id);
     const q = (s: string) => root.querySelector<HTMLElement>(s)!;
     if (!p) { q('[data-title]').textContent = 'Пост не знайдено'; q('[data-excerpt]').textContent = 'Можливо, його видалили в адмінці або відкрито в іншому браузері.'; return; }
-    document.title = `${p.title} | Lions Club Lviv Leopolis`;
+    document.title = `${p.title} | Lions Club Leopolis`;
     q('[data-date]').textContent = fmtDate(p.at);
     q('[data-title]').textContent = p.title;
     q('[data-excerpt]').textContent = p.excerpt;

@@ -7,7 +7,7 @@ import { dateLong } from '../../lib/format';
 import { u } from '../../lib/url';
 const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
 ---
-<Base title="Новини" description="Новини Lions Club Lviv Leopolis: звіти про проєкти, анонси подій, історії людей.">
+<Base title="Новини" description="Новини Lions Club Leopolis: звіти про проєкти, анонси подій, історії людей.">
   <PageHead title="Новини" lead="Звіти про проєкти, анонси подій та історії людей, поруч з якими ми працюємо.">
     <a href={u('/news.xml')} class="link mt-6 inline-block text-[15px]">Підписатися через RSS</a>
   </PageHead>

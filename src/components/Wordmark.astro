@@ -7,10 +7,10 @@ import { u } from '../lib/url';
 interface Props { inverse?: boolean }
 const { inverse = false } = Astro.props;
 ---
-<a href={u('/')} class="flex items-center gap-3 leading-none" aria-label="Lions Club Lviv Leopolis, на головну">
+<a href={u('/')} class="flex items-center gap-3 leading-none" aria-label="Lions Club Leopolis, на головну">
   {!inverse && <BrandAsset name="emblem" alt="Емблема Lions Clubs International" height={40} />}
   <span class="flex flex-col">
     <span class={`text-[11.5px] font-[560] tracking-[0.01em] ${inverse ? 'text-white/70' : 'text-soft'}`}>Lions Club</span>
-    <span class={`text-[18px] font-[760] tracking-[-0.02em] ${inverse ? 'text-white' : ''}`} style="font-stretch:118%">Lviv Leopolis</span>
+    <span class={`text-[18px] font-[760] tracking-[-0.02em] ${inverse ? 'text-white' : ''}`} style="font-stretch:118%">Leopolis</span>
   </span>
 </a>

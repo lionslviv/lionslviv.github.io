@@ -1,4 +1,4 @@
--- Lions Club Lviv Leopolis: початкова схема (етап 2, коли підключаємо Supabase)
+-- Lions Club Leopolis: початкова схема (етап 2, коли підключаємо Supabase)
 -- Ролі: user < member < editor < admin. RLS увімкнено на всіх таблицях.
 
 create type public.app_role as enum ('user', 'member', 'editor', 'admin');

@@ -47,8 +47,8 @@ export const nameRules = [
   ['Друга і наступні згадки', 'Lions International'],
   ['Клуби загалом', 'Lions club, Lions clubs (мала літера c)'],
   ['Члени організації', 'Lions, завжди з великої'],
-  ['Наш клуб', 'Lions Club Lviv Leopolis'],
-  ['Запис у реєстрі LCI', 'Lviv (Leopolis)'],
+  ['Наш клуб', 'Lions Club Leopolis'],
+  ['Запис у реєстрі LCI', 'Lviv (Leopolis), погоджується з District 134'],
   ['Девіз', 'We Serve™, торговельна марка, не перекладаємо в логотипі'],
 ];
 

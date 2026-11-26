@@ -1,4 +1,4 @@
-# Lions Club Lviv Leopolis: сайт клубу
+# Lions Club Leopolis: сайт клубу
 
 Сайт другого клубу Lions International у Львові. Офіційний запис у реєстрі LCI: **Lviv (Leopolis)**.
 Цільовий домен: `leopolislions.org.ua` (редирект з `lionsleopolis.org.ua`).

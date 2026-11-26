@@ -5,8 +5,8 @@ export const DEMO = true;
 // Реальні дані: сторінка клубу у Facebook (перевірено 26.11.2026)
 // https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/
 export const club = {
-  name: 'Lions Club Lviv Leopolis',
-  shortName: 'Lviv Leopolis',
+  name: 'Lions Club Leopolis',
+  shortName: 'Leopolis',
   lciRecord: 'Lviv (Leopolis)',
   facebookName: 'Lviv International Lions Club',
   district: 'District 134, Україна',

@@ -13,7 +13,7 @@ const ev = { uid: e.slug, title: e.title, start: e.start, end: e.end, location: 
 const ics = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsCalendar([ev]))}`;
 const album = albums.find((a) => a.eventSlug === e.slug);
 const isPast = new Date(e.start) < new Date('2026-11-26T12:00:00+02:00');
-const ld = { '@context': 'https://schema.org', '@type': 'Event', name: e.title, startDate: e.start, endDate: e.end, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', location: { '@type': 'Place', name: e.location, address: 'Львів, Україна' }, organizer: { '@type': 'NGO', name: 'Lions Club Lviv Leopolis' }, description: e.description };
+const ld = { '@context': 'https://schema.org', '@type': 'Event', name: e.title, startDate: e.start, endDate: e.end, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', location: { '@type': 'Place', name: e.location, address: 'Львів, Україна' }, organizer: { '@type': 'NGO', name: 'Lions Club Leopolis' }, description: e.description };
 ---
 <Base title={e.title} description={e.description} jsonLd={ld}>
   <section class="bg-[var(--color-lions-deep)] text-white">
