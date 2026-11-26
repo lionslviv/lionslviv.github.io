@@ -259,7 +259,7 @@ export const albums: Album[] = [
   { slug: 'aleia-pamiati', title: 'Алея пам’яті на Сихові', date: '2026-04-12', photos: shots('trees', 10, 'nature') },
 ];
 
-export type Member = { slug: string; name: string; role: string; since: number; field?: string; bio?: string; quote?: string; board: boolean; real?: boolean; bioEn?: string; roleEn?: string; photo?: string };
+export type Member = { slug: string; name: string; role: string; since: number; field?: string; bio?: string; quote?: string; board: boolean; real?: boolean; bioEn?: string; roleEn?: string; photo?: string; nameEn?: string };
 
 // Профілі заповнюють самі члени клубу після згоди на публікацію.
 export const members: Member[] = [
@@ -268,6 +268,7 @@ export const members: Member[] = [
   {
     slug: 'lars-vestbjerg',
     name: 'Lars Vestbjerg',
+    nameEn: 'Lars Vestbjerg',
     role: 'Керівник клубу',
     roleEn: 'Club leader',
     since: 2026,
@@ -279,7 +280,20 @@ export const members: Member[] = [
     photo: '/members/lars-vestbjerg.jpg', // надано клубом
   },
   { slug: 'vice-president', name: 'Віцепрезидент клубу', role: 'Віцепрезидент', since: 2026, field: 'Профіль заповнюється', board: true },
-  { slug: 'secretary', name: 'Секретар клубу', role: 'Секретар', since: 2026, field: 'Профіль заповнюється', board: true },
+  {
+    slug: 'iryna-melnyk',
+    name: 'Ірина Мельник',
+    nameEn: 'Iryna Melnyk',
+    role: 'Секретар клубу',
+    roleEn: 'Club secretary',
+    since: 2026,
+    field: 'Міжнародні відносини, ЛНУ імені Івана Франка',
+    bio: 'Секретар клубу. За освітою фахівчиня з міжнародних відносин, випускниця Львівського національного університету імені Івана Франка.',
+    bioEn: 'Club secretary. Graduate in International Relations from Ivan Franko National University of Lviv.',
+    board: true,
+    real: true,
+    photo: '/members/iryna-melnyk.jpg', // надано клубом
+  },
   { slug: 'treasurer', name: 'Скарбник клубу', role: 'Скарбник', since: 2026, field: 'Профіль заповнюється', board: true },
   { slug: 'membership', name: 'Директор з членства', role: 'Директор з членства', since: 2026, field: 'Профіль заповнюється', board: true },
   { slug: 'service', name: 'Координатор служіння', role: 'Координатор служіння', since: 2026, field: 'Профіль заповнюється', board: true },

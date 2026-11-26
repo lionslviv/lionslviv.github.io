@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Skyline from '../../components/Skyline.astro';
 import { club } from '../../data/site';
 import { members } from '../../data/content';
-const leader = members.find((m) => m.real && m.board);
+const board = members.filter((m) => m.real && m.board);
 import { u } from '../../lib/url';
 ---
 <Base title="In English" description="Lviv International Lions Club: a Lions International club in Lviv, Ukraine.">
@@ -26,7 +26,14 @@ import { u } from '../../lib/url';
   </section>
   <section class="section-tight">
     <div class="wrap max-w-[760px]">
-      {leader && <p class="mb-10 max-w-[60ch] text-[19px] leading-[1.6]"><strong>{leader.name}</strong>, {leader.roleEn?.toLowerCase()}. {leader.bioEn}</p>}
+      <ul class="mb-12 grid gap-6 sm:grid-cols-2">
+        {board.map((m) => (
+          <li class="flex gap-4">
+            {m.photo && <img src={u(m.photo)} alt={m.nameEn ?? m.name} width="72" height="72" class="h-[72px] w-[72px] shrink-0 rounded-2xl object-cover" loading="lazy" />}
+            <div><p class="text-[19px] font-[650]">{m.nameEn ?? m.name}</p><p class="text-[15px] font-[600] text-accent">{m.roleEn}</p><p class="t-small mt-1">{m.bioEn}</p></div>
+          </li>
+        ))}
+      </ul>
       <dl class="grid gap-6 text-[19px] sm:grid-cols-3">
         <div><dt class="t-small">Email</dt><dd><a class="link" href={`mailto:${club.email}`}>{club.email}</a></dd></div>
         <div><dt class="t-small">Phone</dt><dd><a class="link" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phone}</a></dd></div>
