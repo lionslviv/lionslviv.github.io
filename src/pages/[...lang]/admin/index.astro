@@ -15,6 +15,7 @@ const tabs = [
   ['audit', s('Log', 'Журнал')],
 ];
 const inp = 'input';
+import { analytics } from '../../../data/site';
 ---
 <Base title={T.admin} noindex>
   <section class="wrap pb-24 pt-10" data-admin>
@@ -50,6 +51,7 @@ const inp = 'input';
               <button type="button" class="btn btn-blue btn-sm" data-goto="posts">{s('Write news', 'Написати новину')}</button>
               <button type="button" class="btn btn-quiet btn-sm" data-goto="events">{s('Add event', 'Додати подію')}</button>
               <button type="button" class="btn btn-quiet btn-sm" data-goto="moderation">{s('Review queue', 'Перевірити чергу')}</button>
+              {analytics.dashboard && <a class="btn btn-quiet btn-sm" href={analytics.dashboard} target="_blank" rel="noopener">{s('Visitor statistics', 'Статистика відвідувань')}</a>}
             </div>
           </div>
           <div class="panel p-6 sm:p-7"><h2 class="t-h3">{s('Recent changes', 'Що змінилось')}</h2><ul class="mt-4 grid gap-2 text-[15px]" data-recent></ul></div>

@@ -38,6 +38,13 @@ export const club = {
   },
 };
 
+// Аналітика без cookies: GoatCounter (https://www.goatcounter.com). Порожній рядок вимикає лічильник.
+export const analytics = {
+  goatcounter: 'lionslviv',
+  get endpoint() { return this.goatcounter ? `https://${this.goatcounter}.goatcounter.com/count` : ''; },
+  get dashboard() { return this.goatcounter ? `https://${this.goatcounter}.goatcounter.com` : ''; },
+};
+
 export const nav = [
   { href: '/about', key: 'about' },
   { href: '/lions', key: 'lions' },

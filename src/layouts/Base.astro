@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
+import { analytics } from '../data/site';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { club } from '../data/site';
@@ -61,6 +62,9 @@ const org = {
     {noindex && <meta name="robots" content="noindex" />}
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? org)} />
     <ClientRouter />
+    {import.meta.env.PROD && analytics.endpoint && (
+      <script is:inline async data-goatcounter={analytics.endpoint} data-goatcounter-settings='{"no_onload":true}' src="https://gc.zgo.at/count.js"></script>
+    )}
   </head>
   <body class="min-h-dvh">
     {!bare && <Header />}
@@ -68,5 +72,18 @@ const org = {
       <slot />
     </main>
     {!bare && <Footer />}
+    <script>
+      // Перегляди сторінок для GoatCounter: без cookies, без особистих даних.
+      // Рахуємо кожен перехід ClientRouter; службові сторінки не рахуємо.
+      const PRIVATE = /\/(admin|account|login)\/?$/;
+      function countView(tries = 0) {
+        const path = location.pathname + location.search;
+        if (PRIVATE.test(location.pathname)) return;
+        const gc = (window as any).goatcounter;
+        if (gc?.count) gc.count({ path });
+        else if (tries < 20 && document.querySelector('script[data-goatcounter]')) setTimeout(() => countView(tries + 1), 250);
+      }
+      document.addEventListener('astro:page-load', () => countView());
+    </script>
   </body>
 </html>
