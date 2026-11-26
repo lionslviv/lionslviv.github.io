@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { members } from '../../data/content';
+import { u } from '../../lib/url';
+const board = members.filter((m) => m.board);
+const others = members.filter((m) => !m.board);
+---
+<Base title="Учасники" description="Правління і члени Lions Club Lviv Leopolis.">
+  <PageHead title="Люди клубу" lead="Профілі заповнюють самі члени клубу і публікують лише за власною згодою. Контакти бачать тільки члени клубу." />
+  <section class="wrap pb-16">
+    <h2 class="t-h3 mb-8">Правління на Lions-рік 2026-2027</h2>
+    <ul class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+      {board.map((m) => (
+        <li>
+          <a href={u(`/members/${m.slug}`)} class="group block">
+            <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)] transition-colors group-hover:bg-[var(--line)]">
+              <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+            </div>
+            <p class="mt-4 text-[19px] font-[650] leading-tight group-hover:text-[var(--accent)]">{m.role}</p>
+            <p class="t-small mt-1">{m.field}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="bg-alt section-tight">
+    <div class="wrap">
+      <h2 class="t-h3">Члени клубу</h2>
+      <p class="mt-2 text-soft">{others.length} членів клубу ще не опублікували профілі.</p>
+      <ul class="mt-8 flex flex-wrap gap-3">
+        {others.map(() => (
+          <li class="grid h-14 w-14 place-items-center rounded-full bg-[var(--surface)]" aria-label="Профіль не опубліковано">
+            <svg viewBox="0 0 80 80" class="h-7 w-7 text-[var(--color-stone-soft)]" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-10"><a href={u('/join')} class="btn btn-blue">Як стати членом клубу</a></p>
+    </div>
+  </section>
+</Base>

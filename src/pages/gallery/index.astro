@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Photo from '../../components/Photo.astro';
+import { albums } from '../../data/content';
+import { dateLong } from '../../lib/format';
+import { u } from '../../lib/url';
+const [first, ...rest] = albums;
+---
+<Base title="Галерея" description="Фотоальбоми подій і проєктів Lions Club Lviv Leopolis.">
+  <PageHead title="Галерея" lead="Альбоми з подій і проєктів. Члени клубу додають фото, редактори публікують після перевірки." />
+  <section class="wrap pb-24">
+    <a href={u(`/gallery/${first.slug}`)} class="group mb-14 block">
+      <div class="grid grid-cols-4 gap-2 overflow-hidden rounded-[var(--radius-card)] md:grid-cols-6">
+        <Photo art={first.photos[0]} alt={first.title} ratio="1 / 1" class="col-span-2 row-span-2" />
+        {first.photos.slice(1, 9).map((p, i) => <Photo art={p} alt={first.title} ratio="1 / 1" class={i > 3 ? 'hidden md:block' : ''} />)}
+      </div>
+      <div class="mt-5 flex flex-wrap items-baseline justify-between gap-3">
+        <h2 class="t-h2 group-hover:text-[var(--accent)]">{first.title}</h2>
+        <p class="text-soft">{dateLong(first.date)}, {first.photos.length} фото</p>
+      </div>
+    </a>
+    <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      {rest.map((a) => (
+        <a href={u(`/gallery/${a.slug}`)} class="group space-y-4">
+          <div class="overflow-hidden rounded-[var(--radius-card)]"><Photo art={a.photos[0]} alt={a.title} ratio="4 / 3" class="transition-transform duration-700 group-hover:scale-[1.03]" /></div>
+          <div>
+            <h2 class="text-[21px] font-[650] tracking-[-0.015em] group-hover:text-[var(--accent)]">{a.title}</h2>
+            <p class="t-small mt-1">{dateLong(a.date)}, {a.photos.length} фото</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

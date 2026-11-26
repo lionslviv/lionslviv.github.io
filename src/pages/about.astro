@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import Skyline from '../components/Skyline.astro';
+import { club, causes } from '../data/site';
+import { members } from '../data/content';
+import { u } from '../lib/url';
+const board = members.filter((m) => m.board);
+---
+<Base title="Про клуб" description="Lions Club Lviv Leopolis: місія, історія назви, зв'язок з Lions International і District 134.">
+  <section class="hero">
+    <div class="wrap relative z-[2] pb-8 pt-[clamp(3rem,7vw,6rem)]">
+      <h1 class="t-h1 max-w-[16ch]">Lions у місті лева</h1>
+      <p class="mt-5 max-w-[48ch] text-[clamp(1.1rem,1.8vw,1.35rem)] leading-[1.5] text-white/75">
+        Lions Club Lviv Leopolis це другий клуб Lions International у Львові. Ми об’єднуємо людей, які хочуть служити місту системно: з планом, звітом і результатом.
+      </p>
+    </div>
+    <div class="relative h-[clamp(7rem,16vw,13rem)]">
+      <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[#0b3b94]" />
+      <Skyline layer="near" class="absolute inset-x-0 -bottom-px h-[40%] w-full" fill="var(--bg)" />
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap grid gap-12 md:grid-cols-2 md:gap-20">
+      <div class="space-y-5">
+        <h2 class="t-h2">Чому Leopolis</h2>
+        <p class="text-[19px] leading-[1.6]">Leopolis це латинська назва Львова. Місто назвали на честь князя Лева, а лев став його символом: на гербі, на Ринку, на фасадах.</p>
+        <p class="text-[19px] leading-[1.6]">Коли клуб Lions обирав назву, сумнівів не було. Правила Lions International вимагають, щоб другий клуб у місті мав власне ім’я після назви міста. Наше офіційне ім’я в реєстрі: <strong>{club.lciRecord}</strong>.</p>
+      </div>
+      <div class="space-y-5">
+        <h2 class="t-h2">Хто такі Lions</h2>
+        <p class="text-[19px] leading-[1.6]">Lions Clubs International заснували 1917 року в Чикаго. Сьогодні це найбільша у світі мережа сервісних клубів: понад 1,4 мільйона людей у більш ніж 200 країнах і територіях. Девіз: We Serve, «Ми служимо».</p>
+        <p class="text-[19px] leading-[1.6]">Клуби в Україні входять до {club.district}. Ми співпрацюємо з іншими клубами дистрикту і з Lions з усієї Європи.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-alt">
+    <div class="wrap">
+      <h2 class="t-h2 mb-10 max-w-[20ch]">Як ми працюємо</h2>
+      <ol class="grid gap-8 md:grid-cols-4">
+        {[
+          ['Обираємо проблему', 'Там, де клуб може дати вимірний результат за сезон.'],
+          ['Ставимо мету в цифрах', 'Скільки дітей, генераторів, годин. І хто відповідальний.'],
+          ['Робимо разом', 'Члени клубу, волонтери, партнери і Lions з інших країн.'],
+          ['Звітуємо публічно', 'Кожна гривня і кожен результат на сайті.'],
+        ].map(([t, d], i) => (
+          <li class="border-t-2 border-[var(--color-lions)] pt-5">
+            <p class="t-num text-[15px] font-[700] text-accent">Крок {i + 1}</p>
+            <p class="mt-2 text-[21px] font-[650] tracking-[-0.015em]">{t}</p>
+            <p class="mt-2 text-soft">{d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap grid gap-12 md:grid-cols-[1fr_1.5fr]">
+      <div class="space-y-4">
+        <h2 class="t-h2">Правління</h2>
+        <p class="t-lead">Обирається щороку. Lions-рік триває з 1 липня до 30 червня.</p>
+        <a href={u('/members')} class="link inline-block">Усі учасники</a>
+      </div>
+      <ul class="divide-y divide-[var(--line)] border-y border-[var(--line)]">
+        {board.map((m) => (
+          <li class="flex items-baseline justify-between gap-4 py-4">
+            <span class="text-[19px] font-[620]">{m.role}</span>
+            <span class="text-soft">ім’я після погодження</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-alt">
+    <div class="wrap">
+      <h2 class="t-h2 mb-8">Наші пріоритети на 2026-2027</h2>
+      <ul class="flex flex-wrap gap-3">
+        {causes.filter((c) => ['vision', 'humanitarian', 'youth', 'environment'].includes(c.key)).map((c) => (
+          <li class="rounded-full bg-[var(--surface)] px-5 py-3 text-[17px] font-[600]">{c.label}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/url';
+const roles = [
+  { role: 'user', title: 'Користувач', text: 'Коментує новини й альбоми. Перший коментар іде на модерацію.' },
+  { role: 'member', title: 'Член клубу', text: 'Бачить закриті збори, відмічає RSVP, редагує свій профіль.' },
+  { role: 'editor', title: 'Редактор', text: 'Публікує новини й події, модерує коментарі та відгуки.' },
+  { role: 'admin', title: 'Адмін', text: 'Усе, що редактор, плюс ролі учасників і журнал дій.' },
+];
+---
+<Base title="Вхід" noindex>
+  <section class="wrap grid gap-14 pb-24 pt-[clamp(3rem,7vw,6rem)] lg:grid-cols-[1fr_1.2fr]">
+    <div class="space-y-6">
+      <h1 class="t-h1">Вхід</h1>
+      <p class="t-lead">У робочій версії вхід через Google, Apple або посилання на email. Паролів немає.</p>
+      <div class="grid max-w-[380px] gap-3">
+        <button class="btn btn-quiet w-full" disabled>Продовжити з Google</button>
+        <button class="btn btn-quiet w-full" disabled>Продовжити з Apple</button>
+        <div class="field mt-3"><label for="ml">Email</label><input id="ml" class="input" type="email" placeholder="you@example.com" disabled /></div>
+        <button class="btn btn-blue w-full" disabled>Надіслати посилання для входу</button>
+        <p class="t-small">Ці кнопки запрацюють після підключення Supabase Auth.</p>
+      </div>
+    </div>
+    <div class="panel p-8 md:p-10">
+      <h2 class="t-h3">Демо: оберіть роль</h2>
+      <p class="mt-2 text-soft">Вхід імітується в браузері, щоб показати, що бачить кожна роль.</p>
+      <ul class="mt-8 grid gap-3">
+        {roles.map((r) => (
+          <li>
+            <button class="group w-full rounded-[18px] bg-[var(--surface)] p-5 text-left ring-1 ring-[var(--line)] transition hover:ring-2 hover:ring-[var(--color-lions-sky)]" data-role={r.role}>
+              <span class="text-[19px] font-[650] group-hover:text-[var(--accent)]">Увійти як {r.title.toLowerCase()}</span>
+              <span class="mt-1 block text-[15px] text-soft">{r.text}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-6 text-[15px]" data-current></p>
+    </div>
+  </section>
+</Base>
+<script>
+  import { signIn, signOut, getUser, roleLabel, can, type Role } from '../scripts/store';
+  import { navigate } from 'astro:transitions/client';
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  document.addEventListener('astro:page-load', () => {
+    const cur = document.querySelector<HTMLElement>('[data-current]');
+    if (!cur) return;
+    const u0 = getUser();
+    if (u0) {
+      cur.innerHTML = `Зараз ви: <b>${roleLabel[u0.role]}</b>. <button class="link" data-out>Вийти</button>`;
+      cur.querySelector('[data-out]')!.addEventListener('click', () => { signOut(); location.reload(); });
+    }
+    document.querySelectorAll<HTMLButtonElement>('[data-role]').forEach((b) => b.addEventListener('click', () => {
+      const user = signIn(b.dataset.role as Role);
+      navigate(`${base}${can.admin(user) ? '/admin' : '/account'}`);
+    }));
+  });
+</script>

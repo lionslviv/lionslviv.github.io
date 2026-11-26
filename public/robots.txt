@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin
+Disallow: /account
+Disallow: /login
+Allow: /
+
+Sitemap: https://leopolislions.org.ua/sitemap.xml

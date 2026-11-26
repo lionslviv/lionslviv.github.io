@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Skyline from '../components/Skyline.astro';
+const colors = [
+  ['Lions Blue', '#00338D', 'Pantone 287. Заголовки, посилання, основні кнопки.'],
+  ['Deep Blue', '#001A4D', 'Hero, футер, темні секції.'],
+  ['Lions Yellow', '#EBB700', 'Pantone 7406. Лише кнопки дії та акценти. Не для тексту на білому.'],
+  ['Sky', '#407CCA', 'Вторинний. Фокус полів, ілюстрації.'],
+  ['Cool Gray 11', '#53565A', 'Другорядний текст.'],
+  ['Mist', '#F2F4F8', 'Фон панелей і секцій.'],
+];
+---
+<Base title="Стайлгайд" noindex>
+  <section class="wrap py-16">
+    <h1 class="t-h1">Дизайн-система</h1>
+    <p class="t-lead mt-4 max-w-[52ch]">Токени і компоненти сайту. Кольори за Lions International Brand Guidelines, шрифт Roboto Flex (веб-шрифт бренду Lions) зі змінною шириною.</p>
+
+    <h2 class="t-h3 mt-16">Кольори</h2>
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {colors.map(([n, h, d]) => (
+        <li class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--line)]">
+          <div class="h-28" style={`background:${h}`}></div>
+          <div class="p-5"><p class="font-[650]">{n} <span class="t-num font-normal text-soft">{h}</span></p><p class="t-small mt-1">{d}</p></div>
+        </li>
+      ))}
+    </ul>
+
+    <h2 class="t-h3 mt-16">Типографіка</h2>
+    <div class="mt-6 grid gap-6 border-t border-[var(--line)] pt-6">
+      <p class="t-display">Leopolis</p>
+      <p class="t-h1">Заголовок сторінки</p>
+      <p class="t-h2">Заголовок секції</p>
+      <p class="t-h3">Підзаголовок картки</p>
+      <p class="t-statement max-w-[24ch]">Велике твердження для заяв і цитат.</p>
+      <p class="t-lead max-w-[52ch]">Лід: короткий вступ під заголовком, сірим, до 50 знаків у рядку.</p>
+      <p class="max-w-[60ch]">Основний текст 17 px, міжрядковий інтервал 1,55. Для статей 19 px. Рядок не довший за 70 знаків.</p>
+      <p class="t-small">Дрібний текст 14 px: дати, підписи, примітки.</p>
+    </div>
+
+    <h2 class="t-h3 mt-16">Кнопки і мітки</h2>
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <button class="btn btn-gold">Підтримати проєкт</button>
+      <button class="btn btn-blue">Надіслати заявку</button>
+      <button class="btn btn-quiet">Другорядна дія</button>
+      <button class="btn btn-ghost">Контурна</button>
+      <button class="btn btn-blue btn-sm">Мала</button>
+      <span class="badge">нейтральна</span><span class="badge badge-blue">напрям</span><span class="badge badge-gold">демо</span>
+    </div>
+
+    <h2 class="t-h3 mt-16">Форма</h2>
+    <div class="mt-6 grid max-w-[520px] gap-5">
+      <div class="field"><label for="sg1">Поле</label><input id="sg1" class="input" placeholder="Підказка" /></div>
+      <div class="field"><label for="sg2">Список</label><select id="sg2" class="select"><option>Варіант</option></select></div>
+      <label class="check"><input type="checkbox" checked /> <span>Згода на обробку даних</span></label>
+    </div>
+
+    <h2 class="t-h3 mt-16">Фото-плейсхолдери</h2>
+    <p class="t-small mt-2">Детерміновані композиції в кольорах бренду. Замінюються реальними фото з Supabase Storage.</p>
+    <div class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-5">
+      {(['people', 'event', 'nature', 'care', 'city'] as const).map((m) => <div class="overflow-hidden rounded-2xl"><Photo art={{ seed: `sg-${m}`, motif: m }} alt={m} ratio="1 / 1" /></div>)}
+    </div>
+
+    <h2 class="t-h3 mt-16">Силует Львова</h2>
+    <div class="mt-6 overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-lions-deep)]">
+      <div class="relative h-56">
+        <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[#0b3b94]" />
+        <Skyline layer="near" class="absolute inset-x-0 bottom-0 h-[45%] w-full text-[#000f2e]" />
+      </div>
+    </div>
+  </section>
+</Base>

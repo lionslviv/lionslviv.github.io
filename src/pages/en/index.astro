@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import Skyline from '../../components/Skyline.astro';
+import { club } from '../../data/site';
+import { u } from '../../lib/url';
+---
+<Base title="In English" description="Lions Club Lviv Leopolis: a Lions International club in Lviv, Ukraine.">
+  <section class="hero">
+    <div class="wrap relative z-[2] pb-8 pt-[clamp(3rem,7vw,6rem)]">
+      <p class="text-[17px] font-[560] text-white/75">Lions Clubs International in Lviv, Ukraine</p>
+      <h1 class="t-h1 mt-3 max-w-[18ch]">Serving the city of the lion.</h1>
+      <p class="mt-5 max-w-[50ch] text-[clamp(1.1rem,1.8vw,1.3rem)] leading-[1.5] text-white/75">
+        Leopolis is the Latin name of Lviv. We are the city’s second Lions club, {club.district}. We run vision screenings for children, deliver generators to communities hit by power outages and mentor young leaders.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={`mailto:${club.email}`} class="btn btn-gold">Partner with us</a>
+        <a href={u('/')} class="btn btn-ghost text-white">Українською</a>
+      </div>
+    </div>
+    <div class="relative h-[clamp(7rem,16vw,13rem)]">
+      <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[#0b3b94]" />
+      <Skyline layer="near" class="absolute inset-x-0 -bottom-px h-[40%] w-full" fill="var(--bg)" />
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap max-w-[760px]">
+      <p class="t-small">The full English version is planned for stage 3. Lions from other countries can reach us at <a class="link" href={`mailto:${club.email}`}>{club.email}</a>.</p>
+    </div>
+  </section>
+</Base>

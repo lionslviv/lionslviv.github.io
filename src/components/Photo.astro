@@ -1,0 +1,72 @@
+---
+// Плейсхолдер фотографії: детермінована дуотонна композиція в кольорах бренду.
+// Замінюється справжнім <img> з Supabase Storage, коли є фото.
+import type { Art } from '../data/content';
+interface Props { art: Art; alt: string; class?: string; ratio?: string; src?: string }
+const { art, alt, class: cls = '', ratio = '4 / 3', src } = Astro.props;
+
+function hash(s: string) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+const h = hash(art.seed);
+const rnd = (i: number) => ((Math.imul(h ^ (i * 2654435761), 1597334677) >>> 0) % 1000) / 1000;
+
+const palettes = [
+  ['#001a4d', '#00338d', '#407cca'],
+  ['#00338d', '#407cca', '#9fc0ec'],
+  ['#000f2e', '#00338d', '#ebb700'],
+  ['#0a2a66', '#2f5fae', '#d7e3f5'],
+];
+const [c1, c2, c3] = palettes[h % palettes.length];
+const id = `g${h.toString(36)}`;
+const motif = art.motif ?? 'event';
+
+// Композиції: силуети людей, дерева, вікна, серце/хрест допомоги, світло подій
+const people = Array.from({ length: 5 }, (_, i) => {
+  const x = 60 + i * 70 + rnd(i) * 30, s = 0.8 + rnd(i + 9) * 0.5;
+  return { x, s };
+});
+const trees = Array.from({ length: 7 }, (_, i) => ({ x: 20 + i * 60 + rnd(i) * 20, h: 90 + rnd(i + 3) * 90 }));
+const lights = Array.from({ length: 14 }, (_, i) => ({ x: rnd(i) * 400, y: rnd(i + 20) * 170, r: 6 + rnd(i + 40) * 26, o: 0.12 + rnd(i + 60) * 0.35 }));
+---
+<div class={`ph ${cls}`} style={`aspect-ratio:${ratio}`}>
+  {src ? <img src={src} alt={alt} loading="lazy" decoding="async" class="h-full w-full object-cover" /> : (
+  <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${alt} (плейсхолдер фото)`}>
+    <defs>
+      <linearGradient id={id} x1="0" y1="0" x2={rnd(1) > 0.5 ? 1 : 0.3} y2="1">
+        <stop offset="0" stop-color={c2} />
+        <stop offset="1" stop-color={c1} />
+      </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill={`url(#${id})`} />
+    {lights.map((l) => <circle cx={l.x} cy={l.y} r={l.r} fill={c3} opacity={l.o} />)}
+    {motif === 'people' && people.map((p) => (
+      <g transform={`translate(${p.x} ${300}) scale(${p.s})`} fill={c1} opacity="0.92">
+        <circle cx="0" cy="-118" r="17" />
+        <path d="M-30 0V-62C-30 -84 -16 -96 0 -96C16 -96 30 -84 30 -62V0Z" />
+      </g>
+    ))}
+    {motif === 'nature' && trees.map((t) => (
+      <g fill={c1} opacity="0.9">
+        <rect x={t.x + 18} y={300 - t.h * 0.45} width="6" height={t.h * 0.45} />
+        <ellipse cx={t.x + 21} cy={300 - t.h * 0.6} rx={22 + t.h * 0.08} ry={t.h * 0.32} />
+      </g>
+    ))}
+    {motif === 'care' && (
+      <g fill={c1} opacity="0.9">
+        <rect x="70" y="170" width="260" height="130" rx="10" />
+        <rect x="110" y="200" width="60" height="40" rx="4" fill={c3} opacity="0.85" />
+        <rect x="230" y="200" width="60" height="40" rx="4" fill={c3} opacity="0.55" />
+        <path d="M200 70l12 26h-8l14 30-30-38h9z" fill="#ebb700" opacity="0.95" />
+      </g>
+    )}
+    {motif === 'event' && (
+      <g fill={c1} opacity="0.9">
+        <path d="M0 300V230Q200 185 400 230V300Z" />
+        {people.map((p) => <circle cx={p.x * 0.95 + 10} cy={212 - rnd(Math.round(p.x)) * 12} r={13 * p.s} />)}
+      </g>
+    )}
+    {motif === 'city' && (
+      <path fill={c1} opacity="0.92" d="M0 300V220H40V190H70V230H110V160H130V120H140V160H160V210H210V180L235 150L260 180V215H300V170H340V230H400V300Z" />
+    )}
+  </svg>
+  )}
+</div>

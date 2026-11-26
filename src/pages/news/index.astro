@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Photo from '../../components/Photo.astro';
+import { news } from '../../data/content';
+import { dateLong } from '../../lib/format';
+import { u } from '../../lib/url';
+const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
+---
+<Base title="Новини" description="Новини Lions Club Lviv Leopolis: звіти про проєкти, анонси подій, історії людей.">
+  <PageHead title="Новини" lead="Звіти про проєкти, анонси подій та історії людей, поруч з якими ми працюємо.">
+    <a href={u('/news.xml')} class="link mt-6 inline-block text-[15px]">Підписатися через RSS</a>
+  </PageHead>
+  <section class="wrap pb-24">
+    <!-- Пости, опубліковані в демо-адмінці, з’являються тут (localStorage) -->
+    <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2" data-local-posts hidden></ul>
+    <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2">
+      {list.map((n, i) => (
+        <li class={i === 0 ? 'md:col-span-2' : ''}>
+          <a href={u(`/news/${n.slug}`)} class={`group grid gap-6 ${i === 0 ? 'md:grid-cols-[1.4fr_1fr] md:items-center md:gap-12' : ''}`}>
+            <div class="overflow-hidden rounded-[var(--radius-card)]" transition:name={`cover-${n.slug}`}>
+              <Photo art={n.cover} alt={n.title} ratio={i === 0 ? '16 / 10' : '3 / 2'} class="transition-transform duration-700 group-hover:scale-[1.03]" />
+            </div>
+            <div class="space-y-3">
+              <time class="t-small" datetime={n.date}>{dateLong(n.date)}</time>
+              <h2 class={`${i === 0 ? 't-h2' : 't-h3'} group-hover:text-[var(--accent)]`} transition:name={`title-${n.slug}`}>{n.title}</h2>
+              <p class="text-soft">{n.excerpt}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<script>
+  import { posts, esc, fmtDate } from '../../scripts/store';
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  document.addEventListener('astro:page-load', () => {
+    const ul = document.querySelector<HTMLElement>('[data-local-posts]');
+    if (!ul) return;
+    const list = posts().filter((p) => p.status === 'published' && p.type === 'news');
+    ul.hidden = list.length === 0;
+    ul.classList.toggle('mb-14', list.length > 0);
+    ul.innerHTML = list.map((p) => `
+      <li><a href="${base}/news/post/?id=${p.id}" class="group block space-y-3 rounded-[22px] bg-[var(--bg-alt)] p-8">
+        <span class="badge badge-gold">щойно з адмінки</span>
+        <p class="t-small">${fmtDate(p.at)}</p>
+        <h2 class="t-h3 group-hover:text-[var(--accent)]">${esc(p.title)}</h2>
+        <p class="text-soft">${esc(p.excerpt)}</p>
+      </a></li>`).join('');
+  });
+</script>

@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { club } from '../data/site';
+import { u } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+  bare?: boolean;
+}
+const { title, description = 'Lions Club Lviv Leopolis: клуб Lions International у Львові. Перевірки зору для дітей, генератори для громад, молодіжні програми.', noindex = false, jsonLd, bare = false } = Astro.props;
+const fullTitle = title ? `${title} | ${club.name}` : `${club.name}: Lions у місті лева`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: club.name,
+  url: Astro.site?.toString(),
+  email: club.email,
+  areaServed: 'Львів, Україна',
+  memberOf: { '@type': 'Organization', name: 'Lions Clubs International' },
+};
+---
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="uk" href={canonical} />
+    <link rel="alternate" hreflang="en" href={new URL(u('/en'), Astro.site)} />
+    <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Новини клубу" href={u('/news.xml')} />
+    <meta name="theme-color" content="#001a4d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(u('/og.png'), Astro.site)} />
+    <meta property="og:locale" content="uk_UA" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? org)} />
+    <ClientRouter />
+  </head>
+  <body class="min-h-dvh">
+    {!bare && <Header />}
+    <main id="main">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+    <script>
+      import { seed } from '../scripts/store';
+      document.addEventListener('astro:page-load', () => seed());
+    </script>
+  </body>
+</html>

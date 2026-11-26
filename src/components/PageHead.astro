@@ -1,0 +1,14 @@
+---
+import { u } from '../lib/url';
+interface Props { title: string; lead?: string; back?: { href: string; label: string }; tone?: 'plain' | 'blue' }
+const { title, lead, back, tone = 'plain' } = Astro.props;
+const blue = tone === 'blue';
+---
+<header class={blue ? 'bg-[var(--color-lions-deep)] text-white' : ''}>
+  <div class="wrap pb-10 pt-[clamp(3rem,7vw,6rem)] md:pb-14">
+    {back && <a href={u(back.href)} class={`mb-6 inline-block text-[15px] font-[560] ${blue ? 'text-white/70 hover:text-white' : 'link'}`}>{back.label}</a>}
+    <h1 class="t-h1 max-w-[18ch]">{title}</h1>
+    {lead && <p class={`mt-5 max-w-[48ch] t-lead ${blue ? '!text-white/75' : ''}`}>{lead}</p>}
+    <slot />
+  </div>
+</header>

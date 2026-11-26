@@ -1,0 +1,65 @@
+---
+// Узагальнений силует середмістя Львова: Ратуша, шпиль Латинського собору,
+// купол Домініканського собору, Опера, двовежжя Ольги і Єлизавети.
+// Стилізація, не точний креслярський силует.
+interface Props { layer: 'far' | 'near'; class?: string; fill?: string }
+const { layer, class: cls = '', fill } = Astro.props;
+
+const W = 1440, B = 260;
+type S = [x: number, w: number, h: number, roof: 'flat' | 'gable' | 'dome' | 'spire' | 'step'];
+
+const rect = (x: number, w: number, h: number) => `M${x} ${B}V${B - h}H${x + w}V${B}Z`;
+const gable = (x: number, w: number, h: number) => `M${x} ${B}V${B - h}L${x + w / 2} ${B - h - w * 0.42}L${x + w} ${B - h}V${B}Z`;
+const step = (x: number, w: number, h: number) =>
+  `M${x} ${B}V${B - h}H${x + w * 0.2}V${B - h - 10}H${x + w * 0.4}V${B - h - 18}H${x + w * 0.6}V${B - h - 10}H${x + w * 0.8}V${B - h}H${x + w}V${B}Z`;
+const spire = (x: number, w: number, h: number) =>
+  `${rect(x, w, h)}M${x - 2} ${B - h}L${x + w / 2} ${B - h - w * 2.6}L${x + w + 2} ${B - h}Z`;
+const dome = (x: number, w: number, h: number) => {
+  const r = w / 2;
+  return `M${x} ${B}V${B - h}A${r} ${r * 0.95} 0 0 1 ${x + w} ${B - h}V${B}Z` +
+    rect(x + r - 6, 12, h + r * 0.95 + 14) + `M${x + r - 4} ${B - h - r - 14}L${x + r} ${B - h - r - 34}L${x + r + 4} ${B - h - r - 14}Z`;
+};
+
+const shape = ([x, w, h, roof]: S) =>
+  roof === 'gable' ? gable(x, w, h) : roof === 'dome' ? dome(x, w, h) : roof === 'spire' ? spire(x, w, h) : roof === 'step' ? step(x, w, h) : rect(x, w, h);
+
+// Ратуша: вежа з ярусами, ліхтарем і шпилем
+const ratusha = (cx: number) => {
+  const shaft = rect(cx - 26, 52, 170);
+  const tier1 = rect(cx - 21, 42, 196);
+  const tier2 = rect(cx - 15, 30, 214);
+  const lantern = `M${cx - 15} ${B - 214}C${cx - 15} ${B - 236} ${cx + 15} ${B - 236} ${cx + 15} ${B - 214}Z`;
+  const needle = `M${cx - 3} ${B - 232}L${cx} ${B - 258}L${cx + 3} ${B - 232}Z`;
+  const hall = rect(cx - 110, 220, 92);
+  return hall + shaft + tier1 + tier2 + lantern + needle;
+};
+
+// Двовежжя церкви святих Ольги і Єлизавети
+const twin = (x: number) =>
+  rect(x, 120, 110) + gable(x + 30, 60, 112) +
+  rect(x - 6, 30, 170) + `M${x - 8} ${B - 170}L${x + 9} ${B - 248}L${x + 26} ${B - 170}Z` +
+  rect(x + 96, 30, 158) + `M${x + 94} ${B - 158}L${x + 111} ${B - 224}L${x + 128} ${B - 158}Z`;
+
+// Оперний театр
+const opera = (x: number) =>
+  rect(x, 200, 78) + rect(x + 40, 120, 96) + `M${x + 60} ${B - 96}A40 30 0 0 1 ${x + 140} ${B - 96}Z` + rect(x + 96, 8, 140) + rect(x + 6, 14, 104) + rect(x + 180, 14, 104);
+
+const far: S[] = [
+  [0, 70, 70, 'gable'], [64, 52, 96, 'flat'], [112, 60, 84, 'gable'], [170, 44, 120, 'step'], [210, 80, 92, 'flat'],
+  [286, 54, 110, 'gable'], [470, 60, 118, 'gable'], [528, 46, 96, 'flat'], [600, 40, 140, 'spire'], [640, 50, 88, 'flat'],
+  [930, 60, 112, 'gable'], [988, 70, 90, 'flat'], [1056, 48, 128, 'step'], [1300, 60, 98, 'gable'], [1358, 82, 120, 'flat'],
+];
+
+const near: S[] = [
+  [0, 90, 44, 'gable'], [86, 70, 56, 'flat'], [150, 56, 40, 'gable'], [206, 80, 30, 'flat'], [280, 60, 36, 'gable'],
+  [340, 160, 22, 'flat'], [500, 70, 34, 'gable'], [566, 30, 48, 'spire'], [598, 62, 30, 'flat'], [660, 180, 20, 'flat'],
+  [840, 96, 40, 'dome'], [934, 64, 34, 'gable'], [996, 80, 40, 'flat'], [1140, 96, 26, 'flat'], [1320, 120, 50, 'gable'],
+];
+
+const d = layer === 'far'
+  ? far.map(shape).join('') + opera(940) + twin(170) + ratusha(560)
+  : near.map(shape).join('') + rect(1070, 70, 40) + rect(1236, 90, 48);
+---
+<svg class={cls} viewBox={`0 0 ${W} ${B}`} preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+  <path d={d} fill={fill ?? 'currentColor'} />
+</svg>

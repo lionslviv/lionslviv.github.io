@@ -1,0 +1,67 @@
+---
+import Photo from './Photo.astro';
+import PostBody from './PostBody.astro';
+import Comments from './Comments.astro';
+import type { Post } from '../data/content';
+import { causeLabel } from '../data/site';
+import { dateLong } from '../lib/format';
+import { u } from '../lib/url';
+interface Props { post: Post; back: { href: string; label: string }; more: Post[] }
+const { post, back, more } = Astro.props;
+const base = post.type === 'project' ? '/projects' : '/news';
+---
+<article>
+  <header class="wrap-narrow pb-10 pt-[clamp(3rem,7vw,6rem)]">
+    <a href={u(back.href)} class="link text-[15px]">{back.label}</a>
+    <div class="mt-6 flex flex-wrap items-center gap-2">
+      <time class="t-small" datetime={post.date}>{dateLong(post.date)}</time>
+      {post.tags.filter((t) => t !== 'club' && t !== 'event').map((t) => <span class="badge badge-blue">{causeLabel(t)}</span>)}
+      {post.status === 'done' && <span class="badge">завершено</span>}
+    </div>
+    <h1 class="t-h1 mt-4" transition:name={`title-${post.slug}`}>{post.title}</h1>
+    <p class="t-lead mt-5">{post.excerpt}</p>
+  </header>
+  <div class="wrap">
+    <div class="overflow-hidden rounded-[var(--radius-card)]" transition:name={`cover-${post.slug}`}>
+      <Photo art={post.cover} alt={post.title} ratio="21 / 9" />
+    </div>
+  </div>
+  {post.stats && (
+    <div class="wrap-narrow mt-12">
+      <dl class="grid grid-cols-2 gap-6 sm:grid-cols-3">
+        {post.stats.map((s) => (
+          <div class="border-t-2 border-[var(--color-gold)] pt-4">
+            <dd class="t-num text-[42px] font-[760] leading-none tracking-[-0.035em]" style="font-stretch:116%">{s.value}</dd>
+            <dt class="t-small mt-2">{s.label}</dt>
+          </div>
+        ))}
+      </dl>
+    </div>
+  )}
+  <div class="wrap-narrow py-12">
+    <PostBody body={post.body} />
+    {post.type === 'project' && (
+      <div class="panel mt-12 flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-[19px] font-[620]">Хочете допомогти цьому проєкту?</p>
+        <a href={u('/support')} class="btn btn-gold">Підтримати проєкт</a>
+      </div>
+    )}
+  </div>
+</article>
+<Comments target={post.slug} />
+{more.length > 0 && (
+  <aside class="bg-alt section-tight">
+    <div class="wrap">
+      <h2 class="t-h3 mb-8">{post.type === 'project' ? 'Інші проєкти' : 'Ще новини'}</h2>
+      <div class="grid gap-8 md:grid-cols-3">
+        {more.map((m) => (
+          <a href={u(`${base}/${m.slug}`)} class="group space-y-3">
+            <div class="overflow-hidden rounded-2xl"><Photo art={m.cover} alt={m.title} ratio="3 / 2" /></div>
+            <p class="t-small">{dateLong(m.date)}</p>
+            <h3 class="text-[21px] font-[650] leading-[1.2] tracking-[-0.015em] group-hover:text-[var(--accent)]">{m.title}</h3>
+          </a>
+        ))}
+      </div>
+    </div>
+  </aside>
+)}

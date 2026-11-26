@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import { members } from '../../data/content';
+import { u } from '../../lib/url';
+export function getStaticPaths() {
+  return members.filter((m) => m.board).map((m) => ({ params: { slug: m.slug }, props: { m } }));
+}
+const { m } = Astro.props;
+---
+<Base title={m.role} noindex>
+  <section class="wrap grid gap-12 pb-24 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[minmax(0,380px)_1fr]">
+    <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
+      <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+    </div>
+    <div class="space-y-5">
+      <a href={u('/members')} class="link text-[15px]">Усі учасники</a>
+      <h1 class="t-h1">{m.name}</h1>
+      <p class="flex flex-wrap gap-2"><span class="badge badge-blue">{m.role}</span><span class="badge">у клубі з {m.since}</span></p>
+      {m.quote && <blockquote class="max-w-[36ch] border-l-[3px] border-[var(--color-gold)] pl-5 text-[24px] font-[560] leading-[1.35]">{m.quote}</blockquote>}
+      <p class="max-w-[52ch] text-soft">Тут буде коротке біо до 300 символів, сфера діяльності та посилання на LinkedIn. Член клубу редагує профіль у кабінеті і сам вирішує, чи показувати його публічно.</p>
+      <p class="panel max-w-[52ch] p-5 text-[15px]">Телефон і email видно лише членам клубу після входу.</p>
+    </div>
+  </section>
+</Base>

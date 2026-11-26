@@ -1,0 +1,11 @@
+---
+interface Props { body: string[] }
+const { body } = Astro.props;
+---
+<div class="prose-lions">
+  {body.map((b) =>
+    b.startsWith('## ') ? <h2>{b.slice(3)}</h2>
+    : b.startsWith('> ') ? <blockquote>{b.slice(2)}</blockquote>
+    : <p>{b}</p>
+  )}
+</div>

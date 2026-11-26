@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostArticle from '../../components/PostArticle.astro';
+import { projects } from '../../data/content';
+export function getStaticPaths() {
+  return projects.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+const { post } = Astro.props;
+const more = projects.filter((n) => n.slug !== post.slug).slice(0, 3);
+---
+<Base title={post.title} description={post.excerpt}>
+  <PostArticle post={post} back={{ href: '/projects', label: 'Усі проєкти' }} more={more} />
+</Base>

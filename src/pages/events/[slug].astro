@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import { events, albums } from '../../data/content';
+import { u } from '../../lib/url';
+import { dateLong, weekday, time } from '../../lib/format';
+import { googleCalendarUrl, icsCalendar } from '../../lib/ics';
+
+export function getStaticPaths() {
+  return events.map((e) => ({ params: { slug: e.slug }, props: { e } }));
+}
+const { e } = Astro.props;
+const ev = { uid: e.slug, title: e.title, start: e.start, end: e.end, location: e.location, description: e.description };
+const ics = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsCalendar([ev]))}`;
+const album = albums.find((a) => a.eventSlug === e.slug);
+const isPast = new Date(e.start) < new Date('2026-11-26T12:00:00+02:00');
+const ld = { '@context': 'https://schema.org', '@type': 'Event', name: e.title, startDate: e.start, endDate: e.end, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', location: { '@type': 'Place', name: e.location, address: 'Львів, Україна' }, organizer: { '@type': 'NGO', name: 'Lions Club Lviv Leopolis' }, description: e.description };
+---
+<Base title={e.title} description={e.description} jsonLd={ld}>
+  <section class="bg-[var(--color-lions-deep)] text-white">
+    <div class="wrap grid gap-10 pb-16 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[1.5fr_1fr] md:items-end">
+      <div>
+        <a href={u('/events')} class="text-[15px] font-[560] text-white/70 hover:text-white">Усі події</a>
+        {e.visibility === 'members' && <p class="mt-6"><span class="badge">для членів клубу</span></p>}
+        <h1 class="t-h1 mt-5">{e.title}</h1>
+        <p class="mt-5 max-w-[46ch] text-[19px] text-white/75">{e.description}</p>
+      </div>
+      <dl class="grid gap-5 text-[17px]">
+        <div><dt class="text-white/60">Коли</dt><dd class="text-[21px] font-[620] first-letter:uppercase">{weekday(e.start)}, {dateLong(e.start)}</dd><dd>{time(e.start)} до {time(e.end)}</dd></div>
+        <div><dt class="text-white/60">Де</dt><dd class="text-[21px] font-[620]">{e.location}</dd></div>
+      </dl>
+    </div>
+  </section>
+  <section class="wrap flex flex-wrap gap-3 py-10">
+    {!isPast && <a href={googleCalendarUrl(ev)} target="_blank" rel="noopener" class="btn btn-blue">Додати в Google Calendar</a>}
+    {!isPast && <a href={ics} download={`${e.slug}.ics`} class="btn btn-quiet">Завантажити .ics (Apple, Outlook)</a>}
+    {e.visibility === 'members' && !isPast && <button class="btn btn-gold" data-rsvp={e.slug}>Я буду</button>}
+    {album && <a href={u(`/gallery/${album.slug}`)} class="btn btn-quiet">Фото з події</a>}
+  </section>
+  <section class="wrap-narrow pb-24">
+    <p class="t-small" data-rsvp-note></p>
+  </section>
+</Base>
+<script>
+  import { getUser, can } from '../../scripts/store';
+  document.addEventListener('astro:page-load', () => {
+    const btn = document.querySelector<HTMLButtonElement>('[data-rsvp]');
+    if (!btn) return;
+    const key = `llp.rsvp.${btn.dataset.rsvp}`;
+    const note = document.querySelector<HTMLElement>('[data-rsvp-note]')!;
+    const paint = () => { const on = localStorage.getItem(key) === 'yes'; btn.textContent = on ? 'Ви записані. Скасувати' : 'Я буду'; };
+    paint();
+    btn.onclick = () => {
+      if (!can.memberArea(getUser())) { note.textContent = 'RSVP доступний членам клубу. Увійдіть як член клубу (демо).'; return; }
+      localStorage.setItem(key, localStorage.getItem(key) === 'yes' ? 'no' : 'yes'); paint();
+      note.textContent = 'Відповідь збережено. За 24 години до зборів прийде нагадування на email (у продакшні).';
+    };
+  });
+</script>

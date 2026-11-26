@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Skyline from '../components/Skyline.astro';
+import { u } from '../lib/url';
+---
+<Base title="Сторінку не знайдено" noindex>
+  <section class="hero">
+    <div class="wrap relative z-[2] pb-6 pt-[clamp(4rem,10vw,8rem)]">
+      <p class="t-display text-white/90">404</p>
+      <h1 class="t-h2 mt-6 max-w-[20ch]">Такої вулиці у Львові немає.</h1>
+      <p class="mt-4 max-w-[44ch] text-[19px] text-white/75">Можливо, сторінку перенесли. Почніть з головної або загляньте в новини.</p>
+      <div class="mt-8 flex flex-wrap gap-3"><a href={u('/')} class="btn btn-gold">На головну</a><a href={u('/news')} class="btn btn-ghost text-white">Новини</a></div>
+    </div>
+    <div class="relative h-[clamp(7rem,16vw,13rem)]">
+      <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[#0b3b94]" />
+      <Skyline layer="near" class="absolute inset-x-0 -bottom-px h-[40%] w-full" fill="var(--bg)" />
+    </div>
+  </section>
+</Base>
