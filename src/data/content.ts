@@ -259,11 +259,24 @@ export const albums: Album[] = [
   { slug: 'aleia-pamiati', title: 'Алея пам’яті на Сихові', date: '2026-04-12', photos: shots('trees', 10, 'nature') },
 ];
 
-export type Member = { slug: string; name: string; role: string; since: number; field?: string; bio?: string; quote?: string; board: boolean };
+export type Member = { slug: string; name: string; role: string; since: number; field?: string; bio?: string; quote?: string; board: boolean; real?: boolean; bioEn?: string; roleEn?: string };
 
 // Профілі заповнюють самі члени клубу після згоди на публікацію.
 export const members: Member[] = [
-  { slug: 'president', name: 'Президент клубу', role: 'Президент', since: 2026, field: 'Профіль заповнюється', quote: 'Цитата "Чому я в Lions" з’явиться після погодження.', board: true },
+  // Реальний профіль: дані з відкритого професійного профілю у Facebook (26.11.2026).
+  // Остаточний текст і фото погоджує сам керівник клубу.
+  {
+    slug: 'lars-vestbjerg',
+    name: 'Lars Vestbjerg',
+    role: 'Керівник клубу',
+    roleEn: 'Club leader',
+    since: 2026,
+    field: 'Danish Business Association, Vestbjerg Invest ApS',
+    bio: 'Данський підприємець, який живе у Львові. Засновник і CEO Vestbjerg Invest ApS, працює в Danish Business Association. Очолював правління European Business Association в Україні (2004-2007, 2009). Має багаторічний досвід громадського служіння у Львові, зокрема як президент-засновник Lviv International Rotary Club.',
+    bioEn: 'Danish entrepreneur based in Lviv. Founder and CEO of Vestbjerg Invest ApS, works with the Danish Business Association. Former Chairman of the Board of the European Business Association in Ukraine (2004-2007, 2009) and charter president of Lviv International Rotary Club.',
+    board: true,
+    real: true,
+  },
   { slug: 'vice-president', name: 'Віцепрезидент клубу', role: 'Віцепрезидент', since: 2026, field: 'Профіль заповнюється', board: true },
   { slug: 'secretary', name: 'Секретар клубу', role: 'Секретар', since: 2026, field: 'Профіль заповнюється', board: true },
   { slug: 'treasurer', name: 'Скарбник клубу', role: 'Скарбник', since: 2026, field: 'Профіль заповнюється', board: true },

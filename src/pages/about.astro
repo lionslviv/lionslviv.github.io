@@ -79,7 +79,7 @@ const board = members.filter((m) => m.board);
         {board.map((m) => (
           <li class="flex items-baseline justify-between gap-4 py-4">
             <span class="text-[19px] font-[620]">{m.role}</span>
-            <span class="text-soft">ім’я після погодження</span>
+            {m.real ? <a class="link text-[17px]" href={u(`/members/${m.slug}`)}>{m.name}</a> : <span class="text-soft">ім’я після погодження</span>}
           </li>
         ))}
       </ul>

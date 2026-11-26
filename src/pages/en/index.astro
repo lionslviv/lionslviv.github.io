@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import Skyline from '../../components/Skyline.astro';
 import { club } from '../../data/site';
+import { members } from '../../data/content';
+const leader = members.find((m) => m.real && m.board);
 import { u } from '../../lib/url';
 ---
 <Base title="In English" description="Lviv International Lions Club: a Lions International club in Lviv, Ukraine.">
@@ -24,6 +26,7 @@ import { u } from '../../lib/url';
   </section>
   <section class="section-tight">
     <div class="wrap max-w-[760px]">
+      {leader && <p class="mb-10 max-w-[60ch] text-[19px] leading-[1.6]"><strong>{leader.name}</strong>, {leader.roleEn?.toLowerCase()}. {leader.bioEn}</p>}
       <dl class="grid gap-6 text-[19px] sm:grid-cols-3">
         <div><dt class="t-small">Email</dt><dd><a class="link" href={`mailto:${club.email}`}>{club.email}</a></dd></div>
         <div><dt class="t-small">Phone</dt><dd><a class="link" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phone}</a></dd></div>

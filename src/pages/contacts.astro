@@ -3,11 +3,15 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import RequestForm from '../components/RequestForm.astro';
 import { club } from '../data/site';
+import { members } from '../data/content';
+import { u } from '../lib/url';
+const leader = members.find((m) => m.real && m.board);
 ---
 <Base title="Контакти" description="Контакти Lviv International Lions Club.">
   <PageHead title="Контакти" lead="Пишіть або телефонуйте щодо участі в зустрічах, партнерства і спільних проєктів. Можна англійською." />
   <section class="wrap grid gap-14 pb-24 md:grid-cols-[1fr_1.3fr]">
     <dl class="grid content-start gap-7 text-[19px]">
+      {leader && <div><dt class="t-small">Контактна особа</dt><dd><a class="link" href={u(`/members/${leader.slug}`)}>{leader.name}</a>, {leader.role.toLowerCase()}</dd></div>}
       <div><dt class="t-small">Email</dt><dd><a class="link" href={`mailto:${club.email}`}>{club.email}</a></dd></div>
       <div><dt class="t-small">Телефон</dt><dd><a class="link" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phoneDisplay}</a></dd></div>
       <div><dt class="t-small">Зустрічі клубу</dt><dd>{club.meetingRule}</dd><dd class="text-soft">{club.meetingPlace}</dd></div>

@@ -17,8 +17,18 @@ const others = members.filter((m) => !m.board);
             <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)] transition-colors group-hover:bg-[var(--line)]">
               <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
             </div>
-            <p class="mt-4 text-[19px] font-[650] leading-tight group-hover:text-[var(--accent)]">{m.role}</p>
-            <p class="t-small mt-1">{m.field}</p>
+            {m.real ? (
+              <>
+                <p class="mt-4 text-[19px] font-[650] leading-tight group-hover:text-[var(--accent)]">{m.name}</p>
+                <p class="mt-1 text-[15px] font-[600] text-accent">{m.role}</p>
+                <p class="t-small mt-1">{m.field}</p>
+              </>
+            ) : (
+              <>
+                <p class="mt-4 text-[19px] font-[650] leading-tight group-hover:text-[var(--accent)]">{m.role}</p>
+                <p class="t-small mt-1">{m.field}</p>
+              </>
+            )}
           </a>
         </li>
       ))}
