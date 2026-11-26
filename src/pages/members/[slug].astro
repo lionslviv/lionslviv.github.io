@@ -9,9 +9,15 @@ const { m } = Astro.props;
 ---
 <Base title={m.real ? `${m.name}, ${m.role}` : m.role} noindex={!m.real}>
   <section class="wrap grid gap-12 pb-24 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[minmax(0,380px)_1fr]">
-    <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
-      <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
-    </div>
+    {m.photo ? (
+      <div class="aspect-square self-start overflow-hidden rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
+        <img src={u(m.photo)} alt={m.name} width="800" height="800" decoding="async" class="h-full w-full object-cover" />
+      </div>
+    ) : (
+      <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
+        <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+      </div>
+    )}
     <div class="space-y-5">
       <a href={u('/members')} class="link text-[15px]">Усі учасники</a>
       <h1 class="t-h1">{m.name}</h1>
@@ -20,7 +26,7 @@ const { m } = Astro.props;
       {m.field && m.real && <p class="text-[19px] font-[560]">{m.field}</p>}
       {m.bio ? <p class="max-w-[58ch] text-[19px] leading-[1.6]">{m.bio}</p> : <p class="max-w-[52ch] text-soft">Тут буде коротке біо до 300 символів, сфера діяльності та посилання на LinkedIn. Член клубу редагує профіль у кабінеті і сам вирішує, чи показувати його публічно.</p>}
       {m.bioEn && <p class="max-w-[58ch] text-soft" lang="en">{m.bioEn}</p>}
-      {m.real && <p class="t-small">Профіль підготовлено за відкритими професійними даними. Фото і остаточний текст додамо після погодження.</p>}
+      {m.real && <p class="t-small">Профіль підготовлено за відкритими професійними даними, остаточний текст погоджується.</p>}
       <p class="panel max-w-[52ch] p-5 text-[15px]">Телефон і email видно лише членам клубу після входу.</p>
     </div>
   </section>
