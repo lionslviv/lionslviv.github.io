@@ -5,7 +5,7 @@ import Photo from '../components/Photo.astro';
 import SectionHead from '../components/SectionHead.astro';
 import BrandAsset from '../components/BrandAsset.astro';
 import { causeIcon } from '../data/brand-assets';
-import { impact, causes, causeLabel, DEMO } from '../data/site';
+import { impact, causes, causeLabel, DEMO, club } from '../data/site';
 import { projects, news, events, albums } from '../data/content';
 import { u } from '../lib/url';
 import { dateShort, dayNum, monthShort, weekday, time } from '../lib/format';
@@ -17,9 +17,11 @@ const next = upcoming[0];
 const [featured, ...restProjects] = projects.filter((p) => p.status === 'active');
 const latest = [...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
 const [lead, ...side] = latest;
+// Розмір великого слова в hero залежить від його довжини (для 8 літер 17.5vw, для коротших більше)
+const heroSize = `clamp(4.2rem, ${Math.min(22, 17.5 * 8 / club.heroWord.length).toFixed(1)}vw, ${Math.min(20, 17 * 8 / club.heroWord.length).toFixed(1)}rem)`;
 ---
 <Base>
-  <!-- HERO: слово Leopolis між двома шарами силуету міста -->
+  <!-- HERO: велике слово (club.heroWord) між двома шарами силуету міста -->
   <section class="hero flex flex-col md:min-h-[calc(100svh-97px)]">
     <div class="wrap relative z-[3] grid gap-10 pt-[clamp(2.5rem,6vw,4.5rem)] lg:grid-cols-[1fr_auto]">
       <div>
@@ -47,7 +49,7 @@ const [lead, ...side] = latest;
 
     <div class="relative mt-auto h-[clamp(13rem,30vw,27rem)] pt-8">
       <Skyline layer="far" class="hero-skyline-far absolute inset-x-0 bottom-0 z-[1] h-[78%] w-full text-[var(--color-lions)]" />
-      <p class="hero-word pointer-events-none absolute inset-x-0 bottom-[6%] z-[2] select-none text-center" aria-hidden="true">Leopolis</p>
+      <p class="hero-word pointer-events-none absolute inset-x-0 bottom-[6%] z-[2] select-none text-center" style={`font-size:${heroSize}`} aria-hidden="true">{club.heroWord}</p>
       <Skyline layer="near" class="hero-skyline-near absolute inset-x-0 -bottom-px z-[3] h-[26%] w-full" fill="var(--bg)" />
     </div>
   </section>

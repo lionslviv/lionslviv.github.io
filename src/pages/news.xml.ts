@@ -10,7 +10,7 @@ export const GET: APIRoute = ({ site }) => {
     <item><title>${esc(n.title)}</title><link>${link(`/news/${n.slug}`)}</link><guid>${link(`/news/${n.slug}`)}</guid>
     <pubDate>${new Date(n.date).toUTCString()}</pubDate><description>${esc(n.excerpt)}</description></item>`).join('');
   const xml = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
-    <title>Lions Club Leopolis: новини</title><link>${link('/')}</link><language>uk</language>
+    <title>Lviv International Lions Club: новини</title><link>${link('/')}</link><language>uk</language>
     <description>Новини клубу Lions International у Львові</description>${items}</channel></rss>`;
   return new Response(xml, { headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' } });
 };

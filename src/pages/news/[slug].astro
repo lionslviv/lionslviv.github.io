@@ -7,7 +7,7 @@ export function getStaticPaths() {
 }
 const { post } = Astro.props;
 const more = news.filter((n) => n.slug !== post.slug).slice(0, 3);
-const ld = { '@context': 'https://schema.org', '@type': 'NewsArticle', headline: post.title, datePublished: post.date, description: post.excerpt, publisher: { '@type': 'NGO', name: 'Lions Club Leopolis' } };
+const ld = { '@context': 'https://schema.org', '@type': 'NewsArticle', headline: post.title, datePublished: post.date, description: post.excerpt, publisher: { '@type': 'NGO', name: 'Lviv International Lions Club' } };
 ---
 <Base title={post.title} description={post.excerpt} jsonLd={ld}>
   <PostArticle post={post} back={{ href: '/news', label: 'Усі новини' }} more={more} />

@@ -67,7 +67,7 @@ PDF-копії: запустіть `bash scripts/fetch-brand-assets.sh`. Фай�
 
 - Перша згадка: Lions Clubs International, далі Lions International.
 - Lions club, Lions clubs: мала літера c. Lions: члени, з великої.
-- Наш клуб: **Lions Club Leopolis**, запис LCI: **Lviv (Leopolis)**.
+- Наш клуб: **Lviv International Lions Club**, запис LCI: **Lviv (Leopolis)**.
 - «International» до назви клубу додавати заборонено (Board Policy Manual, розділ 10, A.5.e).
 - We Serve™ це торговельна марка.
 

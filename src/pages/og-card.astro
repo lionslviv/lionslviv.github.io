@@ -3,6 +3,7 @@
 import Base from '../layouts/Base.astro';
 import Skyline from '../components/Skyline.astro';
 import BrandAsset from '../components/BrandAsset.astro';
+import { club } from '../data/site';
 ---
 <Base title="OG" noindex bare>
   <div class="relative h-[630px] w-[1200px] overflow-hidden bg-[var(--color-lions-deep)] text-white">
@@ -10,12 +11,12 @@ import BrandAsset from '../components/BrandAsset.astro';
       <BrandAsset name="signature-vertical-white" alt="Lions International" height={150} />
       <div>
       <p class="text-[26px] font-[560] text-white/75">Lions Club</p>
-      <p class="text-[44px] font-[760] leading-none tracking-[-0.02em]" style="font-stretch:118%">Leopolis</p>
+      <p class="text-[44px] font-[760] leading-none tracking-[-0.02em]" style="font-stretch:118%">{club.shortName}</p>
       <p class="mt-6 text-[26px] text-white/75">Служимо місту лева</p>
       </div>
     </div>
     <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-[300px] w-full text-[var(--color-lions)]" />
-    <p class="hero-word absolute inset-x-0 bottom-[30px] text-center !text-[250px]" style="animation:none">Leopolis</p>
+    <p class="hero-word absolute inset-x-0 bottom-[30px] text-center " style={`animation:none;font-size:${Math.min(380, 250 * 8 / club.heroWord.length)}px`}>{club.heroWord}</p>
     <Skyline layer="near" class="absolute inset-x-0 bottom-0 h-[90px] w-full" fill="#ebb700" />
   </div>
 </Base>

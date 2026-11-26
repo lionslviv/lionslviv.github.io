@@ -7,12 +7,12 @@ import { members } from '../data/content';
 import { u } from '../lib/url';
 const board = members.filter((m) => m.board);
 ---
-<Base title="Про клуб" description="Lions Club Leopolis: місія, історія назви, зв'язок з Lions International і District 134.">
+<Base title="Про клуб" description="Lviv International Lions Club: місія, історія назви, зв'язок з Lions International і District 134.">
   <section class="hero">
     <div class="wrap relative z-[2] pb-8 pt-[clamp(3rem,7vw,6rem)]">
       <h1 class="t-h1 max-w-[16ch]">Lions у місті лева</h1>
       <p class="mt-5 max-w-[48ch] text-[clamp(1.1rem,1.8vw,1.35rem)] leading-[1.5] text-white/75">
-        Lions Club Leopolis це другий клуб Lions International у Львові і англомовна спільнота. Ми зосереджуємося на охороні здоров’я та гуманітарній допомозі і служимо місту системно: з планом, звітом і результатом.
+        Lviv International Lions Club це другий клуб Lions International у Львові і англомовна спільнота. Ми зосереджуємося на охороні здоров’я та гуманітарній допомозі і служимо місту системно: з планом, звітом і результатом.
       </p>
     </div>
     <div class="relative h-[clamp(7rem,16vw,13rem)]">
@@ -24,9 +24,10 @@ const board = members.filter((m) => m.board);
   <section class="section-tight">
     <div class="wrap grid gap-12 md:grid-cols-2 md:gap-20">
       <div class="space-y-5">
-        <h2 class="t-h2">Чому Leopolis</h2>
-        <p class="text-[19px] leading-[1.6]">Leopolis це латинська назва Львова. Місто назвали на честь князя Лева, а лев став його символом: на гербі, на Ринку, на фасадах.</p>
-        <p class="text-[19px] leading-[1.6]">Коли клуб Lions обирав назву, сумнівів не було. Правила Lions International вимагають, щоб другий клуб у місті мав власне ім’я після назви міста. Тому в реєстрі Lions International клуб записується як <strong>{club.lciRecord}</strong>, а публічна назва: <strong>{club.name}</strong>.</p>
+        <h2 class="t-h2">Про назву</h2>
+        <p class="text-[19px] leading-[1.6]"><strong>{club.name}</strong>: International, бо ми англомовна спільнота, відкрита для людей з різних країн, які живуть або працюють у Львові.</p>
+        <p class="text-[19px] leading-[1.6]">Львів давно називають містом лева: латинською Leopolis, місто князя Лева, з левами на гербі, на Ринку і на фасадах. Для клубу Lions це особливе місто.</p>
+        <p class="text-soft">Офіційний запис клубу в реєстрі Lions International: {club.lciRecord}.</p>
       </div>
       <div class="space-y-5">
         <BrandAsset name="signature" alt="Lions International" height={52} />

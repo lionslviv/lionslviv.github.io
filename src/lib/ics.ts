@@ -27,11 +27,11 @@ export function icsEvent(e: IcsEvent): string {
   ].filter(Boolean).join('\r\n');
 }
 
-export function icsCalendar(events: IcsEvent[], name = 'Lions Club Leopolis'): string {
+export function icsCalendar(events: IcsEvent[], name = 'Lviv International Lions Club'): string {
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Lions Club Leopolis//UK',
+    'PRODID:-//Lviv International Lions Club//UK',
     'CALSCALE:GREGORIAN',
     `X-WR-CALNAME:${esc(name)}`,
     'X-WR-TIMEZONE:Europe/Kyiv',

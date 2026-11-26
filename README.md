@@ -1,6 +1,6 @@
-# Lions Club Leopolis: сайт клубу
+# Lviv International Lions Club: сайт клубу
 
-Сайт другого клубу Lions International у Львові. Офіційний запис у реєстрі LCI: **Lviv (Leopolis)**.
+Сайт другого клубу Lions International у Львові, англомовної спільноти. Робоча назва для демонстрації: **Lviv International Lions Club** (змінюється в `src/data/site.ts`: `name`, `shortName`, `heroWord`). Офіційний запис у реєстрі LCI погоджується з District 134.
 Цільовий домен: `leopolislions.org.ua` (редирект з `lionsleopolis.org.ua`).
 
 Стан: **етап 1 (MVP) у демо-режимі.** Усі сторінки, дизайн-система і потоки адмінки працюють без бекенду: дані адмінки, коментарі й відгуки зберігаються в браузері (localStorage). Контент умовний і позначений як демо.

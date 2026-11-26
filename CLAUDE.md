@@ -1,7 +1,7 @@
 # Контекст для Claude Code
 
-Сайт Lions Club Leopolis (офіційний запис LCI: Lviv (Leopolis)). Другий Lions club у Львові: ніколи не позиціонуй його як єдиний чи головний.
-Повне ТЗ: документ «ТЗ: сайт Lions Club Leopolis» (розділ 9 містить промпт).
+Сайт Lviv International Lions Club (робоча назва для демонстрації, може змінитися; запис LCI погоджується з District 134). Другий Lions club у Львові: ніколи не позиціонуй його як єдиний чи головний.
+Повне ТЗ: документ «ТЗ: сайт Lviv International Lions Club» (розділ 9 містить промпт).
 
 ## Стан
 - Етап 1 (MVP) зроблено в демо-режимі: Astro 7 + Tailwind 4, статична збірка, GitHub Pages.
@@ -19,5 +19,5 @@
 ## Дизайн
 - Бренд: Lions International Brand Guidelines V4.0 (05/23), конспект у `docs/brand/README.md`, дані в `src/data/brand.ts`. Лише кольори палітри бренду.
 - Roboto Flex, широкі заголовки (font-stretch 110-128%), токени в `src/styles/global.css`.
-- Один «гучний» момент: слово Leopolis у hero між шарами силуету Львова (scroll-driven).
+- Один «гучний» момент: слово club.heroWord у hero між шарами силуету Львова (scroll-driven).
 - Без великих літер у мітках, без стрілок у кнопках, без однакових карток-шаблонів.
