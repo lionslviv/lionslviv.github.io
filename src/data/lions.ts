@@ -34,13 +34,16 @@ export const ukraine: { year: string; text: L }[] = [
 ];
 
 // Клуби в доброму статусі за реєстром Lions International (вересень 2025) + наш клуб.
-export const clubs: { city: L; names: string; note: L }[] = [
-  { city: { en: 'Kyiv', uk: 'Київ' }, names: 'Kyiv Lions Club, Kyiv Ecology, Kyiv Lions Quest', note: { en: 'The largest group of clubs. Kyiv Lions Club has a long international history; since 2022 Lions across Europe have sent aid to hospitals it named. Lion Serhii Denisenko of Kyiv Ecology was a guest at our second meeting.', uk: 'Найбільша група клубів. Kyiv Lions Club має давню міжнародну історію; з 2022 року Lions з усієї Європи передають допомогу лікарням, які він визначив. Lion Сергій Денисенко з Kyiv Ecology був гостем нашої другої зустрічі.' } },
-  { city: { en: 'Lviv', uk: 'Львів' }, names: 'Lions Club Lviv, Lviv International Lions Club', note: { en: 'Roman Monastyrskyy of Lions Club Lviv was the guest at our first meeting. Lviv International Lions Club is a new English-speaking club that first met in November 2026.', uk: 'Роман Монастирський з Lions Club Lviv був гостем нашої першої зустрічі. Lviv International Lions Club: новий англомовний клуб, перша зустріч якого відбулася в листопаді 2026 року.' } },
+export const clubs: { city: L; names: string; note: L; links?: { label: string; url: string }[] }[] = [
+  { city: { en: 'Kyiv', uk: 'Київ' }, names: 'Kyiv Lions Club, Kyiv Ecology, Kyiv Lions Quest',
+    links: [{ label: 'Kyiv Lions Club', url: 'https://www.facebook.com/kyivlions/' }], note: { en: 'The largest group of clubs. Kyiv Lions Club has a long international history; since 2022 Lions across Europe have sent aid to hospitals it named. Lion Serhii Denisenko of Kyiv Ecology was a guest at our second meeting.', uk: 'Найбільша група клубів. Kyiv Lions Club має давню міжнародну історію; з 2022 року Lions з усієї Європи передають допомогу лікарням, які він визначив. Lion Сергій Денисенко з Kyiv Ecology був гостем нашої другої зустрічі.' } },
+  { city: { en: 'Lviv', uk: 'Львів' }, names: 'Lions Club Lviv, Lviv International Lions Club',
+    links: [{ label: 'Lions Club Lviv', url: 'https://www.facebook.com/p/Lions-Club-Lviv-61553940645092/' }], note: { en: 'Roman Monastyrskyy of Lions Club Lviv was the guest at our first meeting. Lviv International Lions Club is a new English-speaking club that first met in November 2026.', uk: 'Роман Монастирський з Lions Club Lviv був гостем нашої першої зустрічі. Lviv International Lions Club: новий англомовний клуб, перша зустріч якого відбулася в листопаді 2026 року.' } },
   { city: { en: 'Chernihiv', uk: 'Чернігів' }, names: 'Lions Club Chernihiv, Chernihiv Siver', note: { en: 'Several clubs serve the city and the region.', uk: 'Кілька клубів служать місту й області.' } },
   { city: { en: 'Cherkasy', uk: 'Черкаси' }, names: 'Lions Club Cherkasy', note: { en: 'Serves the community of central Ukraine.', uk: 'Служить громаді в центральній Україні.' } },
   { city: { en: 'Poltava', uk: 'Полтава' }, names: 'Lions Club Poltava City', note: { en: 'Serves the city of Poltava.', uk: 'Служить громаді Полтави.' } },
   { city: { en: 'Sumy', uk: 'Суми' }, names: 'Lions Club Sumy', note: { en: 'Serves the city near the front line in the north-east of Ukraine.', uk: 'Служить місту поблизу лінії фронту на північному сході України.' } },
+  { city: { en: 'Stryi', uk: 'Стрий' }, names: 'Lions Club Stryi KO', note: { en: 'A club in Stryi, Lviv region.', uk: 'Клуб у Стрию на Львівщині.' } },
   { city: { en: 'Berezhany', uk: 'Бережани' }, names: 'Lions Club Berezhany', note: { en: 'A club in a small historic town in the Ternopil region.', uk: 'Клуб у невеликому історичному місті на Тернопільщині.' } },
 ];
 
@@ -54,3 +57,10 @@ export const lionAi = {
     { title: { en: 'Still learning', uk: 'Ще вчиться' }, text: { en: 'Lions International notes that Ellie is still learning and can make mistakes, so check important answers.', uk: 'Lions International попереджає, що Ellie ще вчиться і може помилятися, тож важливі відповіді варто перевіряти.' } },
   ] as { title: L; text: L }[],
 };
+
+// Спільні сторінки Lions в Україні (перевірено 27.11.2026)
+export const ukraineLinks: { label: L; url: string; note: L }[] = [
+  { label: { en: 'Lions International Ukraine', uk: 'Lions International Ukraine' }, url: 'https://www.facebook.com/LionsClubsInternationalUkraine/', note: { en: 'Official Facebook page of Lions in Ukraine', uk: 'Офіційна Facebook-сторінка Lions в Україні' } },
+  { label: { en: 'Lions United for Ukraine', uk: 'Lions United for Ukraine' }, url: 'https://www.facebook.com/UkrLion/', note: { en: 'Lions platform for humanitarian aid to Ukraine', uk: 'Платформа Lions для гуманітарної допомоги Україні' } },
+  { label: { en: 'Lions International for Ukraine', uk: 'Lions International для України' }, url: 'https://www.lionsclubs.org/UkraineResponse', note: { en: 'How Lions International and LCIF support Ukraine', uk: 'Як Lions International і LCIF підтримують Україну' } },
+];

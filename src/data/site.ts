@@ -40,6 +40,7 @@ export const club = {
 
 export const nav = [
   { href: '/about', key: 'about' },
+  { href: '/lions', key: 'lions' },
   { href: '/projects', key: 'projects' },
   { href: '/news', key: 'news' },
   { href: '/events', key: 'events' },
@@ -48,7 +49,6 @@ export const nav = [
 ] as const;
 
 export const navSecondary = [
-  { href: '/lions', key: 'lions' },
   { href: '/reviews', key: 'reviews' },
   { href: '/join', key: 'join' },
   { href: '/contacts', key: 'contacts' },

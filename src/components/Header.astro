@@ -21,7 +21,7 @@ const otherHref = switchPath(path, other);
   <a href="#main" class="sr-only-focusable absolute left-3 top-3 z-50 rounded-lg bg-white px-3 py-2 text-black">{T.skip}</a>
   <div class="wrap flex h-[60px] items-center justify-between gap-2 sm:gap-6">
     <Wordmark />
-    <nav aria-label={lang === 'uk' ? 'Головна навігація' : 'Main navigation'} class="hidden items-center gap-7 lg:flex" data-main-nav>
+    <nav aria-label={lang === 'uk' ? 'Головна навігація' : 'Main navigation'} class="hidden items-center gap-5 whitespace-nowrap lg:flex xl:gap-7" data-main-nav>
       {nav.map((n) => (
         <a href={lp(lang, n.href)} class="nav-link" aria-current={isActive(path.replace(/^(.*?)\/uk(?=\/|$)/, '$1'), n.href) ? 'page' : undefined}>{T.nav[n.key]}</a>
       ))}
