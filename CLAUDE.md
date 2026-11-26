@@ -8,6 +8,7 @@
 - Бекенд: Supabase (проєкт lyoicjdpqzvsfluromvo, організація lionslviv Org). Публічні параметри в `src/lib/supabase-config.ts`, схема і RLS у `supabase/migrations`.
 - Клієнтський API: `src/scripts/api.ts` (вхід за посиланням на email, профілі й ролі, новини, події, коментарі, відгуки, заявки, фото, журнал).
 - Збірка бере новини, події і схвалені фото з бази (`src/data/live.ts`), статичні дані в `src/data/content.ts` лише запасний варіант. GitHub Actions перезбирає сайт кожні 30 хвилин.
+- Резервна копія: щомісяця `.github/workflows/backup.yml` + `scripts/backup.sh`, зашифрований артефакт 90 днів (docs/backup.md).
 - Ролі видаються через `role_invites` (адмінка → Учасники). Секретні ключі Supabase в репозиторій не додавати.
 
 ## Жорсткі правила
