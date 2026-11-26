@@ -64,7 +64,7 @@ supabase/migrations/  схема БД з RLS для етапу 2
 
 - Дизайн-система за Lions International Brand Guidelines V4.0 (05/23): Blue `#00338D`, Yellow `#EBB700`, Purple `#7A2582`, Navy `#0D2240`, Cool Gray 11 `#55565A`, цифровий шрифт Roboto (на сайті Roboto Flex). Конспект: `docs/brand/README.md`.
 - Офіційні PDF брендбуків: `bash scripts/fetch-brand-assets.sh` (кладе їх у `public/brand/` і `docs/brand/`). Сторінка сайту `/brand` покаже кнопки завантаження.
-- **Емблему Lions не малюємо.** Завантажте офіційний SVG з lionsclubs.org (розділ Logos) і покладіть у `public/brand/emblem.svg`: він автоматично з’явиться в шапці.
+- **Емблему Lions не малюємо.** Офіційні емблема, підписи та іконки напрямів: завантажте з lionsclubs.org/en/logos і виконайте `npm run brand:import -- <папка>`. Вони з’являться в шапці, hero, футері, «Про клуб» і напрямах служіння. Таблиця файлів: `docs/brand/README.md`.
 - Перевірка дизайну: сторінка `/styleguide`.
 
 ## Перед релізом
@@ -72,5 +72,5 @@ supabase/migrations/  схема БД з RLS для етапу 2
 - [ ] Погодити назву з District 134 і клубом-спонсором, зареєструвати домени
 - [ ] Замінити демо-контент, вимкнути `DEMO` у `src/data/site.ts`
 - [ ] Реальні реквізити ГО на `/support`
-- [ ] Офіційна емблема в `public/brand/emblem.svg`, `public/og.png` 1200×630
+- [ ] Офіційні емблема, підписи та іконки в `public/brand/` (`npm run brand:import`), перегенерувати `public/og.png`
 - [ ] Етап 2: Supabase, Auth, Turnstile, Resend

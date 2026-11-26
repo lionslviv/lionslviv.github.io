@@ -11,6 +11,33 @@
 
 PDF-копії: запустіть `bash scripts/fetch-brand-assets.sh`. Файли з’являться тут і в `public/brand/`, а сайт покаже кнопки завантаження на сторінці `/brand`.
 
+## Офіційні файли емблеми, підписів та іконок
+
+Сайт сам показує ці файли там, де вони потрібні, щойно вони з’являються в `public/brand/`. Поки файлу немає, сайт його просто не показує: замінників і перемальованих версій немає.
+
+1. Член клубу завантажує файли з [lionsclubs.org/en/logos](https://www.lionsclubs.org/en/logos) (SVG або PNG з прозорим фоном).
+2. Кладе їх в одну папку і запускає `npm run brand:import -- <папка>`. Скрипт сам розпізнає файли за назвою і копіює їх без змін.
+3. Те, що скрипт не розпізнав, перейменовується вручну за таблицею нижче.
+4. `npm run build`. Сторінка `/brand` показує, скільки файлів додано.
+
+| Файл у `public/brand/` | Що завантажити на lionsclubs.org/en/logos | Де з’являється на сайті |
+| --- | --- | --- |
+| `emblem.svg` | Lions Emblems → Two Color | Шапка, сторінка «Бренд» |
+| `emblem-white.svg` | Lions Emblems → One Color, White | Hero головної, футер, обкладинка для соцмереж |
+| `signature-lci.svg` | Lions Clubs International Signatures → Horizontal, Two Color | «Про клуб» |
+| `signature-lci-white.svg` | Lions Clubs International Signatures → Horizontal, One Color, White | Футер |
+| `icon-vision.svg` | Service Icons → Vision, Full Color | Напрями служіння, теги проєктів |
+| `icon-hunger.svg` | Service Icons → Hunger, Full Color | Напрями служіння |
+| `icon-environment.svg` | Service Icons → Environment, Full Color | Напрями служіння, теги проєктів |
+| `icon-diabetes.svg` | Service Icons → Diabetes, Full Color | Напрями служіння |
+| `icon-cancer.svg` | Service Icons → Childhood Cancer, Full Color | Напрями служіння |
+| `icon-humanitarian.svg` | Service Icons → LCIF Humanitarian Efforts, Full Color | Напрями служіння, теги проєктів |
+| `icon-youth.svg` | Service Icons → LCIF Youth, Full Color | Напрями служіння, теги проєктів |
+
+Умови Lions: файли завантажують члени Lions; клуби мають ліцензію використовувати емблему на вебсторінках; емблему не можна ставити на речі, що продаються. Тому на сайті файли емблем для публічного завантаження не викладаємо.
+
+Після додавання `emblem-white` перегенеруйте обкладинку для соцмереж `public/og.png` зі сторінки `/og-card` (скріншот 1200×630).
+
 ## Кольори (V4.0, розділ 3.1)
 
 | Роль | Назва | Pantone | HEX | Токен у CSS |

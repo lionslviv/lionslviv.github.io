@@ -1,5 +1,6 @@
 ---
 import Wordmark from './Wordmark.astro';
+import BrandAsset from './BrandAsset.astro';
 import { club, nav, navSecondary } from '../data/site';
 import { u } from '../lib/url';
 const year = new Date().getFullYear();
@@ -31,7 +32,10 @@ const year = new Date().getFullYear();
   </div>
   <div class="border-t border-white/10">
     <div class="wrap flex flex-col gap-2 py-6 text-[13px] text-white/55 md:flex-row md:justify-between">
-      <p>© {year} {club.name}. Член Lions Clubs International.</p>
+      <div class="flex flex-wrap items-center gap-4">
+        <BrandAsset name="signature-lci-white" alt="Lions Clubs International" height={28} />
+        <p>© {year} {club.name}. Член Lions Clubs International.</p>
+      </div>
       <p>Назви та емблеми Lions є торговельними марками Lions Clubs International.</p>
     </div>
   </div>

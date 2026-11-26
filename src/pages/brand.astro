@@ -7,12 +7,16 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { brandColors, brandDocs, nameRules, emblemDonts, photoRules, brandContact, trademarkContact } from '../data/brand';
 import { u } from '../lib/url';
+import BrandAsset from '../components/BrandAsset.astro';
+import { brandAssets, assetPath } from '../data/brand-assets';
 
 const exists = (p: string) => !!p && fs.existsSync(path.join(process.cwd(), 'public', p));
 const docs = brandDocs.map((d) => ({ ...d, hasLocal: exists(d.local), size: exists(d.local) ? Math.round(fs.statSync(path.join(process.cwd(), 'public', d.local)).size / 1024 / 1024 * 10) / 10 : 0 }));
 const primary = brandColors.filter((c) => c.role === 'primary');
 const secondary = brandColors.filter((c) => c.role === 'secondary');
 const light = (hex: string) => ['#EBB700', '#B3B2B1'].includes(hex);
+const assets = brandAssets.map((a) => ({ ...a, ok: !!assetPath(a.key) }));
+const okCount = assets.filter((a) => a.ok).length;
 ---
 <Base title="Бренд і матеріали" description="Правила бренду Lions International для Lions Club Lviv Leopolis: назва, емблема, кольори, шрифти, фото. Офіційні брендбуки і матеріали клубу.">
   <PageHead title="Бренд і матеріали" lead="Як правильно писати назву, використовувати емблему, кольори і фото. Для членів клубу, партнерів і медіа." />
@@ -83,6 +87,28 @@ const light = (hex: string) => ['#EBB700', '#B3B2B1'].includes(hex);
 
   <section class="section-tight bg-alt">
     <div class="wrap">
+      <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <h2 class="t-h2">Офіційні файли на сайті</h2>
+        <p class="text-soft">{okCount} з {assets.length} додано</p>
+      </div>
+      <p class="t-lead mt-3 max-w-[60ch]">Емблема, підписи та іконки напрямів служіння з lionsclubs.org. Публічно ми їх не роздаємо: завантажувати офіційні файли можуть члени Lions на сайті організації.</p>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {assets.map((a) => (
+          <li class="flex flex-col rounded-[var(--radius-card)] bg-[var(--surface)] p-5">
+            <div class={`grid h-28 place-items-center rounded-2xl ${a.key.endsWith('white') ? 'bg-[var(--color-lions-deep)]' : 'bg-[var(--bg-alt)]'}`}>
+              <BrandAsset name={a.key} alt={a.title} height={a.key.startsWith('signature') ? 40 : 64} clearSpace showMissing />
+            </div>
+            <p class="mt-4 font-[640] leading-tight">{a.title}</p>
+            <p class="t-small mt-1">{a.source}</p>
+            <p class="t-small mt-auto pt-3">{a.ok ? <span class="text-[var(--color-green)]">Додано.</span> : <span>Ще немає.</span>} {a.where}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap">
       <h2 class="t-h2">Кольори</h2>
       <p class="t-lead mt-3 max-w-[52ch]">Основна палітра: синій, жовтий і фіолетовий. Вторинні кольори лише для акцентів.</p>
       <ul class="mt-10 grid gap-4 md:grid-cols-3">
@@ -116,7 +142,7 @@ const light = (hex: string) => ['#EBB700', '#B3B2B1'].includes(hex);
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="section-tight bg-alt">
     <div class="wrap grid gap-12 md:grid-cols-2">
       <div class="space-y-4">
         <h2 class="t-h2">Шрифти</h2>
@@ -132,7 +158,7 @@ const light = (hex: string) => ['#EBB700', '#B3B2B1'].includes(hex);
     </div>
   </section>
 
-  <section class="section-tight bg-alt">
+  <section class="section-tight">
     <div class="wrap">
       <h2 class="t-h2">Фото</h2>
       <p class="t-lead mt-3 max-w-[56ch]">Показуємо Lions у дії і людей, яким допомагаємо. Тепло, природно, без постановки.</p>
@@ -149,7 +175,7 @@ const light = (hex: string) => ['#EBB700', '#B3B2B1'].includes(hex);
     </div>
   </section>
 
-  <section class="section-tight">
+  <section class="section-tight bg-alt">
     <div class="wrap grid gap-12 md:grid-cols-[1fr_1.2fr]">
       <div class="space-y-4">
         <h2 class="t-h2">Матеріали клубу</h2>
@@ -171,7 +197,7 @@ const light = (hex: string) => ['#EBB700', '#B3B2B1'].includes(hex);
     </div>
   </section>
 
-  <section class="pb-24">
+  <section class="py-16">
     <div class="wrap">
       <p class="panel p-6 text-[15px]">Питання щодо бренду Lions: <a class="link" href={`mailto:${brandContact}`}>{brandContact}</a>. Питання щодо матеріалів клубу: <a class="link" href={u('/contacts')}>контакти клубу</a>.</p>
     </div>

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Skyline from '../components/Skyline.astro';
+import BrandAsset from '../components/BrandAsset.astro';
 import { club, causes } from '../data/site';
 import { members } from '../data/content';
 import { u } from '../lib/url';
@@ -28,6 +29,7 @@ const board = members.filter((m) => m.board);
         <p class="text-[19px] leading-[1.6]">Коли клуб Lions обирав назву, сумнівів не було. Правила Lions International вимагають, щоб другий клуб у місті мав власне ім’я після назви міста. Наше офіційне ім’я в реєстрі: <strong>{club.lciRecord}</strong>.</p>
       </div>
       <div class="space-y-5">
+        <BrandAsset name="signature-lci" alt="Lions Clubs International" height={56} />
         <h2 class="t-h2">Хто такі Lions</h2>
         <p class="text-[19px] leading-[1.6]">Lions Clubs International заснували 1917 року в Чикаго. Сьогодні це найбільша у світі мережа сервісних клубів: понад 1,4 мільйона людей у більш ніж 200 країнах і територіях. Девіз: We Serve, «Ми служимо».</p>
         <p class="text-[19px] leading-[1.6]">Клуби в Україні входять до {club.district}. Ми співпрацюємо з іншими клубами дистрикту і з Lions з усієї Європи.</p>

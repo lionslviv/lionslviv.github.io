@@ -1,0 +1,19 @@
+---
+// Виводить офіційний файл Lions, якщо він є в public/brand/.
+// Якщо файлу немає, нічого не показує (або підказку, коли showMissing).
+// Файл не змінюється: без фільтрів, обрізання, нахилу і зміни кольорів.
+import { assetPath, type AssetKey } from '../data/brand-assets';
+import { u } from '../lib/url';
+interface Props { name: AssetKey; alt: string; class?: string; height?: number; showMissing?: boolean; clearSpace?: boolean }
+const { name, alt, class: cls = '', height, showMissing = false, clearSpace = false } = Astro.props;
+const src = assetPath(name);
+---
+{src ? (
+  <span class={`inline-flex ${clearSpace ? 'p-[0.22em]' : ''}`} style={height && clearSpace ? `font-size:${height}px` : undefined}>
+    <img src={u(src)} alt={alt} class={`block w-auto max-w-none ${cls}`} style={height ? `height:${height}px` : undefined} decoding="async" />
+  </span>
+) : showMissing ? (
+  <span class={`inline-grid place-items-center rounded-xl border border-dashed border-[var(--line)] px-3 text-center text-[12px] text-soft ${cls}`} style={height ? `height:${height}px;min-width:${height}px` : undefined}>
+    public/brand/{name}.svg
+  </span>
+) : null}

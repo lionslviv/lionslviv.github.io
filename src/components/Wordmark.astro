@@ -1,15 +1,13 @@
 ---
-// Словесний знак клубу. Офіційну емблему Lions (SVG з lionsclubs.org)
-// покладіть у public/brand/emblem.svg: вона з'явиться ліворуч автоматично.
-import fs from 'node:fs';
-import path from 'node:path';
+// Знак клубу: офіційна емблема Lions (якщо файл є в public/brand/) + назва клубу.
+// Емблему не перемальовуємо: на світлому фоні двоколірна, на темному біла.
+import BrandAsset from './BrandAsset.astro';
 import { u } from '../lib/url';
 interface Props { inverse?: boolean }
 const { inverse = false } = Astro.props;
-const hasEmblem = fs.existsSync(path.join(process.cwd(), 'public/brand/emblem.svg'));
 ---
-<a href={u('/')} class="flex items-center gap-2.5 leading-none" aria-label="Lions Club Lviv Leopolis, на головну">
-  {hasEmblem && <img src={u('/brand/emblem.svg')} alt="" width="34" height="34" class="h-[34px] w-[34px]" />}
+<a href={u('/')} class="flex items-center gap-3 leading-none" aria-label="Lions Club Lviv Leopolis, на головну">
+  <BrandAsset name={inverse ? 'emblem-white' : 'emblem'} alt="" height={38} />
   <span class="flex flex-col">
     <span class={`text-[11.5px] font-[560] tracking-[0.01em] ${inverse ? 'text-white/70' : 'text-soft'}`}>Lions Club</span>
     <span class={`text-[18px] font-[760] tracking-[-0.02em] ${inverse ? 'text-white' : ''}`} style="font-stretch:118%">Lviv Leopolis</span>

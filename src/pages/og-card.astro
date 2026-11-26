@@ -2,13 +2,17 @@
 // Службова сторінка для генерації public/og.png (1200×630). Не індексується.
 import Base from '../layouts/Base.astro';
 import Skyline from '../components/Skyline.astro';
+import BrandAsset from '../components/BrandAsset.astro';
 ---
 <Base title="OG" noindex bare>
   <div class="relative h-[630px] w-[1200px] overflow-hidden bg-[var(--color-lions-deep)] text-white">
-    <div class="absolute left-[64px] top-[56px]">
+    <div class="absolute left-[64px] top-[56px] flex items-start gap-6">
+      <BrandAsset name="emblem-white" alt="" height={112} />
+      <div>
       <p class="text-[26px] font-[560] text-white/75">Lions Club</p>
       <p class="text-[44px] font-[760] leading-none tracking-[-0.02em]" style="font-stretch:118%">Lviv Leopolis</p>
       <p class="mt-6 text-[26px] text-white/75">Lions International у місті лева</p>
+      </div>
     </div>
     <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-[300px] w-full text-[var(--color-lions)]" />
     <p class="hero-word absolute inset-x-0 bottom-[30px] text-center !text-[250px]" style="animation:none">Leopolis</p>

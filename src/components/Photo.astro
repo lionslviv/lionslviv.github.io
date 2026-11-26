@@ -9,11 +9,12 @@ function hash(s: string) { let h = 2166136261; for (const c of s) { h ^= c.charC
 const h = hash(art.seed);
 const rnd = (i: number) => ((Math.imul(h ^ (i * 2654435761), 1597334677) >>> 0) % 1000) / 1000;
 
+// Лише кольори палітри Brand Guidelines V4.0
 const palettes = [
   ['#0d2240', '#00338d', '#407cca'],
-  ['#00338d', '#407cca', '#9fc0ec'],
-  ['#000f2e', '#00338d', '#ebb700'],
-  ['#0a2a66', '#2f5fae', '#d7e3f5'],
+  ['#00338d', '#407cca', '#b3b2b1'],
+  ['#0d2240', '#00338d', '#ebb700'],
+  ['#0d2240', '#7a2582', '#407cca'],
 ];
 const [c1, c2, c3] = palettes[h % palettes.length];
 const id = `g${h.toString(36)}`;

@@ -2,6 +2,8 @@
 import Photo from './Photo.astro';
 import PostBody from './PostBody.astro';
 import Comments from './Comments.astro';
+import BrandAsset from './BrandAsset.astro';
+import { causeIcon } from '../data/brand-assets';
 import type { Post } from '../data/content';
 import { causeLabel } from '../data/site';
 import { dateLong } from '../lib/format';
@@ -15,7 +17,7 @@ const base = post.type === 'project' ? '/projects' : '/news';
     <a href={u(back.href)} class="link text-[15px]">{back.label}</a>
     <div class="mt-6 flex flex-wrap items-center gap-2">
       <time class="t-small" datetime={post.date}>{dateLong(post.date)}</time>
-      {post.tags.filter((t) => t !== 'club' && t !== 'event').map((t) => <span class="badge badge-blue">{causeLabel(t)}</span>)}
+      {post.tags.filter((t) => t !== 'club' && t !== 'event').map((t) => <span class="badge badge-blue">{causeIcon[t] && <BrandAsset name={causeIcon[t]} alt="" height={18} />}{causeLabel(t)}</span>)}
       {post.status === 'done' && <span class="badge">завершено</span>}
     </div>
     <h1 class="t-h1 mt-4" transition:name={`title-${post.slug}`}>{post.title}</h1>
