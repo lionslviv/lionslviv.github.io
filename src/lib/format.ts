@@ -1,28 +1,15 @@
+import type { Lang } from '../i18n';
 const TZ = 'Europe/Kyiv';
+const loc = (lang: Lang = 'en') => (lang === 'uk' ? 'uk-UA' : 'en-GB');
+const f = (iso: string, lang: Lang, o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(loc(lang), { timeZone: TZ, ...o }).format(new Date(iso));
 
-export function dateLong(iso: string): string {
-  return new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'long', year: 'numeric', timeZone: TZ }).format(new Date(iso));
-}
-
-export function dateShort(iso: string): string {
-  return new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'long', timeZone: TZ }).format(new Date(iso));
-}
-
-export function dayNum(iso: string): string {
-  return new Intl.DateTimeFormat('uk-UA', { day: 'numeric', timeZone: TZ }).format(new Date(iso));
-}
-
-export function monthShort(iso: string): string {
-  return new Intl.DateTimeFormat('uk-UA', { month: 'short', timeZone: TZ }).format(new Date(iso)).replace('.', '');
-}
-
-export function weekday(iso: string): string {
-  return new Intl.DateTimeFormat('uk-UA', { weekday: 'long', timeZone: TZ }).format(new Date(iso));
-}
-
-export function time(iso: string): string {
-  return new Intl.DateTimeFormat('uk-UA', { hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(iso));
-}
+export const dateLong = (iso: string, lang: Lang = 'en') => f(iso, lang, { day: 'numeric', month: 'long', year: 'numeric' });
+export const dateShort = (iso: string, lang: Lang = 'en') => f(iso, lang, { day: 'numeric', month: 'long' });
+export const dayNum = (iso: string, lang: Lang = 'en') => f(iso, lang, { day: 'numeric' });
+export const monthShort = (iso: string, lang: Lang = 'en') => f(iso, lang, { month: 'short' }).replace('.', '');
+export const weekday = (iso: string, lang: Lang = 'en') => f(iso, lang, { weekday: 'long' });
+export const time = (iso: string, lang: Lang = 'en') => f(iso, lang, { hour: '2-digit', minute: '2-digit' });
+export const monthTitle = (key: string, lang: Lang = 'en') => new Intl.DateTimeFormat(loc(lang), { month: 'long', year: 'numeric' }).format(new Date(`${key}-15`));
 
 export function initials(name: string): string {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();

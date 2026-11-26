@@ -4,6 +4,7 @@
 // Файл не змінюється: без фільтрів, обрізання, нахилу і зміни кольорів.
 import { assetPath, type AssetKey } from '../data/brand-assets';
 import { u } from '../lib/url';
+import { langFromUrl } from '../i18n';
 interface Props { name: AssetKey; alt: string; class?: string; height?: number; showMissing?: boolean; clearSpace?: boolean }
 const { name, alt, class: cls = '', height, showMissing = false, clearSpace = false } = Astro.props;
 const src = assetPath(name);
@@ -14,6 +15,6 @@ const src = assetPath(name);
   </span>
 ) : showMissing ? (
   <span class={`inline-grid place-items-center rounded-xl border border-dashed border-[var(--line)] px-3 text-center text-[12px] text-soft ${cls}`} style={height ? `height:${height}px;min-width:${height}px` : undefined}>
-    Ще не додано
+    {langFromUrl(Astro.url) === 'uk' ? 'Ще не додано' : 'Not added yet'}
   </span>
 ) : null}

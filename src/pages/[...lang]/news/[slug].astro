@@ -1,0 +1,17 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostArticle from '../../../components/PostArticle.astro';
+import { news } from '../../../data/content';
+import { club } from '../../../data/site';
+import { langOf, tr, t } from '../../../i18n';
+export function getStaticPaths() {
+  return [undefined, 'uk'].flatMap((lang) => news.map((post) => ({ params: { lang, slug: post.slug }, props: { post } })));
+}
+const { post } = Astro.props;
+const lang = langOf(Astro.params.lang);
+const more = news.filter((n) => n.slug !== post.slug).slice(0, 3);
+const ld = { '@context': 'https://schema.org', '@type': 'NewsArticle', headline: tr(lang, post.title), inLanguage: lang, datePublished: post.date, description: tr(lang, post.excerpt), publisher: { '@type': 'NGO', name: club.name } };
+---
+<Base title={tr(lang, post.title)} description={tr(lang, post.excerpt)} jsonLd={ld}>
+  <PostArticle post={post} back={{ href: '/news', label: t(lang).allNews }} more={more} />
+</Base>

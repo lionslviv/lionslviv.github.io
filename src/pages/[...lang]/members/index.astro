@@ -1,0 +1,62 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import { members } from '../../../data/content';
+import { u } from '../../../lib/url';
+import { langPaths, langOf, lp, tr, t } from '../../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const board = members.filter((m) => m.board);
+const others = members.filter((m) => !m.board);
+---
+<Base title={T.nav.members} description={s('Board and members of Lviv International Lions Club.', 'Правління і члени Lviv International Lions Club.')}>
+  <PageHead title={s('People of the club', 'Люди клубу')} lead={s('Members fill in their own profiles and publish them only with their consent. Contact details are visible to club members only.', 'Профілі заповнюють самі члени клубу і публікують лише за власною згодою. Контакти бачать тільки члени клубу.')} />
+  <section class="wrap pb-16">
+    <h2 class="t-h3 mb-8">{s('Board for the 2026-2027 Lions year', 'Правління на Lions-рік 2026-2027')}</h2>
+    <ul class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+      {board.map((m) => (
+        <li>
+          <a href={lp(lang, `/members/${m.slug}`)} class="group block">
+            {m.photo ? (
+              <div class="aspect-square overflow-hidden rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
+                <img src={u(m.photo)} alt={tr(lang, m.name)} width="800" height="800" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+              </div>
+            ) : (
+              <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)] transition-colors group-hover:bg-[var(--line)]">
+                <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+              </div>
+            )}
+            {m.real ? (
+              <>
+                <p class="mt-4 text-[19px] font-[650] leading-tight group-hover:text-[var(--accent)]">{tr(lang, m.name)}</p>
+                <p class="mt-1 text-[15px] font-[600] text-accent">{tr(lang, m.role)}</p>
+                <p class="t-small mt-1">{tr(lang, m.field)}</p>
+              </>
+            ) : (
+              <>
+                <p class="mt-4 text-[19px] font-[650] leading-tight group-hover:text-[var(--accent)]">{tr(lang, m.role)}</p>
+                <p class="t-small mt-1">{tr(lang, m.field)}</p>
+              </>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="bg-alt section-tight">
+    <div class="wrap">
+      <h2 class="t-h3">{s('Club members', 'Члени клубу')}</h2>
+      <p class="mt-2 text-soft">{s(`${others.length} club members have not published their profiles yet.`, `${others.length} членів клубу ще не опублікували профілі.`)}</p>
+      <ul class="mt-8 flex flex-wrap gap-3">
+        {others.map(() => (
+          <li class="grid h-14 w-14 place-items-center rounded-full bg-[var(--surface)]" aria-label={s('Profile not published', 'Профіль не опубліковано')}>
+            <svg viewBox="0 0 80 80" class="h-7 w-7 text-[var(--color-stone-soft)]" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-10"><a href={lp(lang, '/join')} class="btn btn-blue">{s('How to become a member', 'Як стати членом клубу')}</a></p>
+    </div>
+  </section>
+</Base>

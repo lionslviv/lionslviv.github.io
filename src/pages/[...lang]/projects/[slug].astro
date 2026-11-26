@@ -1,0 +1,15 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostArticle from '../../../components/PostArticle.astro';
+import { projects } from '../../../data/content';
+import { langOf, tr, t } from '../../../i18n';
+export function getStaticPaths() {
+  return [undefined, 'uk'].flatMap((lang) => projects.map((post) => ({ params: { lang, slug: post.slug }, props: { post } })));
+}
+const { post } = Astro.props;
+const lang = langOf(Astro.params.lang);
+const more = projects.filter((n) => n.slug !== post.slug).slice(0, 3);
+---
+<Base title={tr(lang, post.title)} description={tr(lang, post.excerpt)}>
+  <PostArticle post={post} back={{ href: '/projects', label: t(lang).allProjects }} more={more} />
+</Base>

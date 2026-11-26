@@ -1,0 +1,66 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { events, albums } from '../../../data/content';
+import { club } from '../../../data/site';
+import { dateLong, weekday, time } from '../../../lib/format';
+import { googleCalendarUrl, icsCalendar } from '../../../lib/ics';
+import { langOf, lp, tr, t } from '../../../i18n';
+
+export function getStaticPaths() {
+  return [undefined, 'uk'].flatMap((lang) => events.map((e) => ({ params: { lang, slug: e.slug }, props: { e } })));
+}
+const { e } = Astro.props;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const title = tr(lang, e.title);
+const location = tr(lang, e.location);
+const description = tr(lang, e.description);
+const ev = { uid: e.slug, title, start: e.start, end: e.end, location, description };
+const ics = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsCalendar([ev]))}`;
+const album = albums.find((a) => a.eventSlug === e.slug);
+const isPast = new Date(e.start) < new Date('2026-11-26T12:00:00+02:00');
+const ld = { '@context': 'https://schema.org', '@type': 'Event', name: title, startDate: e.start, endDate: e.end, inLanguage: lang, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', location: { '@type': 'Place', name: location, address: s('Lviv, Ukraine', 'Львів, Україна') }, organizer: { '@type': 'NGO', name: club.name }, description };
+---
+<Base title={title} description={description} jsonLd={ld}>
+  <section class="bg-[var(--color-lions-deep)] text-white">
+    <div class="wrap grid gap-10 pb-16 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[1.5fr_1fr] md:items-end">
+      <div>
+        <a href={lp(lang, '/events')} class="text-[15px] font-[560] text-white/70 hover:text-white">{T.allEvents}</a>
+        {(e.visibility === 'members' || e.demo) && <p class="mt-6 flex gap-2">{e.visibility === 'members' && <span class="badge">{T.forMembers}</span>}{e.demo && <span class="badge badge-gold">{T.demoExample}</span>}</p>}
+        <h1 class="t-h1 mt-5">{title}</h1>
+        <p class="mt-5 max-w-[46ch] text-[19px] text-white/75">{description}</p>
+      </div>
+      <dl class="grid gap-5 text-[17px]">
+        <div><dt class="text-white/60">{s('When', 'Коли')}</dt><dd class="text-[21px] font-[620] first-letter:uppercase">{weekday(e.start, lang)}, {dateLong(e.start, lang)}</dd>{!e.timeUnknown && <dd>{time(e.start, lang)} {s('to', 'до')} {time(e.end, lang)}</dd>}</div>
+        <div><dt class="text-white/60">{s('Where', 'Де')}</dt><dd class="text-[21px] font-[620]">{location}</dd></div>
+      </dl>
+    </div>
+  </section>
+  <section class="wrap flex flex-wrap gap-3 py-10">
+    {!isPast && <a href={googleCalendarUrl(ev)} target="_blank" rel="noopener" class="btn btn-blue">{s('Add to Google Calendar', 'Додати в Google Calendar')}</a>}
+    {!isPast && <a href={ics} download={`${e.slug}.ics`} class="btn btn-quiet">{s('Download .ics (Apple, Outlook)', 'Завантажити .ics (Apple, Outlook)')}</a>}
+    {e.visibility === 'members' && !isPast && <button class="btn btn-gold" data-rsvp={e.slug}>{s('I’m going', 'Я буду')}</button>}
+    {album && <a href={lp(lang, `/gallery/${album.slug}`)} class="btn btn-quiet">{s('Event photos', 'Фото з події')}</a>}
+  </section>
+  <section class="wrap-narrow pb-24">
+    <p class="t-small" data-rsvp-note></p>
+  </section>
+</Base>
+<script>
+  import { getUser, can } from '../../../scripts/store';
+  import { ct } from '../../../scripts/i18n';
+  document.addEventListener('astro:page-load', () => {
+    const btn = document.querySelector<HTMLButtonElement>('[data-rsvp]');
+    if (!btn) return;
+    const key = `llp.rsvp.${btn.dataset.rsvp}`;
+    const note = document.querySelector<HTMLElement>('[data-rsvp-note]')!;
+    const paint = () => { const on = localStorage.getItem(key) === 'yes'; btn.textContent = on ? ct().rsvpYes : ct().rsvpGo; };
+    paint();
+    btn.onclick = () => {
+      if (!can.memberArea(getUser())) { note.textContent = ct().rsvpMembers; return; }
+      localStorage.setItem(key, localStorage.getItem(key) === 'yes' ? 'no' : 'yes'); paint();
+      note.textContent = ct().rsvpSaved;
+    };
+  });
+</script>

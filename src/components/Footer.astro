@@ -3,6 +3,9 @@ import Wordmark from './Wordmark.astro';
 import BrandAsset from './BrandAsset.astro';
 import { club, nav, navSecondary } from '../data/site';
 import { u } from '../lib/url';
+import { langFromUrl, t, lp, tr } from '../i18n';
+const lang = langFromUrl(Astro.url);
+const T = t(lang);
 const year = new Date().getFullYear();
 ---
 <footer class="bg-[var(--color-lions-deep)] text-white">
@@ -10,22 +13,22 @@ const year = new Date().getFullYear();
     <div class="space-y-5">
       <Wordmark inverse />
       <p class="max-w-[34ch] text-[15px] text-white/70">
-        {club.about} {club.district}.
+        {tr(lang, club.about)} {tr(lang, club.district)}.
       </p>
-      <p class="text-[15px] text-white/70">{club.meetingRule}<br />{club.meetingPlace}</p>
+      <p class="text-[15px] text-white/70">{tr(lang, club.meetingRule)}<br />{tr(lang, club.meetingPlace)}</p>
     </div>
-    <nav aria-label="Розділи сайту" class="grid content-start gap-2.5 text-[15px]">
-      <p class="mb-1 font-[640] text-white">Клуб</p>
-      {nav.map((n) => <a class="text-white/70 hover:text-white" href={u(n.href)}>{n.label}</a>)}
+    <nav aria-label={T.footerClub} class="grid content-start gap-2.5 text-[15px]">
+      <p class="mb-1 font-[640] text-white">{T.footerClub}</p>
+      {nav.map((n) => <a class="text-white/70 hover:text-white" href={lp(lang, n.href)}>{T.nav[n.key]}</a>)}
     </nav>
-    <nav aria-label="Корисне" class="grid content-start gap-2.5 text-[15px]">
-      <p class="mb-1 font-[640] text-white">Долучитися</p>
-      <a class="text-white/70 hover:text-white" href={u('/support')}>Підтримати</a>
-      {navSecondary.map((n) => <a class="text-white/70 hover:text-white" href={u(n.href)}>{n.label}</a>)}
-      <a class="text-white/70 hover:text-white" href={u('/events.ics')}>Календар подій (ICS)</a>
+    <nav aria-label={T.footerJoin} class="grid content-start gap-2.5 text-[15px]">
+      <p class="mb-1 font-[640] text-white">{T.footerJoin}</p>
+      <a class="text-white/70 hover:text-white" href={lp(lang, '/support')}>{T.support}</a>
+      {navSecondary.map((n) => <a class="text-white/70 hover:text-white" href={lp(lang, n.href)}>{n.key === 'join' ? T.join : T.nav[n.key]}</a>)}
+      <a class="text-white/70 hover:text-white" href={u(lang === 'uk' ? '/uk/events.ics' : '/events.ics')}>{T.footerCalendar}</a>
     </nav>
     <div class="grid content-start gap-2.5 text-[15px]">
-      <p class="mb-1 font-[640] text-white">Зв’язок</p>
+      <p class="mb-1 font-[640] text-white">{T.footerContact}</p>
       <a class="text-white/70 hover:text-white" href={`mailto:${club.email}`}>{club.email}</a>
       <a class="text-white/70 hover:text-white" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phoneDisplay}</a>
       {club.social.map((s) => <a class="text-white/70 hover:text-white" href={s.href} rel="noopener">{s.label}</a>)}
@@ -35,9 +38,9 @@ const year = new Date().getFullYear();
     <div class="wrap flex flex-col gap-2 py-6 text-[13px] text-white/55 md:flex-row md:justify-between">
       <div class="flex flex-wrap items-center gap-4">
         <BrandAsset name="signature-white" alt="Lions International" height={36} />
-        <p>© {year} {club.name}. Член Lions Clubs International.</p>
+        <p>© {year} {club.name}. {T.footerMember}</p>
       </div>
-      <p>Назви та емблеми Lions є торговельними марками Lions Clubs International.</p>
+      <p>{T.footerTm}</p>
     </div>
   </div>
 </footer>

@@ -1,25 +1,27 @@
 ---
 // Коментарі. Демо: localStorage. Продакшн: таблиця comments у Supabase з RLS.
-import { u } from '../lib/url';
+import { langFromUrl, t, lp } from '../i18n';
 interface Props { target: string }
 const { target } = Astro.props;
+const lang = langFromUrl(Astro.url);
+const C = t(lang).comments;
 ---
 <section class="wrap-narrow border-t border-[var(--line)] py-14" data-comments={target} aria-labelledby="comments-title">
-  <h2 id="comments-title" class="t-h3">Коментарі</h2>
+  <h2 id="comments-title" class="t-h3">{C.title}</h2>
   <ol class="mt-8 grid gap-6" data-list></ol>
-  <p class="mt-6 text-soft" data-empty hidden>Коментарів ще немає. Поставте перше запитання.</p>
+  <p class="mt-6 text-soft" data-empty hidden>{C.empty}</p>
 
   <div class="mt-10" data-guest hidden>
-    <p class="panel p-6 text-[17px]">Коментувати можуть авторизовані користувачі. <a class="link" href={u('/login')}>Увійти</a></p>
+    <p class="panel p-6 text-[17px]">{C.guest} <a class="link" href={lp(lang, '/login')}>{t(lang).signIn}</a></p>
   </div>
 
   <form class="mt-10 grid gap-4" data-form hidden>
     <div class="field">
-      <label for={`c-${target}`}>Ваш коментар</label>
-      <textarea id={`c-${target}`} name="body" class="textarea" maxlength="1500" required placeholder="Що хочете запитати чи додати?"></textarea>
+      <label for={`c-${target}`}>{C.label}</label>
+      <textarea id={`c-${target}`} name="body" class="textarea" maxlength="1500" required placeholder={C.placeholder}></textarea>
     </div>
     <div class="flex flex-wrap items-center gap-4">
-      <button class="btn btn-blue" type="submit">Надіслати коментар</button>
+      <button class="btn btn-blue" type="submit">{C.submit}</button>
       <p class="t-small" data-note></p>
     </div>
   </form>
@@ -27,6 +29,7 @@ const { target } = Astro.props;
 
 <script>
   import { getUser, comments, addComment, esc, fmtDate } from '../scripts/store';
+  import { ct } from '../scripts/i18n';
 
   function render(root: HTMLElement) {
     const target = root.dataset.comments!;
@@ -38,7 +41,7 @@ const { target } = Astro.props;
         <span class="grid h-11 w-11 place-items-center rounded-full bg-[var(--bg-alt)] text-[15px] font-[680] text-[var(--accent)]">${esc(c.author.slice(0, 1))}</span>
         <div>
           <p class="text-[15px]"><span class="font-[640]">${esc(c.author)}</span> <span class="text-soft">${fmtDate(c.at)}</span>
-          ${c.status === 'pending' ? '<span class="badge badge-gold ml-2">на модерації</span>' : ''}</p>
+          ${c.status === 'pending' ? `<span class="badge badge-gold ml-2">${ct().moderation}</span>` : ''}</p>
           <p class="mt-1 whitespace-pre-line">${esc(c.body)}</p>
         </div>
       </li>`).join('');
@@ -59,9 +62,7 @@ const { target } = Astro.props;
         if (body.length < 2) return;
         const c = addComment(root.dataset.comments!, body);
         form.reset();
-        root.querySelector('[data-note]')!.textContent = c.status === 'pending'
-          ? 'Коментар надіслано. Він з’явиться після модерації.'
-          : 'Коментар опубліковано.';
+        root.querySelector('[data-note]')!.textContent = c.status === 'pending' ? ct().commentPending : ct().commentPublished;
         render(root);
       });
     });

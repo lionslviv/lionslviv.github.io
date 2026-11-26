@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import Skyline from '../../components/Skyline.astro';
+import BrandAsset from '../../components/BrandAsset.astro';
+import { club, causes } from '../../data/site';
+import { members } from '../../data/content';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const board = members.filter((m) => m.board);
+const steps = lang === 'uk'
+  ? [
+      ['Обираємо проблему', 'Там, де клуб може дати вимірний результат за сезон.'],
+      ['Ставимо мету в цифрах', 'Скільки дітей, генераторів, годин. І хто відповідальний.'],
+      ['Робимо разом', 'Члени клубу, волонтери, партнери і Lions з інших країн.'],
+      ['Звітуємо публічно', 'Кожна гривня і кожен результат на сайті.'],
+    ]
+  : [
+      ['Choose a problem', 'Where the club can deliver a measurable result within a season.'],
+      ['Set a goal in numbers', 'How many children, generators, hours. And who is responsible.'],
+      ['Do it together', 'Club members, volunteers, partners and Lions from other countries.'],
+      ['Report publicly', 'Every hryvnia and every result on the website.'],
+    ];
+---
+<Base title={T.nav.about} description={s('Lviv International Lions Club: our mission, our name, and our ties to Lions International and District 134.', 'Lviv International Lions Club: місія, історія назви, зв’язок з Lions International і District 134.')}>
+  <section class="hero">
+    <div class="wrap relative z-[2] pb-8 pt-[clamp(3rem,7vw,6rem)]">
+      <h1 class="t-h1 max-w-[16ch]">{s('Lions in the city of the lion', 'Lions у місті лева')}</h1>
+      <p class="mt-5 max-w-[48ch] text-[clamp(1.1rem,1.8vw,1.35rem)] leading-[1.5] text-white/75">
+        {s('Lviv International Lions Club is the second Lions International club in Lviv and an English-speaking community. We focus on healthcare and humanitarian aid and serve the city systematically: with a plan, a report and a result.',
+           'Lviv International Lions Club це другий клуб Lions International у Львові і англомовна спільнота. Ми зосереджуємося на охороні здоров’я та гуманітарній допомозі і служимо місту системно: з планом, звітом і результатом.')}
+      </p>
+    </div>
+    <div class="relative h-[clamp(7rem,16vw,13rem)]">
+      <Skyline layer="far" class="absolute inset-x-0 bottom-0 h-full w-full text-[var(--color-lions)]" />
+      <Skyline layer="near" class="absolute inset-x-0 -bottom-px h-[40%] w-full" fill="var(--bg)" />
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap grid gap-12 md:grid-cols-2 md:gap-20">
+      <div class="space-y-5">
+        <h2 class="t-h2">{s('About our name', 'Про назву')}</h2>
+        <p class="text-[19px] leading-[1.6]"><strong>{club.name}</strong>: {s('International, because we are an English-speaking community open to people from different countries who live or work in Lviv.', 'International, бо ми англомовна спільнота, відкрита для людей з різних країн, які живуть або працюють у Львові.')}</p>
+        <p class="text-[19px] leading-[1.6]">{s('Lviv has long been called the city of the lion: Leopolis in Latin, the city of Prince Lev, with lions on its coat of arms, in the Market Square and on its façades. For a Lions club it is a special place.', 'Львів давно називають містом лева: латинською Leopolis, місто князя Лева, з левами на гербі, на Ринку і на фасадах. Для клубу Lions це особливе місто.')}</p>
+        <p class="text-soft">{s('Official club record with Lions International', 'Офіційний запис клубу в реєстрі Lions International')}: {tr(lang, club.lciRecord)}.</p>
+      </div>
+      <div class="space-y-5">
+        <BrandAsset name="signature" alt="Lions International" height={52} />
+        <h2 class="t-h2">{s('Who the Lions are', 'Хто такі Lions')}</h2>
+        <p class="text-[19px] leading-[1.6]">{s('Lions Clubs International was founded in Chicago in 1917. Today it is the world’s largest network of service clubs: more than 1.4 million people in over 200 countries and territories. Our motto: We Serve.', 'Lions Clubs International заснували 1917 року в Чикаго. Сьогодні це найбільша у світі мережа сервісних клубів: понад 1,4 мільйона людей у більш ніж 200 країнах і територіях. Девіз: We Serve, «Ми служимо».')}</p>
+        <p class="text-[19px] leading-[1.6]">{s('Clubs in Ukraine belong to', 'Клуби в Україні входять до')} {tr(lang, club.district)}. {s('Guests from other clubs join our meetings, including Lions Club “Kiev Ecology”.', 'На наших зустрічах бувають гості з інших клубів, зокрема з Lions Club «Kiev Ecology».')}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-[var(--color-lions)] text-white">
+    <div class="wrap grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end">
+      <div class="space-y-4">
+        <h2 class="t-h2">{s('An English-speaking club in Lviv', 'Англомовний клуб у Львові')}</h2>
+        <p class="max-w-[52ch] text-[19px] leading-[1.6] text-white/80">{s('We speak English, so it is easy to join for people from different countries who live or work in Lviv, and for Lviv residents who want to serve in an international circle.', 'Ми спілкуємося англійською, тож до нас легко долучитися людям з різних країн, які живуть або працюють у Львові, і львів’янам, які хочуть служити в міжнародному колі.')}</p>
+      </div>
+      <p class="text-[19px] leading-[1.6] text-white/80 md:text-right">{lang === 'uk' ? <span lang="en">{club.about.en}</span> : <span lang="uk">{club.about.uk}</span>}</p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-alt">
+    <div class="wrap">
+      <h2 class="t-h2 mb-10 max-w-[20ch]">{s('How we work', 'Як ми працюємо')}</h2>
+      <ol class="grid gap-8 md:grid-cols-4">
+        {steps.map(([h, d], i) => (
+          <li class="border-t-2 border-[var(--color-lions)] pt-5">
+            <p class="t-num text-[15px] font-[700] text-accent">{s('Step', 'Крок')} {i + 1}</p>
+            <p class="mt-2 text-[21px] font-[650] tracking-[-0.015em]">{h}</p>
+            <p class="mt-2 text-soft">{d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap grid gap-12 md:grid-cols-[1fr_1.5fr]">
+      <div class="space-y-4">
+        <h2 class="t-h2">{s('Board', 'Правління')}</h2>
+        <p class="t-lead">{s('Elected every year. The Lions year runs from 1 July to 30 June.', 'Обирається щороку. Lions-рік триває з 1 липня до 30 червня.')}</p>
+        <a href={lp(lang, '/members')} class="link inline-block">{T.allMembers}</a>
+      </div>
+      <ul class="divide-y divide-[var(--line)] border-y border-[var(--line)]">
+        {board.map((m) => (
+          <li class="flex items-baseline justify-between gap-4 py-4">
+            <span class="text-[19px] font-[620]">{tr(lang, m.role)}</span>
+            {m.real ? <a class="link text-[17px]" href={lp(lang, `/members/${m.slug}`)}>{tr(lang, m.name)}</a> : <span class="text-soft">{s('name after approval', 'ім’я після погодження')}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-alt">
+    <div class="wrap">
+      <h2 class="t-h2 mb-3">{s('Our priorities for 2026-2027', 'Наші пріоритети на 2026-2027')}</h2>
+      <p class="t-lead mb-8 max-w-[56ch]">{s('Healthcare and humanitarian aid. Among the Lions global causes, these are:', 'Охорона здоров’я та гуманітарна допомога. Серед глобальних напрямів Lions це:')}</p>
+      <ul class="flex flex-wrap gap-3">
+        {causes.filter((c) => ['humanitarian', 'vision', 'diabetes', 'cancer'].includes(c.key)).map((c) => (
+          <li class="rounded-full bg-[var(--surface)] px-5 py-3 text-[17px] font-[600]">{tr(lang, c.label)}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

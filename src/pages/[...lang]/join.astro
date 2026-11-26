@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import RequestForm from '../../components/RequestForm.astro';
+import { events } from '../../data/content';
+import { dateLong, time } from '../../lib/format';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const openNight = events.find((e) => e.slug.startsWith('vidkrytyi-vechir'));
+const steps = [
+  [s('Come to an open evening', 'Прийдіть на відкритий вечір'), openNight ? s(`Next one: ${dateLong(openNight.start, lang)}, ${time(openNight.start, lang)}.`, `Найближчий: ${dateLong(openNight.start, lang)}, ${time(openNight.start, lang)}.`) : s('We will announce the date in Events.', 'Дату оголосимо в розділі «Події».')],
+  [s('Try service', 'Спробуйте служіння'), s('Volunteer on one of our projects to see how we work.', 'Долучіться волонтером до одного з проєктів, щоб відчути, як ми працюємо.')],
+  [s('Get a sponsor', 'Отримайте рекомендацію'), s('A club member sponsors you, the board approves, and you take the Lions oath.', 'Член клубу рекомендує вас, правління погоджує, і ви складаєте присягу Lions.')],
+];
+---
+<Base title={T.join} description={s('How to become a member or volunteer of Lviv International Lions Club.', 'Як стати членом Lviv International Lions Club або волонтером клубу.')}>
+  <PageHead title={s('How to join the club', 'Як долучитися до клубу')} lead={s('Lions membership is by sponsorship from a current member. You can start simply: come to a meeting or help as a volunteer. Meetings are held in English.', 'Членство в Lions за рекомендацією чинного члена клубу. Почати можна з простого: прийти на зустріч або допомогти волонтером. Зустрічі проходять англійською.')} />
+  <section class="wrap pb-16">
+    <ol class="grid gap-8 md:grid-cols-3">
+      {steps.map(([h, d], i) => (
+        <li class="panel p-7">
+          <p class="t-num text-[44px] font-[780] leading-none tracking-[-0.04em] text-accent" style="font-stretch:118%">{i + 1}</p>
+          <p class="mt-4 text-[21px] font-[650] tracking-[-0.015em]">{h}</p>
+          <p class="mt-2 text-soft">{d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+  <section class="section-tight bg-alt">
+    <div class="wrap grid gap-12 md:grid-cols-[1fr_1.3fr]">
+      <div class="space-y-4">
+        <h2 class="t-h2">{s('Send a request', 'Залиште заявку')}</h2>
+        <p class="t-lead">{s('Tell us briefly about yourself and what interests you: membership, volunteering or partnership.', 'Розкажіть коротко про себе і що вам цікаво: членство, волонтерство чи партнерство.')}</p>
+        <p class="text-soft">{s('We will explain membership dues and what is expected of members at the first meeting.', 'Членський внесок і очікування від членів клубу пояснимо на першій зустрічі.')}</p>
+        {openNight && <a href={lp(lang, `/events/${openNight.slug}`)} class="link inline-block">{s('About the open evening', 'Про відкритий вечір')}</a>}
+      </div>
+      <RequestForm kind="join" submitLabel={s('Send request', 'Надіслати заявку')} messageLabel={s('About you and how you would like to help', 'Про себе і чим хочете долучитися')} />
+    </div>
+  </section>
+</Base>

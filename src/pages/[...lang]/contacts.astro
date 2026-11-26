@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import RequestForm from '../../components/RequestForm.astro';
+import { club } from '../../data/site';
+import { members } from '../../data/content';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const leader = members.find((m) => m.real && m.board);
+---
+<Base title={T.nav.contacts} description={s('Contact Lviv International Lions Club.', 'Контакти Lviv International Lions Club.')}>
+  <PageHead title={T.nav.contacts} lead={s('Write or call about joining a meeting, partnerships and joint projects.', 'Пишіть або телефонуйте щодо участі в зустрічах, партнерства і спільних проєктів. Можна англійською.')} />
+  <section class="wrap grid gap-14 pb-24 md:grid-cols-[1fr_1.3fr]">
+    <dl class="grid content-start gap-7 text-[19px]">
+      {leader && <div><dt class="t-small">{s('Contact person', 'Контактна особа')}</dt><dd><a class="link" href={lp(lang, `/members/${leader.slug}`)}>{tr(lang, leader.name)}</a>, {lang === 'uk' ? tr(lang, leader.role).toLowerCase() : tr(lang, leader.role)}</dd></div>}
+      <div><dt class="t-small">Email</dt><dd><a class="link" href={`mailto:${club.email}`}>{club.email}</a></dd></div>
+      <div><dt class="t-small">{s('Phone', 'Телефон')}</dt><dd><a class="link" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phoneDisplay}</a></dd></div>
+      <div><dt class="t-small">{s('Club meetings', 'Зустрічі клубу')}</dt><dd>{tr(lang, club.meetingRule)}</dd><dd class="text-soft">{tr(lang, club.meetingPlace)}</dd></div>
+      <div><dt class="t-small">{s('District', 'Дистрикт')}</dt><dd>Lions Clubs International, {tr(lang, club.district)}</dd></div>
+      <div><dt class="t-small">Facebook</dt><dd><a class="link" href={club.social[0].href} target="_blank" rel="noopener">{club.facebookName}</a></dd></div>
+      <div><dt class="t-small">{s('Meeting language', 'Мова зустрічей')}</dt><dd>{s('English', 'Англійська')}</dd></div>
+    </dl>
+    <RequestForm kind="contact" submitLabel={s('Send message', 'Надіслати повідомлення')} messageLabel={s('Message', 'Повідомлення')} />
+  </section>
+</Base>

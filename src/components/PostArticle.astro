@@ -7,26 +7,29 @@ import { causeIcon } from '../data/brand-assets';
 import type { Post } from '../data/content';
 import { causeLabel } from '../data/site';
 import { dateLong } from '../lib/format';
-import { u } from '../lib/url';
+import { langFromUrl, t, lp, tr } from '../i18n';
 interface Props { post: Post; back: { href: string; label: string }; more: Post[] }
 const { post, back, more } = Astro.props;
+const lang = langFromUrl(Astro.url);
+const T = t(lang);
 const base = post.type === 'project' ? '/projects' : '/news';
+const title = tr(lang, post.title);
 ---
 <article>
   <header class="wrap-narrow pb-10 pt-[clamp(3rem,7vw,6rem)]">
-    <a href={u(back.href)} class="link text-[15px]">{back.label}</a>
+    <a href={lp(lang, back.href)} class="link text-[15px]">{back.label}</a>
     <div class="mt-6 flex flex-wrap items-center gap-2">
-      <time class="t-small" datetime={post.date}>{dateLong(post.date)}</time>
-      {post.tags.filter((t) => t !== 'club' && t !== 'event').map((t) => <span class="badge badge-blue">{causeIcon[t] && <BrandAsset name={causeIcon[t]} alt="" height={18} />}{causeLabel(t)}</span>)}
-      {post.status === 'done' && <span class="badge">завершено</span>}
-      {post.demo && <span class="badge badge-gold">демо-приклад</span>}
+      <time class="t-small" datetime={post.date}>{dateLong(post.date, lang)}</time>
+      {post.tags.filter((g) => g !== 'club' && g !== 'event').map((g) => <span class="badge badge-blue">{causeIcon[g] && <BrandAsset name={causeIcon[g]} alt="" height={18} />}{causeLabel(g, lang)}</span>)}
+      {post.status === 'done' && <span class="badge">{T.done}</span>}
+      {post.demo && <span class="badge badge-gold">{T.demoExample}</span>}
     </div>
-    <h1 class="t-h1 mt-4" transition:name={`title-${post.slug}`}>{post.title}</h1>
-    <p class="t-lead mt-5">{post.excerpt}</p>
+    <h1 class="t-h1 mt-4" transition:name={`title-${post.slug}`}>{title}</h1>
+    <p class="t-lead mt-5">{tr(lang, post.excerpt)}</p>
   </header>
   <div class="wrap">
     <div class="overflow-hidden rounded-[var(--radius-card)]" transition:name={`cover-${post.slug}`}>
-      <Photo art={post.cover} alt={post.title} ratio="21 / 9" />
+      <Photo art={post.cover} alt={title} ratio="21 / 9" />
     </div>
   </div>
   {post.stats && (
@@ -34,20 +37,20 @@ const base = post.type === 'project' ? '/projects' : '/news';
       <dl class="grid grid-cols-2 gap-6 sm:grid-cols-3">
         {post.stats.map((s) => (
           <div class="border-t-2 border-[var(--color-gold)] pt-4">
-            <dd class="t-num text-[42px] font-[760] leading-none tracking-[-0.035em]" style="font-stretch:116%">{s.value}</dd>
-            <dt class="t-small mt-2">{s.label}</dt>
+            <dd class="t-num text-[42px] font-[760] leading-none tracking-[-0.035em]" style="font-stretch:116%">{lang === 'uk' ? s.value.replace(',', ' ') : s.value}</dd>
+            <dt class="t-small mt-2">{tr(lang, s.label)}</dt>
           </div>
         ))}
       </dl>
     </div>
   )}
   <div class="wrap-narrow py-12">
-    <PostBody body={post.body} />
-    {post.source && <p class="t-small mt-8">Джерело: <a class="link" href={post.source} target="_blank" rel="noopener">сторінка клубу у Facebook</a></p>}
+    <PostBody body={post.body[lang]} />
+    {post.source && <p class="t-small mt-8">{T.source}: <a class="link" href={post.source} target="_blank" rel="noopener">{T.sourceFb}</a></p>}
     {post.type === 'project' && (
       <div class="panel mt-12 flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
-        <p class="text-[19px] font-[620]">Хочете допомогти цьому проєкту?</p>
-        <a href={u('/support')} class="btn btn-gold">Підтримати проєкт</a>
+        <p class="text-[19px] font-[620]">{T.helpProject}</p>
+        <a href={lp(lang, '/support')} class="btn btn-gold">{T.supportProject}</a>
       </div>
     )}
   </div>
@@ -56,13 +59,13 @@ const base = post.type === 'project' ? '/projects' : '/news';
 {more.length > 0 && (
   <aside class="bg-alt section-tight">
     <div class="wrap">
-      <h2 class="t-h3 mb-8">{post.type === 'project' ? 'Інші проєкти' : 'Ще новини'}</h2>
+      <h2 class="t-h3 mb-8">{post.type === 'project' ? T.otherProjects : T.moreNews}</h2>
       <div class="grid gap-8 md:grid-cols-3">
         {more.map((m) => (
-          <a href={u(`${base}/${m.slug}`)} class="group space-y-3">
-            <div class="overflow-hidden rounded-2xl"><Photo art={m.cover} alt={m.title} ratio="3 / 2" /></div>
-            <p class="t-small">{dateLong(m.date)}</p>
-            <h3 class="text-[21px] font-[650] leading-[1.2] tracking-[-0.015em] group-hover:text-[var(--accent)]">{m.title}</h3>
+          <a href={lp(lang, `${base}/${m.slug}`)} class="group space-y-3">
+            <div class="overflow-hidden rounded-2xl"><Photo art={m.cover} alt={tr(lang, m.title)} ratio="3 / 2" /></div>
+            <p class="t-small">{dateLong(m.date, lang)}</p>
+            <h3 class="text-[21px] font-[650] leading-[1.2] tracking-[-0.015em] group-hover:text-[var(--accent)]">{tr(lang, m.title)}</h3>
           </a>
         ))}
       </div>

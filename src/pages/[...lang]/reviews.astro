@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { reviews, reviewKindLabel } from '../../data/content';
+import { dateLong } from '../../lib/format';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+---
+<Base title={T.nav.reviews} description={s('Reviews of Lviv International Lions Club from partners, volunteers and beneficiaries.', 'Відгуки партнерів, волонтерів і отримувачів допомоги про Lviv International Lions Club.')}>
+  <PageHead title={s('Reviews of the club', 'Відгуки про клуб')} lead={s('We publish only genuine reviews, with the author’s consent and after moderation. Criticism goes directly to the board.', 'Публікуємо лише справжні відгуки, зі згодою автора і після модерації. Критику отримує правління напряму.')} />
+  <section class="wrap grid gap-14 pb-16 lg:grid-cols-[1.5fr_1fr]">
+    <div>
+      <ul class="grid gap-6" data-reviews>
+        {reviews.map((r) => (
+          <li class="panel p-7 md:p-8">
+            <p class="text-[21px] leading-[1.45]">{tr(lang, r.text)}</p>
+            <p class="mt-5 text-[15px]"><span class="font-[640]">{tr(lang, r.author)}</span> <span class="text-soft">{tr(lang, reviewKindLabel[r.kind])}, {dateLong(r.date, lang)}</span> <span class="badge badge-gold ml-1">{T.demo}</span></p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <aside class="lg:sticky lg:top-24 lg:self-start">
+      <h2 class="t-h3">{s('Leave a review', 'Залишити відгук')}</h2>
+      <form class="mt-6 grid gap-5" data-review-form novalidate>
+        <div class="field"><label for="rv-name">{s('Name or organisation', 'Ім’я або організація')}</label><input id="rv-name" name="author" class="input" required /></div>
+        <div class="field"><label for="rv-kind">{s('Your relation to the club', 'Хто ви для клубу')}</label>
+          <select id="rv-kind" name="kind" class="select">
+            {(['partner', 'beneficiary', 'volunteer', 'guest'] as const).map((k) => <option value={k} selected={k === 'guest'}>{tr(lang, reviewKindLabel[k])}</option>)}
+          </select></div>
+        <div class="field"><label for="rv-text">{s('Review', 'Відгук')}</label><textarea id="rv-text" name="text" class="textarea" maxlength="1200" required></textarea></div>
+        <div class="field"><label for="rv-email">{s('Email (not published)', 'Email (не публікується)')}</label><input id="rv-email" name="email" type="email" class="input" /></div>
+        <label class="check"><input type="checkbox" name="consent" /> <span>{s('I agree to my review being published with my name.', 'Погоджуюся на публікацію відгуку з моїм ім’ям.')}</span></label>
+        <button class="btn btn-blue w-fit" type="submit">{s('Send review', 'Надіслати відгук')}</button>
+        <p class="text-[15px]" role="status" data-status></p>
+      </form>
+    </aside>
+  </section>
+</Base>
+<script>
+  import { reviews, addReview, esc, fmtDate } from '../../scripts/store';
+  import { ct } from '../../scripts/i18n';
+  function paint() {
+    const ul = document.querySelector<HTMLElement>('[data-reviews]');
+    if (!ul) return;
+    ul.querySelectorAll('[data-local]').forEach((n) => n.remove());
+    reviews().filter((r) => r.status === 'approved').forEach((r) => {
+      ul.insertAdjacentHTML('afterbegin', `<li class="panel p-7 md:p-8" data-local><p class="text-[21px] leading-[1.45]">${esc(r.text)}</p>
+        <p class="mt-5 text-[15px]"><span class="font-[640]">${esc(r.author)}</span> <span class="text-soft">${ct().kinds[r.kind] ?? ''}, ${fmtDate(r.at)}</span></p></li>`);
+    });
+  }
+  document.addEventListener('astro:page-load', () => {
+    paint();
+    const f = document.querySelector<HTMLFormElement>('[data-review-form]');
+    if (!f || f.dataset.bound) return; f.dataset.bound = '1';
+    f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const st = f.querySelector<HTMLElement>('[data-status]')!;
+      if (!f.checkValidity()) { st.textContent = ct().reviewInvalid; st.className = 'text-[15px] text-[#b42318]'; f.reportValidity(); return; }
+      const d = new FormData(f);
+      addReview({ author: String(d.get('author')), kind: String(d.get('kind')), text: String(d.get('text')), email: String(d.get('email') || ''), consent: d.get('consent') === 'on' });
+      f.reset();
+      st.className = 'text-[15px] text-[#067647]';
+      st.textContent = ct().reviewThanks;
+    });
+  });
+</script>

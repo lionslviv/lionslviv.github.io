@@ -1,0 +1,37 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { members } from '../../../data/content';
+import { u } from '../../../lib/url';
+import { langOf, lp, tr, t } from '../../../i18n';
+export function getStaticPaths() {
+  return [undefined, 'uk'].flatMap((lang) => members.filter((m) => m.board).map((m) => ({ params: { lang, slug: m.slug }, props: { m } })));
+}
+const { m } = Astro.props;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const name = tr(lang, m.name);
+const role = tr(lang, m.role);
+---
+<Base title={m.real ? `${name}, ${role}` : role} description={m.bio ? tr(lang, m.bio) : undefined} noindex={!m.real}>
+  <section class="wrap grid gap-12 pb-24 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[minmax(0,380px)_1fr]">
+    {m.photo ? (
+      <div class="aspect-square self-start overflow-hidden rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
+        <img src={u(m.photo)} alt={name} width="800" height="800" decoding="async" class="h-full w-full object-cover" />
+      </div>
+    ) : (
+      <div class="grid aspect-square place-items-center rounded-[var(--radius-card)] bg-[var(--bg-alt)]">
+        <svg viewBox="0 0 80 80" class="h-1/2 w-1/2 text-[var(--color-lions-sky)] opacity-60" aria-hidden="true"><circle cx="40" cy="28" r="15" fill="currentColor" /><path d="M12 76c0-17 12-28 28-28s28 11 28 28z" fill="currentColor" /></svg>
+      </div>
+    )}
+    <div class="space-y-5">
+      <a href={lp(lang, '/members')} class="link text-[15px]">{T.allMembers}</a>
+      <h1 class="t-h1">{name}</h1>
+      <p class="flex flex-wrap gap-2"><span class="badge badge-blue">{role}</span><span class="badge">{s('member since', 'у клубі з')} {m.since}</span></p>
+      {m.field && m.real && <p class="text-[19px] font-[560]">{tr(lang, m.field)}</p>}
+      {m.bio ? <p class="max-w-[58ch] text-[19px] leading-[1.6]">{tr(lang, m.bio)}</p> : <p class="max-w-[52ch] text-soft">{s('A short bio of up to 300 characters, field of work and a LinkedIn link will appear here. Members edit their profile in their account and decide whether to show it publicly.', 'Тут буде коротке біо до 300 символів, сфера діяльності та посилання на LinkedIn. Член клубу редагує профіль у кабінеті і сам вирішує, чи показувати його публічно.')}</p>}
+      {m.real && <p class="t-small">{s('Profile prepared from public professional information; the final text is being approved.', 'Профіль підготовлено за відкритими професійними даними, остаточний текст погоджується.')}</p>}
+      <p class="panel max-w-[52ch] p-5 text-[15px]">{s('Phone and email are visible to club members after signing in.', 'Телефон і email видно лише членам клубу після входу.')}</p>
+    </div>
+  </section>
+</Base>

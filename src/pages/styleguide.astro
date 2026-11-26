@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Photo from '../components/Photo.astro';
 import Skyline from '../components/Skyline.astro';
 import { brandColors } from '../data/brand';
-const colors = brandColors.map((c) => [c.name, c.hex, `${c.pantone}. ${c.role === 'primary' ? 'Основний' : 'Вторинний'}. ${c.use}`]);
+const colors = brandColors.map((c) => [c.name, c.hex, `${c.pantone}. ${c.role === 'primary' ? 'Основний' : 'Вторинний'}. ${c.use.uk}`]);
 ---
 <Base title="Стайлгайд" noindex>
   <section class="wrap py-16">

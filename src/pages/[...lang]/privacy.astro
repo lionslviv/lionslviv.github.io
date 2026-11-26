@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { club } from '../../data/site';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+---
+<Base title={T.nav.privacy} description={s('Privacy policy of Lviv International Lions Club.', 'Політика конфіденційності Lviv International Lions Club.')}>
+  <PageHead title={s('Privacy policy', 'Політика конфіденційності')} lead={s('Draft. The final text will be approved by the club board with a lawyer.', 'Чернетка. Фінальний текст погоджує правління клубу з юристом.')} />
+  <section class="wrap-narrow pb-24">
+    {lang === 'uk' ? (
+      <div class="prose-lions">
+        <h2>Які дані ми збираємо</h2>
+        <ul>
+          <li>Ім’я та email з форм заявки, контакту і відгуку.</li>
+          <li>Дані облікового запису під час входу через Google, Apple або email.</li>
+          <li>Профілі членів клубу, які вони заповнюють і публікують самостійно.</li>
+        </ul>
+        <h2>Для чого</h2>
+        <p>Щоб відповісти на заявку, модерувати коментарі й відгуки та організовувати події клубу. Ми не продаємо і не передаємо дані третім особам для реклами.</p>
+        <h2>Аналітика і cookies</h2>
+        <p>Використовуємо аналітику без cookies і без відстеження окремих людей, тому банер згоди на cookies не потрібен.</p>
+        <h2>Фото</h2>
+        <p>Фото людей публікуємо зі згоди. Фото дітей лише зі згоди батьків або так, щоб обличчя не було видно. Щоб прибрати фото, напишіть на {club.email}.</p>
+        <h2>Ваші права</h2>
+        <p>Відповідно до Закону України «Про захист персональних даних» (і GDPR для гостей з ЄС) ви можете отримати, виправити або видалити свої дані. Пишіть на <a href={`mailto:${club.email}`}>{club.email}</a>.</p>
+      </div>
+    ) : (
+      <div class="prose-lions">
+        <h2>What data we collect</h2>
+        <ul>
+          <li>Name and email from the join, contact and review forms.</li>
+          <li>Account data when you sign in with Google, Apple or email.</li>
+          <li>Club member profiles that members fill in and publish themselves.</li>
+        </ul>
+        <h2>Why</h2>
+        <p>To reply to your request, moderate comments and reviews, and organise club events. We do not sell data or share it with third parties for advertising.</p>
+        <h2>Analytics and cookies</h2>
+        <p>We use cookie-free analytics that do not track individuals, so no cookie consent banner is needed.</p>
+        <h2>Photos</h2>
+        <p>We publish photos of people with their consent. Photos of children only with parental consent or with faces not visible. To have a photo removed, write to {club.email}.</p>
+        <h2>Your rights</h2>
+        <p>Under the Law of Ukraine “On Personal Data Protection” (and the GDPR for guests from the EU) you can access, correct or delete your data. Write to <a href={`mailto:${club.email}`}>{club.email}</a>.</p>
+      </div>
+    )}
+  </section>
+</Base>

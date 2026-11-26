@@ -1,0 +1,39 @@
+---
+// Перегляд поста, створеного в демо-адмінці (дані з localStorage).
+// У продакшні це звичайна сторінка /news/[slug] з даними з Supabase.
+import Base from '../../../layouts/Base.astro';
+import Comments from '../../../components/Comments.astro';
+import { langPaths, langOf, lp, tr, t } from '../../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+---
+<Base title={s('News', 'Новина')} noindex>
+  <article class="wrap-narrow pb-16 pt-[clamp(3rem,7vw,6rem)]" data-local-post>
+    <a href={lp(lang, '/news')} class="link text-[15px]">{T.allNews}</a>
+    <p class="t-small mt-6" data-date></p>
+    <h1 class="t-h1 mt-3" data-title>{s('Loading…', 'Завантаження…')}</h1>
+    <p class="t-lead mt-5" data-excerpt></p>
+    <div class="prose-lions mt-10" data-body></div>
+  </article>
+  <Comments target="local-post" />
+</Base>
+<script>
+  import { posts, esc, fmtDate } from '../../../scripts/store';
+  import { ct } from '../../../scripts/i18n';
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector<HTMLElement>('[data-local-post]');
+    if (!root) return;
+    const id = new URLSearchParams(location.search).get('id');
+    const p = posts().find((x) => x.id === id);
+    const q = (s: string) => root.querySelector<HTMLElement>(s)!;
+    if (!p) { q('[data-title]').textContent = ct().notFound; q('[data-excerpt]').textContent = ct().notFoundText; return; }
+    document.title = `${p.title} | Lviv International Lions Club`;
+    q('[data-date]').textContent = fmtDate(p.at);
+    q('[data-title]').textContent = p.title;
+    q('[data-excerpt]').textContent = p.excerpt;
+    q('[data-body]').innerHTML = p.body.split(/\n{2,}/).map((b) => `<p>${esc(b)}</p>`).join('');
+    document.querySelector<HTMLElement>('[data-comments]')?.setAttribute('data-comments', `local-${p.id}`);
+  });
+</script>

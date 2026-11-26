@@ -3,13 +3,14 @@
 // Емблему не перемальовуємо. На темному фоні (футер) емблему не ставимо:
 // там офіційний білий підпис Lions International окремо, з вільним полем.
 import BrandAsset from './BrandAsset.astro';
-import { u } from '../lib/url';
+import { langFromUrl, lp } from '../i18n';
 import { club } from '../data/site';
 interface Props { inverse?: boolean }
 const { inverse = false } = Astro.props;
+const lang = langFromUrl(Astro.url);
 ---
-<a href={u('/')} class="flex items-center gap-3 leading-none" aria-label="Lviv International Lions Club, на головну">
-  {!inverse && <BrandAsset name="emblem" alt="Емблема Lions Clubs International" height={40} />}
+<a href={lp(lang, '/')} class="flex items-center gap-3 leading-none" aria-label={lang === 'uk' ? `${club.name}, на головну` : `${club.name}, home`}>
+  {!inverse && <BrandAsset name="emblem" alt={lang === 'uk' ? 'Емблема Lions Clubs International' : 'Lions Clubs International emblem'} height={40} />}
   <span class="flex flex-col">
     <span class={`text-[11.5px] font-[560] tracking-[0.01em] ${inverse ? 'text-white/70' : 'text-soft'}`}>Lions Club</span>
     <span class={`whitespace-nowrap text-[16px] font-[760] tracking-[-0.02em] sm:text-[18px] ${inverse ? 'text-white' : ''}`} style="font-stretch:112%">{club.shortName}</span>

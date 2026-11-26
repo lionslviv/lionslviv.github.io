@@ -1,12 +1,13 @@
 ---
-import { u } from '../lib/url';
+import { langFromUrl, lp } from '../i18n';
 interface Props { title: string; lead?: string; href?: string; linkLabel?: string; class?: string }
 const { title, lead, href, linkLabel, class: cls = '' } = Astro.props;
+const lang = langFromUrl(Astro.url);
 ---
 <div class={`mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between ${cls}`}>
   <div class="max-w-[46rem] space-y-3">
     <h2 class="t-h2">{title}</h2>
     {lead && <p class="t-lead">{lead}</p>}
   </div>
-  {href && <a href={u(href)} class="link shrink-0 text-[17px]">{linkLabel}</a>}
+  {href && <a href={lp(lang, href)} class="link shrink-0 text-[17px]">{linkLabel}</a>}
 </div>

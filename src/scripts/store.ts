@@ -30,10 +30,13 @@ function write(key: string, value: unknown) {
   try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* приватний режим або переповнення */ }
   window.dispatchEvent(new CustomEvent('llp:change', { detail: key }));
 }
+import { clang, ct, cfmt } from './i18n';
 export const uid = () => Math.random().toString(36).slice(2, 10);
 const now = () => new Date().toISOString();
 
-export const roleLabel: Record<Role, string> = { user: 'Користувач', member: 'Член клубу', editor: 'Редактор', admin: 'Адмін' };
+/** Назва ролі мовою поточної сторінки */
+export const roleName = (r: Role) => ct().roles[r];
+const L = (en: string, uk: string) => (clang() === 'uk' ? uk : en);
 export const can = {
   comment: (u: DemoUser | null) => !!u,
   memberArea: (u: DemoUser | null) => !!u && u.role !== 'user',
@@ -44,11 +47,11 @@ export const can = {
 export function seed() {
   if (read(K.seeded, false)) return;
   write(K.comments, [
-    { id: uid(), target: 'perevirka-zoru-shkola', author: 'Гість сайту (демо)', body: 'Чи можна подати заявку від нашої школи?', status: 'approved', at: '2026-11-08T10:12:00Z' },
+    { id: uid(), target: 'perevirka-zoru-shkola', author: 'Site guest (demo)', body: 'Can our school apply for a screening too?', status: 'approved', at: '2026-11-08T10:12:00Z' },
     { id: uid(), target: 'perevirka-zoru-shkola', author: 'Новий користувач (демо)', body: 'Перший коментар нового користувача чекає модерації.', status: 'pending', at: '2026-11-09T18:40:00Z' },
   ]);
   write(K.reviews, [
-    { id: uid(), author: 'Відгук на модерації (демо)', kind: 'guest', text: 'Так виглядає відгук, що чекає схвалення редактора.', consent: true, status: 'pending', at: '2026-11-20T09:00:00Z' },
+    { id: uid(), author: 'Review in moderation (demo)', kind: 'guest', text: 'This is how a review waiting for editor approval looks.', consent: true, status: 'pending', at: '2026-11-20T09:00:00Z' },
   ]);
   write(K.seeded, true);
 }
@@ -56,8 +59,8 @@ export function seed() {
 // ---- користувач ----
 export const getUser = () => read<DemoUser | null>(K.user, null);
 export function signIn(role: Role, name?: string) {
-  const u: DemoUser = { name: name || `${roleLabel[role]} (демо)`, email: `${role}@demo.local`, role, isPublic: true };
-  write(K.user, u); log(u.name, 'увійшов у демо-режимі');
+  const u: DemoUser = { name: name || `${roleName(role)} ${ct().demoUser}`, email: `${role}@demo.local`, role, isPublic: true };
+  write(K.user, u); log(u.name, L('signed in (demo)', 'увійшов у демо-режимі'));
   return u;
 }
 export function updateUser(patch: Partial<DemoUser>) { const u = getUser(); if (u) write(K.user, { ...u, ...patch }); }
@@ -66,7 +69,7 @@ export function signOut() { localStorage.removeItem(K.user); window.dispatchEven
 // ---- коментарі ----
 export const comments = () => read<DemoComment[]>(K.comments, []);
 export function addComment(target: string, body: string) {
-  const u = getUser(); if (!u) throw new Error('Увійдіть, щоб коментувати');
+  const u = getUser(); if (!u) throw new Error('Sign in to comment');
   const trusted = u.role !== 'user';
   const c: DemoComment = { id: uid(), target, author: u.name, body: body.trim(), status: trusted ? 'approved' : 'pending', at: now() };
   write(K.comments, [...comments(), c]);
@@ -74,7 +77,7 @@ export function addComment(target: string, body: string) {
 }
 export function setCommentStatus(id: string, status: Status) {
   write(K.comments, comments().map((c) => (c.id === id ? { ...c, status } : c)));
-  log(getUser()?.name ?? '?', `коментар ${id}: ${status}`);
+  log(getUser()?.name ?? '?', `${L('comment', 'коментар')} ${id}: ${status}`);
 }
 
 // ---- відгуки ----
@@ -84,7 +87,7 @@ export function addReview(r: Omit<DemoReview, 'id' | 'status' | 'at'>) {
 }
 export function setReviewStatus(id: string, status: Status) {
   write(K.reviews, reviews().map((r) => (r.id === id ? { ...r, status } : r)));
-  log(getUser()?.name ?? '?', `відгук ${id}: ${status}`);
+  log(getUser()?.name ?? '?', `${L('review', 'відгук')} ${id}: ${status}`);
 }
 
 // ---- пости ----
@@ -94,19 +97,19 @@ export function savePost(p: Partial<DemoPost> & { title: string }) {
   const u = getUser();
   if (p.id) {
     write(K.posts, list.map((x) => (x.id === p.id ? { ...x, ...p } as DemoPost : x)));
-    log(u?.name ?? '?', `оновив пост "${p.title}"`);
+    log(u?.name ?? '?', `${L('updated post', 'оновив пост')} "${p.title}"`);
     return p.id;
   }
   const id = uid();
   write(K.posts, [{ id, type: 'news', excerpt: '', body: '', status: 'draft', at: now(), author: u?.name ?? '', ...p } as DemoPost, ...list]);
-  log(u?.name ?? '?', `створив пост "${p.title}"`);
+  log(u?.name ?? '?', `${L('created post', 'створив пост')} "${p.title}"`);
   return id;
 }
-export function deletePost(id: string) { write(K.posts, posts().filter((p) => p.id !== id)); log(getUser()?.name ?? '?', `видалив пост ${id}`); }
+export function deletePost(id: string) { write(K.posts, posts().filter((p) => p.id !== id)); log(getUser()?.name ?? '?', `${L('deleted post', 'видалив пост')} ${id}`); }
 
 // ---- події ----
 export const demoEvents = () => read<DemoEvent[]>(K.events, []);
-export function addEvent(e: Omit<DemoEvent, 'id' | 'at'>) { write(K.events, [...demoEvents(), { ...e, id: uid(), at: now() }]); log(getUser()?.name ?? '?', `додав подію "${e.title}"`); }
+export function addEvent(e: Omit<DemoEvent, 'id' | 'at'>) { write(K.events, [...demoEvents(), { ...e, id: uid(), at: now() }]); log(getUser()?.name ?? '?', `${L('added event', 'додав подію')} "${e.title}"`); }
 export function deleteEvent(id: string) { write(K.events, demoEvents().filter((e) => e.id !== id)); }
 
 // ---- заявки ----
@@ -120,4 +123,4 @@ function log(who: string, what: string) { const a = audit(); a.unshift({ at: now
 export function resetDemo() { Object.values(K).forEach((k) => localStorage.removeItem(k)); seed(); }
 
 export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
-export const fmtDate = (iso: string) => new Intl.DateTimeFormat('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
+export const fmtDate = (iso: string) => cfmt(iso);

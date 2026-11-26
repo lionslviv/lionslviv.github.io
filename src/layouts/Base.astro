@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { club } from '../data/site';
 import { u } from '../lib/url';
+import { langFromUrl, switchPath, tr } from '../i18n';
 
 interface Props {
   title?: string;
@@ -13,38 +14,50 @@ interface Props {
   jsonLd?: Record<string, unknown>;
   bare?: boolean;
 }
-const { title, description = 'Lviv International Lions Club: клуб Lions International у Львові. Перевірки зору для дітей, генератори для громад, молодіжні програми.', noindex = false, jsonLd, bare = false } = Astro.props;
-const fullTitle = title ? `${title} | ${club.name}` : `${club.name}: Lions у місті лева`;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const lang = langFromUrl(Astro.url);
+const defaults = {
+  en: 'Lviv International Lions Club: an English-speaking Lions club in Lviv, Ukraine. Healthcare, humanitarian aid and service to the community.',
+  uk: 'Lviv International Lions Club: англомовний клуб Lions у Львові. Охорона здоров’я, гуманітарна допомога і служіння громаді.',
+};
+const { title, description = defaults[lang], noindex = false, jsonLd, bare = false } = Astro.props;
+const tagline = { en: 'Lions in the city of the lion', uk: 'Lions у місті лева' };
+const fullTitle = title ? `${title} | ${club.name}` : `${club.name}: ${tagline[lang]}`;
+const abs = (p: string) => new URL(p, Astro.site);
+const canonical = abs(Astro.url.pathname);
+const enUrl = abs(switchPath(Astro.url.pathname, 'en'));
+const ukUrl = abs(switchPath(Astro.url.pathname, 'uk'));
 const org = {
   '@context': 'https://schema.org',
   '@type': 'NGO',
   name: club.name,
   url: Astro.site?.toString(),
   email: club.email,
-  areaServed: 'Львів, Україна',
+  description: tr(lang, club.about),
+  areaServed: lang === 'uk' ? 'Львів, Україна' : 'Lviv, Ukraine',
   memberOf: { '@type': 'Organization', name: 'Lions Clubs International' },
 };
 ---
 <!doctype html>
-<html lang="uk">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="uk" href={canonical} />
-    <link rel="alternate" hreflang="en" href={new URL(u('/en'), Astro.site)} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="uk" href={ukUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
     <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
-    <link rel="alternate" type="application/rss+xml" title="Новини клубу" href={u('/news.xml')} />
+    <link rel="alternate" type="application/rss+xml" title={lang === 'uk' ? 'Новини клубу' : 'Club news'} href={u(lang === 'uk' ? '/uk/news.xml' : '/news.xml')} />
     <meta name="theme-color" content="#0d2240" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(u('/og.png'), Astro.site)} />
-    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:image" content={abs(u('/og.png'))} />
+    <meta property="og:locale" content={lang === 'uk' ? 'uk_UA' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={lang === 'uk' ? 'en_GB' : 'uk_UA'} />
     <meta name="twitter:card" content="summary_large_image" />
     {noindex && <meta name="robots" content="noindex" />}
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? org)} />

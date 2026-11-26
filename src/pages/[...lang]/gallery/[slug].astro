@@ -1,0 +1,84 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Photo from '../../../components/Photo.astro';
+import Comments from '../../../components/Comments.astro';
+import { albums, events } from '../../../data/content';
+import { dateLong } from '../../../lib/format';
+import { langOf, lp, tr, t } from '../../../i18n';
+export function getStaticPaths() {
+  return [undefined, 'uk'].flatMap((lang) => albums.map((a) => ({ params: { lang, slug: a.slug }, props: { a } })));
+}
+const { a } = Astro.props;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const title = tr(lang, a.title);
+const ev = events.find((e) => e.slug === a.eventSlug);
+const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
+---
+<Base title={title} description={`${s('Photo album', 'Фотоальбом')}: ${title}`}>
+  <PageHead title={title} lead={`${dateLong(a.date, lang)}, ${a.photos.length} ${T.photos}`} back={{ href: '/gallery', label: s('Whole gallery', 'Уся галерея') }}>
+    {ev && <a class="link mt-4 inline-block" href={lp(lang, `/events/${ev.slug}`)}>{s('About the event', 'Про подію')}</a>}
+  </PageHead>
+  <section class="wrap pb-16">
+    {a.note && <p class="panel mb-6 max-w-[70ch] p-5 text-[15px]">{tr(lang, a.note)}</p>}
+    <div class="columns-2 gap-3 md:columns-3 [&>*]:mb-3" data-gallery>
+      {a.photos.map((p, i) => (
+        <button type="button" class="block w-full overflow-hidden rounded-2xl focus-visible:outline-offset-2" data-index={i} aria-label={s(`Open photo ${i + 1} of ${a.photos.length}`, `Відкрити фото ${i + 1} з ${a.photos.length}`)}>
+          <Photo art={p} alt={`${title}, ${T.photos} ${i + 1}`} ratio={ratios[i % ratios.length]} class="transition-transform duration-500 hover:scale-[1.02]" />
+        </button>
+      ))}
+    </div>
+    <p class="t-small mt-6">{s('Photos are published with the consent of the people in them. Want a photo of you removed? Write to us via the Contact page.', 'Фото публікуються зі згоди людей у кадрі. Хочете прибрати фото з собою? Напишіть нам через сторінку «Контакти».')}</p>
+  </section>
+  <Comments target={`album-${a.slug}`} />
+
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label={s('Photo viewer', 'Перегляд фото')} data-lightbox>
+    <figure class="relative">
+      <div class="overflow-hidden rounded-2xl" data-lb-stage></div>
+      <figcaption class="mt-4 text-center text-[15px] text-white/70" data-lb-caption></figcaption>
+    </figure>
+    <button class="lb-btn left-4" aria-label={s('Previous photo', 'Попереднє фото')} data-lb-prev>‹</button>
+    <button class="lb-btn right-4" aria-label={s('Next photo', 'Наступне фото')} data-lb-next>›</button>
+    <button class="absolute right-5 top-5 rounded-full bg-white/10 px-4 py-2 text-[15px] text-white hover:bg-white/20" data-lb-close>{s('Close', 'Закрити')}</button>
+  </div>
+</Base>
+
+<script>
+  import { ct } from '../../../scripts/i18n';
+  document.addEventListener('astro:page-load', () => {
+    const gallery = document.querySelector<HTMLElement>('[data-gallery]');
+    const lb = document.querySelector<HTMLElement>('[data-lightbox]');
+    if (!gallery || !lb) return;
+    const items = [...gallery.querySelectorAll<HTMLButtonElement>('[data-index]')];
+    const stage = lb.querySelector<HTMLElement>('[data-lb-stage]')!;
+    const caption = lb.querySelector<HTMLElement>('[data-lb-caption]')!;
+    let idx = 0; let opener: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      idx = (i + items.length) % items.length;
+      const ph = items[idx].querySelector('.ph')!.cloneNode(true) as HTMLElement;
+      ph.style.aspectRatio = '3 / 2'; ph.classList.remove('hover:scale-[1.02]');
+      stage.replaceChildren(ph);
+      caption.textContent = ct().photoOf(idx + 1, items.length);
+    };
+    const open = (i: number) => { opener = document.activeElement as HTMLElement; show(i); lb.dataset.open = 'true'; document.body.style.overflow = 'hidden'; lb.querySelector<HTMLElement>('[data-lb-close]')!.focus(); };
+    const close = () => { lb.dataset.open = 'false'; document.body.style.overflow = ''; opener?.focus(); };
+
+    items.forEach((b) => b.addEventListener('click', () => open(Number(b.dataset.index))));
+    lb.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(idx - 1));
+    lb.querySelector('[data-lb-next]')!.addEventListener('click', () => show(idx + 1));
+    lb.querySelector('[data-lb-close]')!.addEventListener('click', close);
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (lb.dataset.open !== 'true') return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(idx - 1);
+      if (e.key === 'ArrowRight') show(idx + 1);
+    });
+    let x0 = 0;
+    lb.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1)); });
+  });
+</script>

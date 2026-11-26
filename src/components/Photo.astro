@@ -2,8 +2,10 @@
 // Плейсхолдер фотографії: детермінована дуотонна композиція в кольорах бренду.
 // Замінюється справжнім <img> з Supabase Storage, коли є фото.
 import type { Art } from '../data/content';
+import { langFromUrl } from '../i18n';
 interface Props { art: Art; alt: string; class?: string; ratio?: string; src?: string }
 const { art, alt, class: cls = '', ratio = '4 / 3', src } = Astro.props;
+const lang = langFromUrl(Astro.url);
 
 function hash(s: string) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
 const h = hash(art.seed);
@@ -30,7 +32,7 @@ const lights = Array.from({ length: 14 }, (_, i) => ({ x: rnd(i) * 400, y: rnd(i
 ---
 <div class={`ph ${cls}`} style={`aspect-ratio:${ratio}`}>
   {src ? <img src={src} alt={alt} loading="lazy" decoding="async" class="h-full w-full object-cover" /> : (
-  <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${alt} (плейсхолдер фото)`}>
+  <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${alt} (${lang === 'uk' ? 'плейсхолдер фото' : 'photo placeholder'})`}>
     <defs>
       <linearGradient id={id} x1="0" y1="0" x2={rnd(1) > 0.5 ? 1 : 0.3} y2="1">
         <stop offset="0" stop-color={c2} />

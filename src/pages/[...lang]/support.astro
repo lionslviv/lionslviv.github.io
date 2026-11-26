@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { club } from '../../data/site';
+import { projects } from '../../data/content';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const active = projects.filter((p) => p.status === 'active');
+---
+<Base title={T.support} description={s('How to support Lviv International Lions Club projects: bank details, reporting, partnership.', 'Як підтримати проєкти Lviv International Lions Club: реквізити, звітність, партнерство.')}>
+  <PageHead title={s('Support the club', 'Підтримати клуб')} lead={s('All donations go to service projects. The club’s administrative costs are covered by membership dues.', 'Усі кошти йдуть на проєкти служіння. Адміністративні витрати клубу покривають членські внески.')} tone="blue" />
+  <section class="section-tight">
+    <div class="wrap grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+      <div class="panel p-8 md:p-10">
+        <div class="flex flex-wrap items-center gap-3">
+          <h2 class="t-h3">{s('Bank transfer details', 'Реквізити для переказу')}</h2>
+          <span class="badge badge-gold">{T.demo}</span>
+        </div>
+        <dl class="mt-8 grid gap-5 text-[17px]">
+          <div><dt class="t-small">{s('Recipient', 'Отримувач')}</dt><dd class="font-[600]">{tr(lang, club.bank.recipient)}</dd></div>
+          <div><dt class="t-small">IBAN</dt><dd class="flex flex-wrap items-center gap-3"><span class="t-num font-[600] tracking-[0.02em]" data-iban>{club.bank.iban}</span><button class="btn btn-quiet btn-sm" data-copy>{s('Copy', 'Скопіювати')}</button></dd></div>
+          <div><dt class="t-small">{s('EDRPOU (registry code)', 'ЄДРПОУ')}</dt><dd class="t-num font-[600]">{club.bank.edrpou}</dd></div>
+          <div><dt class="t-small">{s('Payment reference', 'Призначення платежу')}</dt><dd class="font-[600]">{tr(lang, club.bank.purpose)}</dd></div>
+        </dl>
+        <p class="t-small mt-8">{s('Online card payments (Monobank jar or LiqPay) will be added once the NGO is registered. The details above are placeholders.', 'Онлайн-оплату карткою підключимо після реєстрації ГО (Monobank-банка або LiqPay). Реквізити вище умовні.')}</p>
+      </div>
+      <div class="space-y-6">
+        <h2 class="t-h3">{s('What you can donate to', 'На що можна задонатити')}</h2>
+        <ul class="grid gap-4">
+          {active.map((p) => (
+            <li><a href={lp(lang, `/projects/${p.slug}`)} class="group block rounded-[18px] border border-[var(--line)] p-5 hover:border-[var(--color-lions-sky)]">
+              <p class="text-[19px] font-[640] group-hover:text-[var(--accent)]">{tr(lang, p.title)}</p>
+              <p class="mt-1 text-soft">{tr(lang, p.excerpt)}</p>
+            </a></li>
+          ))}
+        </ul>
+        <p class="text-soft">{s('Put the project name in the payment reference and we will direct the funds there.', 'Вкажіть назву проєкту в призначенні платежу, і ми спрямуємо кошти саме туди.')}</p>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-alt">
+    <div class="wrap grid gap-10 md:grid-cols-3">
+      <div><h3 class="t-h3">{s('Reporting', 'Звітність')}</h3><p class="mt-3 text-soft">{s('Every quarter we publish how much we raised and how it was spent, with receipts and handover records.', 'Щокварталу публікуємо, скільки зібрали і на що витратили, з чеками та актами передачі.')}</p></div>
+      <div><h3 class="t-h3">{s('Partnership for business', 'Партнерство для бізнесу')}</h3><p class="mt-3 text-soft">{s('Joint projects, team volunteering, corporate charity evenings.', 'Спільні проєкти, волонтерство команди, корпоративні благодійні вечори.')} <a class="link" href={lp(lang, '/contacts')}>{s('Write to us', 'Напишіть нам')}</a>.</p></div>
+      <div><h3 class="t-h3">{s('Through Lions International', 'Через Lions International')}</h3><p class="mt-3 text-soft">{s('International donors can support Ukraine through LCIF at lionsclubs.org.', 'Міжнародні донори можуть підтримати Україну через фонд LCIF на lionsclubs.org.')}</p></div>
+    </div>
+  </section>
+</Base>
+<script>
+  import { ct } from '../../scripts/i18n';
+  document.addEventListener('astro:page-load', () => {
+    const b = document.querySelector<HTMLButtonElement>('[data-copy]');
+    if (!b) return;
+    b.onclick = async () => {
+      const v = document.querySelector('[data-iban]')!.textContent!.replace(/\s/g, '');
+      try { await navigator.clipboard.writeText(v); b.textContent = ct().copied; } catch { b.textContent = ct().copyFail; }
+      setTimeout(() => (b.textContent = ct().copy), 2000);
+    };
+  });
+</script>

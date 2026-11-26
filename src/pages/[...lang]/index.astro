@@ -1,0 +1,241 @@
+---
+import Base from '../../layouts/Base.astro';
+import Skyline from '../../components/Skyline.astro';
+import Photo from '../../components/Photo.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import BrandAsset from '../../components/BrandAsset.astro';
+import { causeIcon } from '../../data/brand-assets';
+import { impact, causes, causeLabel, DEMO, club } from '../../data/site';
+import { projects, news, events, albums } from '../../data/content';
+import { dateShort, dayNum, monthShort, weekday, time } from '../../lib/format';
+import { googleCalendarUrl } from '../../lib/ics';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+
+const now = new Date('2026-11-26T12:00:00+02:00'); // демо-"сьогодні"; у продакшні new Date()
+const upcoming = events.filter((e) => e.visibility === 'public' && new Date(e.start) > now).sort((a, b) => a.start.localeCompare(b.start));
+const next = upcoming[0];
+const [featured, ...restProjects] = projects.filter((p) => p.status === 'active');
+const latest = [...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+const [lead, ...side] = latest;
+const statVal = (v: string) => (lang === 'uk' ? v.replace(',', ' ') : v);
+// Розмір великого слова в hero залежить від його довжини
+const heroSize = `clamp(4.2rem, ${Math.min(22, 17.5 * 8 / club.heroWord.length).toFixed(1)}vw, ${Math.min(20, 17 * 8 / club.heroWord.length).toFixed(1)}rem)`;
+---
+<Base>
+  <!-- HERO: велике слово (club.heroWord) між двома шарами силуету міста -->
+  <section class="hero flex flex-col md:min-h-[calc(100svh-97px)]">
+    <div class="wrap relative z-[3] grid gap-10 pt-[clamp(2.5rem,6vw,4.5rem)] lg:grid-cols-[1fr_auto]">
+      <div>
+      <div class="hero-intro"><BrandAsset name="signature-white" alt="Lions International" height={44} /></div>
+      <h1 class="hero-intro-2 mt-8 max-w-[22ch] text-[clamp(1.75rem,3.4vw,2.75rem)] font-[680] leading-[1.1] tracking-[-0.02em]" style="font-stretch:108%">
+        {s('Serving the city of the lion.', 'Служимо місту лева.')}
+      </h1>
+      <p class="hero-intro-3 mt-5 max-w-[44ch] text-[clamp(1.05rem,1.6vw,1.25rem)] leading-[1.5] text-white/75">
+        {s('An English-speaking Lions community in Lviv, Ukraine. We serve through healthcare and humanitarian aid. Lviv was founded as Leopolis, “the city of the lion”.',
+           'Англомовна спільнота Lions у Львові. Служимо через охорону здоров’я та гуманітарну допомогу. Leopolis це латинська назва Львова, «місто лева».')}
+      </p>
+      <div class="hero-intro-3 mt-8 flex flex-wrap gap-3">
+        <a href={lp(lang, '/support')} class="btn btn-gold">{T.supportProject}</a>
+        <a href={lp(lang, '/join')} class="btn btn-ghost text-white">{s('How to join', 'Як долучитися')}</a>
+      </div>
+      </div>
+      {next && (
+        <a href={lp(lang, `/events/${next.slug}`)} class="hero-intro-3 hidden self-start rounded-[20px] bg-white/[0.07] p-6 ring-1 ring-white/15 backdrop-blur transition-colors hover:bg-white/[0.12] lg:block lg:w-[300px]">
+          <p class="text-[14px] text-white/65">{s('Next open event', 'Найближча відкрита подія')}{next.demo && <span class="badge badge-gold ml-2 align-middle">{T.demo}</span>}</p>
+          <p class="mt-3 t-num text-[56px] font-[780] leading-none tracking-[-0.04em]" style="font-stretch:120%">{dayNum(next.start, lang)}<span class="ml-2 text-[22px] font-[600] tracking-normal text-white/75">{monthShort(next.start, lang)}</span></p>
+          <p class="mt-3 text-[19px] font-[640] leading-[1.25]">{tr(lang, next.title)}</p>
+          <p class="mt-1 text-[15px] text-white/65">{time(next.start, lang)}. {tr(lang, next.location)}</p>
+        </a>
+      )}
+    </div>
+
+    <div class="relative mt-auto h-[clamp(13rem,30vw,27rem)] pt-8">
+      <Skyline layer="far" class="hero-skyline-far absolute inset-x-0 bottom-0 z-[1] h-[78%] w-full text-[var(--color-lions)]" />
+      <p class="hero-word pointer-events-none absolute inset-x-0 bottom-[6%] z-[2] select-none text-center" style={`font-size:${heroSize}`} aria-hidden="true">{club.heroWord}</p>
+      <Skyline layer="near" class="hero-skyline-near absolute inset-x-0 -bottom-px z-[3] h-[26%] w-full" fill="var(--bg)" />
+    </div>
+  </section>
+
+  <!-- Заява -->
+  <section class="section-tight">
+    <div class="wrap">
+      <p class="t-statement max-w-[24ch]">
+        {s('1.4 million Lions in more than 200 countries chose not to wait, but to act. We do it in Lviv.',
+           '1,4 мільйона Lions у понад 200 країнах вирішили не чекати, а робити. Ми робимо це у Львові.')}
+      </p>
+      <a href={lp(lang, '/about')} class="link mt-8 inline-block text-[19px]">{s('About the club and Lions International', 'Про клуб і Lions International')}</a>
+    </div>
+  </section>
+
+  <!-- Цифри впливу -->
+  <section class="section-tight bg-alt">
+    <div class="wrap">
+      <div class="mb-10 flex flex-wrap items-center gap-3">
+        <h2 class="t-h2">{s('Our first season in numbers', 'Перший сезон у цифрах')}</h2>
+        {DEMO && <span class="badge badge-gold">{T.demoData}</span>}
+      </div>
+      <div class="grid auto-rows-[minmax(170px,auto)] gap-4 md:grid-cols-3">
+        <div class="flex flex-col justify-between rounded-[var(--radius-card)] bg-[var(--color-lions)] p-8 text-white md:col-span-2">
+          <p class="t-num text-[clamp(3.5rem,9vw,7rem)] font-[780] leading-none tracking-[-0.04em]" style="font-stretch:120%">{tr(lang, impact[0].value)}</p>
+          <p class="text-[19px] text-white/80">{tr(lang, impact[0].label)}</p>
+        </div>
+        <div class="flex flex-col justify-between rounded-[var(--radius-card)] bg-[var(--color-gold)] p-8 text-[var(--color-lions-deep)] md:row-span-2">
+          <p class="t-num text-[clamp(3.5rem,9vw,7rem)] font-[780] leading-none tracking-[-0.04em]" style="font-stretch:120%">{tr(lang, impact[1].value)}</p>
+          <div>
+            <p class="text-[19px] font-[560]">{tr(lang, impact[1].label)}</p>
+            <a href={lp(lang, '/projects/svitlo-dlia-hromad')} class="mt-3 inline-block font-[640] underline underline-offset-4">{s('About the project', 'Про проєкт')}</a>
+          </div>
+        </div>
+        {impact.slice(2).map((m) => (
+          <div class="flex flex-col justify-between rounded-[var(--radius-card)] bg-[var(--surface)] p-8">
+            <p class="t-num text-[clamp(2.5rem,5vw,3.75rem)] font-[760] leading-none tracking-[-0.035em] text-accent" style="font-stretch:116%">{tr(lang, m.value)}</p>
+            <p class="text-[17px] text-soft">{tr(lang, m.label)}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Проєкти -->
+  <section class="section">
+    <div class="wrap">
+      <SectionHead title={s('What we do', 'Що ми робимо')} lead={s('We choose projects where the club can deliver a measurable result within a season.', 'Проєкти обираємо там, де клуб може дати вимірний результат за сезон.')} href="/projects" linkLabel={T.allProjects} />
+      <a href={lp(lang, `/projects/${featured.slug}`)} class="group grid items-center gap-8 md:grid-cols-[1.15fr_1fr] md:gap-14">
+        <div class="overflow-hidden rounded-[var(--radius-card)]">
+          <Photo art={featured.cover} alt={tr(lang, featured.title)} ratio="5 / 4" class="transition-transform duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.03]" />
+        </div>
+        <div class="space-y-5">
+          <div class="flex gap-2">{featured.tags.map((g) => <span class="badge badge-blue">{causeLabel(g, lang)}</span>)}{featured.demo && <span class="badge badge-gold">{T.demo}</span>}</div>
+          <h3 class="t-h1">{tr(lang, featured.title)}</h3>
+          <p class="t-lead">{tr(lang, featured.excerpt)}</p>
+          {featured.stats && (
+            <dl class="flex flex-wrap gap-x-10 gap-y-4 pt-2">
+              {featured.stats.map((m) => (
+                <div><dt class="sr-only">{tr(lang, m.label)}</dt><dd class="t-num text-[34px] font-[740] leading-none tracking-[-0.03em]" style="font-stretch:112%">{statVal(m.value)}</dd><dd class="t-small mt-1">{tr(lang, m.label)}</dd></div>
+              ))}
+            </dl>
+          )}
+        </div>
+      </a>
+      <ul class="mt-16 divide-y divide-[var(--line)] border-y border-[var(--line)]">
+        {restProjects.map((p) => (
+          <li>
+            <a href={lp(lang, `/projects/${p.slug}`)} class="group grid gap-2 py-7 md:grid-cols-[1fr_1.3fr_auto] md:items-baseline md:gap-10">
+              <h3 class="t-h3 group-hover:text-[var(--accent)]">{tr(lang, p.title)}</h3>
+              <p class="text-soft">{tr(lang, p.excerpt)}</p>
+              <span class="t-small whitespace-nowrap">{p.tags.map((g) => causeLabel(g, lang)).join(', ')}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Найближча подія -->
+  {next && (
+    <section class="bg-[var(--color-lions)] text-white">
+      <div class="wrap grid gap-10 py-16 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-16 md:py-20">
+        <div class="flex items-baseline gap-3 md:block">
+          <p class="t-num text-[clamp(5rem,12vw,9rem)] font-[800] leading-[0.85] tracking-[-0.05em]" style="font-stretch:125%">{dayNum(next.start, lang)}</p>
+          <p class="text-[22px] font-[600] text-white/80">{monthShort(next.start, lang)}, {weekday(next.start, lang)}</p>
+        </div>
+        <div class="space-y-3">
+          <p class="text-[17px] text-white/70">{s('Next open event', 'Найближча відкрита подія')}{next.demo && <span class="badge badge-gold ml-2 align-middle">{T.demo}</span>}</p>
+          <h2 class="t-h2">{tr(lang, next.title)}</h2>
+          <p class="text-[19px] text-white/80">{time(next.start, lang)}. {tr(lang, next.location)}</p>
+        </div>
+        <div class="flex flex-wrap gap-3 md:flex-col">
+          <a href={lp(lang, `/events/${next.slug}`)} class="btn btn-gold">{s('Event details', 'Деталі події')}</a>
+          <a href={googleCalendarUrl({ uid: next.slug, title: tr(lang, next.title), start: next.start, end: next.end, location: tr(lang, next.location), description: tr(lang, next.description) })} class="btn btn-ghost text-white" rel="noopener" target="_blank">{s('Add to calendar', 'Додати в календар')}</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Новини -->
+  <section class="section">
+    <div class="wrap">
+      <SectionHead title={T.nav.news} href="/news" linkLabel={T.allNews} />
+      <div class="grid gap-10 md:grid-cols-[1.4fr_1fr]">
+        <a href={lp(lang, `/news/${lead.slug}`)} class="group space-y-5">
+          <div class="overflow-hidden rounded-[var(--radius-card)]">
+            <Photo art={lead.cover} alt={tr(lang, lead.title)} ratio="16 / 10" class="transition-transform duration-700 ease-[var(--ease-apple)] group-hover:scale-[1.03]" />
+          </div>
+          <p class="t-small">{dateShort(lead.date, lang)}{lead.demo && <span class="badge badge-gold ml-2">{T.demo}</span>}</p>
+          <h3 class="t-h2 group-hover:text-[var(--accent)]">{tr(lang, lead.title)}</h3>
+          <p class="t-lead">{tr(lang, lead.excerpt)}</p>
+        </a>
+        <div class="grid content-start gap-8">
+          {side.map((n) => (
+            <a href={lp(lang, `/news/${n.slug}`)} class="group grid grid-cols-[132px_1fr] gap-5">
+              <div class="overflow-hidden rounded-2xl"><Photo art={n.cover} alt={tr(lang, n.title)} ratio="1 / 1" /></div>
+              <div class="space-y-2">
+                <p class="t-small">{dateShort(n.date, lang)}{n.demo && <span class="badge badge-gold ml-2">{T.demo}</span>}</p>
+                <h3 class="text-[21px] font-[650] leading-[1.2] tracking-[-0.015em] group-hover:text-[var(--accent)]">{tr(lang, n.title)}</h3>
+              </div>
+            </a>
+          ))}
+          <a href={lp(lang, '/events')} class="panel block p-7">
+            <p class="text-[19px] font-[640]">{s('Meeting schedule', 'Розклад зустрічей')}</p>
+            <p class="mt-1 text-soft">{s('Regular meetings, service activities and open evenings for guests.', 'Регулярні збори, акції служіння і відкриті вечори для гостей.')}</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Галерея -->
+  <section class="section-tight bg-alt">
+    <div class="wrap">
+      <SectionHead title={T.nav.gallery} href="/gallery" linkLabel={T.allAlbums} />
+      <div class="rail">
+        {albums.map((a) => (
+          <a href={lp(lang, `/gallery/${a.slug}`)} class="group block space-y-3">
+            <div class="overflow-hidden rounded-[var(--radius-card)]"><Photo art={a.photos[0]} alt={tr(lang, a.title)} ratio="4 / 3" class="transition-transform duration-700 group-hover:scale-[1.03]" /></div>
+            <p class="text-[19px] font-[640]">{tr(lang, a.title)}</p>
+            <p class="t-small -mt-2">{a.photos.length} {T.photos}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Напрями служіння -->
+  <section class="section">
+    <div class="wrap grid gap-12 md:grid-cols-[1fr_1.6fr]">
+      <div class="space-y-4">
+        <h2 class="t-h2">{s('Seven Lions global causes', 'Сім напрямів служіння Lions')}</h2>
+        <p class="t-lead">{s('The global priorities of Lions International. The club chooses what to focus on this year.', 'Глобальні пріоритети Lions International. Клуб обирає, на чому зосередитися цього року.')}</p>
+      </div>
+      <dl class="grid gap-x-10 sm:grid-cols-2">
+        {causes.map((c) => (
+          <div class="border-t border-[var(--line)] py-5">
+            <dt class="flex items-center gap-3 text-[19px] font-[650]"><BrandAsset name={causeIcon[c.key]} alt="" height={36} />{tr(lang, c.label)}</dt>
+            <dd class="mt-1 text-soft">{tr(lang, c.text)}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- Заклик -->
+  <section class="pb-[clamp(4rem,8vw,7rem)]">
+    <div class="wrap">
+      <div class="grid gap-8 rounded-[28px] bg-[var(--color-gold)] px-8 py-12 text-[var(--color-lions-deep)] md:grid-cols-[1.4fr_1fr] md:items-end md:px-14 md:py-16">
+        <div class="space-y-4">
+          <h2 class="t-h1">{s('Serving together is easier.', 'Служити разом легше.')}</h2>
+          <p class="max-w-[46ch] text-[19px] leading-[1.5]">{s('Lions membership is by invitation. Start with an open evening: meet the club and see how we work.', 'Членство в Lions за рекомендацією. Почніть з відкритого вечора: познайомтеся з клубом і подивіться, як ми працюємо.')}</p>
+        </div>
+        <div class="flex flex-wrap gap-3 md:justify-end">
+          <a href={lp(lang, '/join')} class="btn btn-blue">{s('Sign up for an evening', 'Записатися на вечір')}</a>
+          <a href={lp(lang, '/support')} class="btn btn-ghost">{T.support}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
