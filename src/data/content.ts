@@ -150,28 +150,31 @@ export const news: Post[] = [
     },
   },
   {
-    // Реальна новина: сторінка клубу у Facebook; дата зустрічі 19.11.2026 (підтвердив клуб)
+    // Реальна новина: текст клубу про другу зустріч (19.11.2026), фото надав клуб
     slug: 'druha-zustrich-klubu',
     type: 'news',
-    title: { en: 'Our second club meeting: the community is growing', uk: 'Друга зустріч клубу: спільнота зростає' },
-    excerpt: { en: 'On 19 November we met for the second time in Lviv, joined by Lions Club “Kiev Ecology” and other guests.', uk: '19 листопада зібралися вдруге у Львові разом з Lions Club «Kiev Ecology» та іншими гостями.' },
+    title: { en: 'Our second Lions Club meeting, and our community is growing', uk: 'Друга зустріч клубу: наша спільнота зростає' },
+    excerpt: { en: 'New faces, fresh ideas and a special guest from Lions Club Kyiv Ecology.', uk: 'Нові обличчя, свіжі ідеї та особливий гість з Lions Club Kyiv Ecology.' },
     date: '2026-11-19',
-    cover: { seed: 'second-meeting', motif: 'event' },
+    cover: { seed: 'second-meeting', motif: 'event', src: '/gallery/druha-zustrich/01.jpg', w: 1600, h: 900 },
     tags: ['club'],
     source: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/',
     body: {
       en: [
-        'On 19 November our club held its second meeting in Lviv, and the community keeps growing.',
-        'Friends from Lions Club “Kiev Ecology” and other guests joined us.',
-        'We are an English-speaking Lions community focusing on healthcare and humanitarian service. Our next meeting is on 3 December. If you would like to join, get in touch.',
+        'Our second meeting on 19 November brought new faces, fresh ideas and inspiring conversations. We were pleased to welcome Lion Serhii Denisenko, our special guest from the Lions Club Kyiv Ecology, and welcome new members to our growing community.',
+        'Serhii gave us an insightful introduction to the Lions Clubs International structure, its history and projects, making the meeting both inspiring and engaging.',
+        'We also had a productive discussion about new opportunities for collaboration between Lions Clubs in Lviv, Kyiv and beyond.',
+        '> Great conversations, new connections and shared ideas, all driven by one common purpose: We Serve.',
       ],
       uk: [
-        '19 листопада відбулася друга зустріч нашого клубу у Львові, і спільнота продовжує зростати.',
-        'До нас долучилися друзі з Lions Club «Kiev Ecology» та інші гості.',
-        'Ми англомовна спільнота Lions, яка зосереджується на охороні здоров’я та гуманітарній допомозі. Наступна зустріч 3 грудня. Якщо хочете долучитися, напишіть нам.',
+        'Наша друга зустріч 19 листопада принесла нові обличчя, свіжі ідеї та натхненні розмови. Ми раді були вітати особливого гостя, Lion Сергія Денисенка з Lions Club Kyiv Ecology, а також нових членів нашої спільноти, що зростає.',
+        'Сергій змістовно розповів про структуру Lions Clubs International, її історію та проєкти, і зустріч вийшла водночас надихаючою й захопливою.',
+        'Ми також продуктивно обговорили нові можливості для співпраці між Lions клубами Львова, Києва та інших міст.',
+        '> Чудові розмови, нові знайомства і спільні ідеї, які об’єднує одна мета: We Serve.',
       ],
     },
   },
+
   {
     slug: 'perevirka-zoru-shkola',
     demo: true,
@@ -217,8 +220,8 @@ export type Event = {
 
 export const events: Event[] = [
   // Реальний розклад клубу (підтвердив клуб 26.11.2026). Час і місце, де невідомі, уточнюються.
+  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: { en: 'Lviv', uk: 'Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'Our second meeting, with special guest Lion Serhii Denisenko from Lions Club Kyiv Ecology: the structure, history and projects of Lions Clubs International, new members and collaboration between Lions clubs.', uk: 'Друга зустріч клубу з особливим гостем Lion Сергієм Денисенком з Lions Club Kyiv Ecology: структура, історія і проєкти Lions Clubs International, нові члени клубу та співпраця між Lions клубами.' }, timeUnknown: true },
   { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, start: '2026-11-05T18:00:00+02:00', end: '2026-11-05T21:00:00+02:00', location: { en: 'Hotel Leopolis, Lviv', uk: 'Готель Leopolis, Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'The first meeting and the start of Lviv International Lions Club: dinner, member introductions, club structure, humanitarian projects and commemorative diplomas.', uk: 'Перша зустріч і старт роботи Lviv International Lions Club: вечеря, знайомство членів клубу, структура клубу, гуманітарні проєкти і пам’ятні дипломи.' }, timeUnknown: true },
-  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: { en: 'Lviv', uk: 'Львів' }, visibility: 'public', kind: 'meeting', description: { en: 'The second meeting of the English-speaking Lions community in Lviv, with Lions Club “Kiev Ecology” and guests.', uk: 'Друга зустріч англомовної спільноти Lions у Львові, разом з Lions Club «Kiev Ecology» та гостями.' }, timeUnknown: true },
   { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: { en: 'Lviv, venue to be confirmed', uk: 'Львів, місце уточнюється' }, visibility: 'public', kind: 'meeting', description: { en: 'Our regular club meeting. Guests interested in joining are welcome: write to us to get the details.', uk: 'Чергова зустріч клубу. Гості, які думають долучитися, запрошені: напишіть нам, щоб отримати деталі.' }, timeUnknown: true },
   { slug: 'novorichna-zustrich-2026', title: { en: 'New Year club gathering', uk: 'Новорічна зустріч клубу' }, start: '2026-12-12T18:00:00+02:00', end: '2026-12-12T22:00:00+02:00', location: { en: 'Lviv, venue to be confirmed', uk: 'Львів, місце уточнюється' }, visibility: 'public', kind: 'gala', description: { en: 'A festive New Year gathering of club members to celebrate the start of our journey together.', uk: 'Святкова новорічна зустріч членів клубу, щоб разом відзначити початок нашого шляху.' }, timeUnknown: true },
   // Демо-приклад акції служіння
@@ -240,9 +243,9 @@ const real = (dir: string, files: [string, number, number][]): Art[] =>
   files.map(([f, w, h]) => ({ seed: `${dir}-${f}`, motif: 'event', src: `/gallery/${dir}/${f}`, w, h }));
 
 export const albums: Album[] = [
-  // Реальний альбом: фото надав клуб (метадані й геолокацію прибрано)
+  // Реальні альбоми: фото надав клуб (метадані й геолокацію прибрано)
+  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, date: '2026-11-19', eventSlug: 'druha-zustrich', photos: real('druha-zustrich', [['01.jpg', 1600, 900], ['02.jpg', 1200, 1600], ['03.jpg', 900, 1600], ['04.jpg', 1200, 1600], ['05.jpg', 1200, 1600]]) },
   { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, date: '2026-11-05', eventSlug: 'persha-zustrich', photos: real('persha-zustrich', [['01.jpg', 1600, 1200], ['02.jpg', 1600, 1200], ['03.jpg', 900, 1600], ['04.jpg', 900, 1600], ['05.jpg', 900, 1600], ['06.jpg', 900, 1600]]) },
-  { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, date: '2026-11-19', eventSlug: 'druha-zustrich', photos: shots('found', 12, 'event'), note: { en: 'Photos from this meeting are on the club’s Facebook page. We will add them here once the people in them agree.', uk: 'Фото з цієї зустрічі є на сторінці клубу у Facebook. На сайт їх додамо після погодження з людьми в кадрі.' } },
   { slug: 'zir-levandivka', title: { en: 'Eye screening, Levandivka', uk: 'Перевірка зору, Левандівка' }, date: '2026-11-07', photos: shots('lev', 12, 'people') },
   { slug: 'heneratory', title: { en: 'Generators for communities', uk: 'Генератори для громад' }, date: '2026-10-24', photos: shots('gen', 7, 'care') },
   { slug: 'aleia-pamiati', title: { en: 'Memorial alley in Sykhiv', uk: 'Алея пам’яті на Сихові' }, date: '2026-04-12', photos: shots('trees', 10, 'nature') },
