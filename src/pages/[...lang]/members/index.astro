@@ -9,30 +9,20 @@ export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
-const board = members.filter((m) => m.board);
-const others = members.filter((m) => !m.board);
-const published = others.filter((m) => m.real);
-const open = others.filter((m) => !m.real);
+// Поки учасників небагато, показуємо всіх разом. Поділ на правління і членів додамо, коли їх стане більше.
+const published = members.filter((m) => m.real);
+const open = members.filter((m) => !m.real);
 ---
-<Base title={T.nav.members} description={s('Board and members of Lviv International Lions Club.', 'Правління і члени Lviv International Lions Club.')}>
+<Base title={T.nav.members} description={s('Members of Lviv International Lions Club.', 'Члени Lviv International Lions Club.')}>
   <PageHead title={s('People of the club', 'Люди клубу')} lead={s('Members fill in their own profiles and publish them only with their consent. Contact details are visible to club members only.', 'Профілі заповнюють самі члени клубу і публікують лише за власною згодою. Контакти бачать тільки члени клубу.')} />
   <section class="wrap pb-16">
-    <h2 class="t-h3 mb-8">{s('Board for the 2026-2027 Lions year', 'Правління на Lions-рік 2026-2027')}</h2>
     <ul class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
-      {board.map((m) => (
-        <MemberCard m={m} />
-      ))}
+      {published.map((m) => <MemberCard m={m} />)}
     </ul>
   </section>
   <section class="bg-alt section-tight">
     <div class="wrap">
-      <h2 class="t-h3">{s('Club members', 'Члени клубу')}</h2>
-      {published.length > 0 && (
-        <ul class="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
-          {published.map((m) => <MemberCard m={m} />)}
-        </ul>
-      )}
-      <p class="mt-10 text-soft">{s(`${open.length} more club members have not published their profiles yet. Roles in the club will be assigned at the meeting on 3 December.`, `Ще ${open.length} членів клубу поки не опублікували профілі. Ролі в клубі розподілимо на зустрічі 3 грудня.`)}</p>
+      <p class="text-soft">{s(`${open.length} more club members have not published their profiles yet. Roles in the club will be assigned at the meeting on 3 December.`, `Ще ${open.length} членів клубу поки не опублікували профілі. Ролі в клубі розподілимо на зустрічі 3 грудня.`)}</p>
       <ul class="mt-6 flex flex-wrap gap-3">
         {open.map(() => (
           <li class="grid h-14 w-14 place-items-center rounded-full bg-[var(--surface)]" aria-label={s('Profile not published', 'Профіль не опубліковано')}>
