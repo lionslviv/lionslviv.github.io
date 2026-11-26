@@ -9,12 +9,13 @@ export const DEMO = false;
 export const club = {
   name: 'Lviv International Lions Club',
   // Назва для демонстрації членам клубу; остаточну погоджуємо після обговорення
-  // і з District 134. Змінюється тут: name, shortName, heroWord.
+  // і з Lions International. Змінюється тут: name, shortName, heroWord.
+  // З березня 2026 District 134 (Україна) розформовано: клуби України підтримує Lions International напряму.
   shortName: 'Lviv International',
   heroWord: 'Lviv', // велике слово в hero між шарами силуету міста (було: 'Leopolis')
-  lciRecord: { en: 'to be confirmed with District 134', uk: 'уточнюється з District 134' } as L,
+  lciRecord: { en: 'to be confirmed with Lions International', uk: 'уточнюється з Lions International' } as L,
   facebookName: 'Lviv International Lions Club',
-  district: { en: 'District 134, Ukraine', uk: 'District 134, Україна' } as L,
+  district: { en: 'Lions Clubs International, Ukraine', uk: 'Lions Clubs International, Україна' } as L,
   motto: 'We Serve',
   about: {
     en: 'English-speaking Lions community in Lviv, Ukraine, focusing on healthcare and humanitarian service.',
@@ -47,6 +48,7 @@ export const nav = [
 ] as const;
 
 export const navSecondary = [
+  { href: '/lions', key: 'lions' },
   { href: '/reviews', key: 'reviews' },
   { href: '/join', key: 'join' },
   { href: '/contacts', key: 'contacts' },

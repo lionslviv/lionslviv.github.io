@@ -50,7 +50,7 @@ export const nameRules: [L, L][] = [
   [{ en: 'Clubs in general', uk: 'Клуби загалом' }, { en: 'Lions club, Lions clubs (lower-case c)', uk: 'Lions club, Lions clubs (мала літера c)' }],
   [{ en: 'Members of the organisation', uk: 'Члени організації' }, { en: 'Lions, always capitalised', uk: 'Lions, завжди з великої' }],
   [{ en: 'Our club', uk: 'Наш клуб' }, { en: 'Lviv International Lions Club', uk: 'Lviv International Lions Club' }],
-  [{ en: 'LCI registry record', uk: 'Запис у реєстрі LCI' }, { en: 'to be confirmed with District 134', uk: 'уточнюється з District 134' }],
+  [{ en: 'LCI registry record', uk: 'Запис у реєстрі LCI' }, { en: 'to be confirmed with Lions International', uk: 'уточнюється з Lions International' }],
   [{ en: 'Motto', uk: 'Девіз' }, { en: 'We Serve™, a trademark, not translated in the logo', uk: 'We Serve™, торговельна марка, не перекладаємо в логотипі' }],
 ];
 

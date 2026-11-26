@@ -24,7 +24,7 @@ const steps = lang === 'uk'
       ['Report publicly', 'Every hryvnia and every result on the website.'],
     ];
 ---
-<Base title={T.nav.about} description={s('Lviv International Lions Club: our mission, our name, and our ties to Lions International and District 134.', 'Lviv International Lions Club: місія, історія назви, зв’язок з Lions International і District 134.')}>
+<Base title={T.nav.about} description={s('Lviv International Lions Club: our mission, our name, and our ties to Lions International.', 'Lviv International Lions Club: місія, історія назви, зв’язок з Lions International.')}>
   <section class="hero">
     <div class="wrap relative z-[2] pb-8 pt-[clamp(3rem,7vw,6rem)]">
       <h1 class="t-h1 max-w-[16ch]">{s('Lions in the city of the lion', 'Lions у місті лева')}</h1>
@@ -51,7 +51,8 @@ const steps = lang === 'uk'
         <BrandAsset name="signature" alt="Lions International" height={52} />
         <h2 class="t-h2">{s('Who the Lions are', 'Хто такі Lions')}</h2>
         <p class="text-[19px] leading-[1.6]">{s('Lions Clubs International was founded in Chicago in 1917. Today it is the world’s largest network of service clubs: more than 1.4 million people in over 200 countries and territories. Our motto: We Serve.', 'Lions Clubs International заснували 1917 року в Чикаго. Сьогодні це найбільша у світі мережа сервісних клубів: понад 1,4 мільйона людей у більш ніж 200 країнах і територіях. Девіз: We Serve, «Ми служимо».')}</p>
-        <p class="text-[19px] leading-[1.6]">{s('Clubs in Ukraine belong to', 'Клуби в Україні входять до')} {tr(lang, club.district)}. {s('Guests from other clubs join our meetings, including Lions Club Kyiv Ecology.', 'На наших зустрічах бувають гості з інших клубів, зокрема з Lions Club Kyiv Ecology.')}</p>
+        <p class="text-[19px] leading-[1.6]">{s('Lions clubs have worked in Ukraine since 1993. Guests from other clubs join our meetings, including Lions Club Kyiv Ecology.', 'Lions клуби працюють в Україні з 1993 року. На наших зустрічах бувають гості з інших клубів, зокрема з Lions Club Kyiv Ecology.')}</p>
+        <a href={lp(lang, '/lions')} class="link inline-block text-[17px]">{s('History of Lions, clubs in Ukraine and Lion AI', 'Історія Lions, клуби в Україні та Lion AI')}</a>
       </div>
     </div>
   </section>

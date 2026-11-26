@@ -14,7 +14,7 @@ B = f'http://localhost:{PORT}'
 CHROME = os.environ.get('PLAYWRIGHT_CHROME', '/usr/bin/google-chrome')
 PAGES = ['/', '/about/', '/projects/', '/news/', '/news/druha-zustrich-klubu/', '/events/', '/events/tretia-zustrich/',
          '/gallery/', '/gallery/persha-zustrich/', '/members/', '/members/lars-vestbjerg/', '/support/', '/join/',
-         '/contacts/', '/reviews/', '/brand/', '/privacy/', '/login/', '/account/', '/admin/', '/news/post/?slug=x']
+         '/contacts/', '/reviews/', '/brand/', '/lions/', '/privacy/', '/login/', '/account/', '/admin/', '/news/post/?slug=x']
 results = []
 
 def check(name, ok, detail=''):

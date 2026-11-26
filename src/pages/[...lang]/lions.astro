@@ -1,0 +1,122 @@
+---
+import Base from '../../layouts/Base.astro';
+import { today, history, ukraine, clubs, lionAi } from '../../data/lions';
+import { langPaths, langOf, lp, tr, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+---
+<Base title={T.nav.lions} description={s('History of Lions Clubs International, Lions clubs in Ukraine and the Lion AI assistant.', 'Історія Lions Clubs International, Lions клуби в Україні та AI-асистент Lion AI.')}>
+  <section class="hero">
+    <div class="wrap relative z-[2] pb-[clamp(3rem,6vw,5rem)] pt-[clamp(3rem,7vw,6rem)]">
+      <h1 class="t-h1 max-w-[18ch]">{s('Lions: since 1917, and now in Lviv', 'Lions: з 1917 року, а тепер і у Львові')}</h1>
+      <p class="mt-5 max-w-[52ch] text-[clamp(1.1rem,1.8vw,1.35rem)] leading-[1.5] text-white/75">
+        {s('Lions Clubs International is the world’s largest network of service clubs. Here is how it started, where Lions work in Ukraine and how Lions use AI today.',
+           'Lions Clubs International: найбільша у світі мережа сервісних клубів. Тут коротко про те, як усе почалося, де Lions працюють в Україні і як Lions використовують AI сьогодні.')}
+      </p>
+      <dl class="mt-10 grid max-w-[44rem] grid-cols-3 gap-4">
+        {today.map((x) => (
+          <div>
+            <dt class="sr-only">{tr(lang, x.label)}</dt>
+            <dd class="[font-stretch:120%] text-[clamp(1.8rem,5vw,3rem)] font-bold leading-none">{tr(lang, x.value)}</dd>
+            <dd class="mt-2 text-[15px] leading-[1.35] text-white/70">{tr(lang, x.label)}</dd>
+          </div>
+        ))}
+      </dl>
+      <nav class="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-[17px]" aria-label={s('On this page', 'На цій сторінці')}>
+        <a class="text-white underline decoration-white/40 underline-offset-4 hover:decoration-white" href="#history">{s('History', 'Історія')}</a>
+        <a class="text-white underline decoration-white/40 underline-offset-4 hover:decoration-white" href="#ukraine">{s('Lions in Ukraine', 'Lions в Україні')}</a>
+        <a class="text-white underline decoration-white/40 underline-offset-4 hover:decoration-white" href="#ai">Lion AI</a>
+      </nav>
+    </div>
+  </section>
+
+  <section id="history" class="section-tight scroll-mt-24">
+    <div class="wrap">
+      <h2 class="t-h2">{s('A short history', 'Коротка історія')}</h2>
+      <p class="mt-4 max-w-[60ch] text-[19px] leading-[1.6]">{s('Melvin Jones believed that business clubs should look beyond their own interests and work to improve their communities. That idea became the motto We Serve.', 'Мелвін Джонс вважав, що ділові клуби мають дивитися ширше за власні інтереси і працювати на благо громад. Ця ідея стала девізом We Serve, «Ми служимо».')}</p>
+      <ol class="mt-10 border-l-2 border-[var(--color-lions)]/30">
+        {history.map((h) => (
+          <li class="relative pb-8 pl-6 last:pb-0 sm:pl-10">
+            <span class="absolute -left-[7px] top-[0.55rem] h-3 w-3 rounded-full bg-[var(--color-lions)]" aria-hidden="true"></span>
+            <div class="grid gap-1 sm:grid-cols-[6rem_1fr] sm:gap-6">
+              <p class="[font-stretch:120%] text-[clamp(1.4rem,3vw,1.9rem)] font-bold leading-tight text-[var(--color-lions)]">{h.year}</p>
+              <div class="max-w-[60ch]">
+                <h3 class="text-[19px] font-semibold leading-snug">{tr(lang, h.title)}</h3>
+                <p class="mt-1 text-[17px] leading-[1.6] text-soft">{tr(lang, h.text)}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="ukraine" class="section-tight scroll-mt-24 bg-[var(--color-lions)] text-white">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
+      <div>
+        <h2 class="t-h2">{s('Lions in Ukraine', 'Lions в Україні')}</h2>
+        <ul class="mt-8 space-y-5">
+          {ukraine.map((u) => (
+            <li class="grid grid-cols-[4.5rem_1fr] gap-4">
+              <span class="[font-stretch:120%] text-[22px] font-bold leading-snug">{u.year}</span>
+              <span class="text-[17px] leading-[1.55] text-white/85">{tr(lang, u.text)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-[22px] font-semibold">{s('Where Lions clubs work', 'Де працюють Lions клуби')}</h3>
+        <p class="mt-2 text-[15px] text-white/70">{s('Active clubs by city, from the Lions International membership register (September 2025), plus our club.', 'Активні клуби за містами з реєстру членства Lions International (вересень 2025) і наш клуб.')}</p>
+        <ul class="mt-6 divide-y divide-white/20 border-y border-white/20">
+          {clubs.map((c) => (
+            <li class="py-4">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <span class="text-[19px] font-semibold">{tr(lang, c.city)}</span>
+                <span class="text-[15px] text-white/75">{c.names}</span>
+              </div>
+              <p class="mt-1 text-[16px] leading-[1.55] text-white/85">{tr(lang, c.note)}</p>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 text-[15px] leading-[1.55] text-white/75">
+          {s('The list may be incomplete: clubs open and close every year. News of Ukrainian Lions is on the Facebook page “Lions International Ukraine”.', 'Список може бути неповним: клуби відкриваються і закриваються щороку. Новини українських Lions є на Facebook-сторінці «Lions International Ukraine».')}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai" class="section-tight scroll-mt-24">
+    <div class="wrap">
+      <h2 class="t-h2">{s('Lion AI: Ellie, the assistant for Lions', 'Lion AI: Ellie, асистентка для Lions')}</h2>
+      <p class="mt-4 max-w-[62ch] text-[19px] leading-[1.6]">{s('Lions International has its own AI assistant called Ellie on lionsclubs.org. It helps Lions and Leos find programmes, resources and ideas for service faster.', 'У Lions International є власний AI-асистент Ellie на lionsclubs.org. Вона допомагає Lions і Leo швидше знаходити програми, матеріали та ідеї для служіння.')}</p>
+      <div class="mt-10 grid gap-x-12 gap-y-8 sm:grid-cols-2">
+        {lionAi.points.map((p) => (
+          <div class="max-w-[48ch] border-t-2 border-[var(--color-lions)] pt-4">
+            <h3 class="text-[19px] font-semibold">{tr(lang, p.title)}</h3>
+            <p class="mt-2 text-[17px] leading-[1.6] text-soft">{tr(lang, p.text)}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mt-10 max-w-[62ch] text-[17px] leading-[1.6]">{s('Our club uses AI tools in its own work too, carefully and with human review. If you would like to help the club with AI or digital skills, we will be glad to hear from you.', 'Наш клуб теж використовує AI-інструменти у своїй роботі, обережно і з перевіркою людиною. Якщо хочеш допомогти клубу з AI чи цифровими навичками, будемо раді.')}</p>
+      <div class="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-[17px]">
+        <a class="link" href={lionAi.url} target="_blank" rel="noopener">{s('Try Lion AI on lionsclubs.org', 'Спробувати Lion AI на lionsclubs.org')}</a>
+        <a class="link" href={lionAi.about} target="_blank" rel="noopener">{s('About Lion AI and privacy', 'Про Lion AI і конфіденційність')}</a>
+        <a class="link" href={lp(lang, '/join')}>{s('Join the club', 'Приєднатися до клубу')}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-[var(--line)]">
+    <div class="wrap"><div class="max-w-[70ch]">
+      <h2 class="text-[19px] font-semibold">{s('Sources', 'Джерела')}</h2>
+      <ul class="mt-3 space-y-1 text-[15px] text-soft">
+        <li><a class="link" href="https://www.lionsclubs.org/en/discover-our-foundation/history" target="_blank" rel="noopener">Lions Clubs International: LCIF History</a></li>
+        <li><a class="link" href="https://www.lionsclubs.org/en/about-lion-ai" target="_blank" rel="noopener">Lions Clubs International: About Lion AI</a></li>
+        <li><a class="link" href="http://www.lions.org.ua/pro-nas/" target="_blank" rel="noopener">Lions Clubs International Ukraine: {s('About us', 'Про нас')}</a></li>
+        <li><a class="link" href="https://www.mdalions.org/mda_web/The_Lion_Magazine/Magazines/2026/2/LionMagAprMayJun2026.pdf" target="_blank" rel="noopener">LION Magazine, {s('April-June 2026: International Board report', 'квітень-червень 2026: звіт Міжнародного правління')}</a></li>
+      </ul>
+    </div></div>
+  </section>
+</Base>

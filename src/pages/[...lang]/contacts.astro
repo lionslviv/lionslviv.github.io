@@ -19,7 +19,7 @@ const leader = members.find((m) => m.real && m.board);
       <div><dt class="t-small">Email</dt><dd><a class="link" href={`mailto:${club.email}`}>{club.email}</a></dd></div>
       <div><dt class="t-small">{s('Phone', 'Телефон')}</dt><dd><a class="link" href={`tel:${club.phone.replace(/\s/g, '')}`}>{club.phoneDisplay}</a></dd></div>
       <div><dt class="t-small">{s('Club meetings', 'Зустрічі клубу')}</dt><dd>{tr(lang, club.meetingRule)}</dd><dd class="text-soft">{tr(lang, club.meetingPlace)}</dd></div>
-      <div><dt class="t-small">{s('District', 'Дистрикт')}</dt><dd>Lions Clubs International, {tr(lang, club.district)}</dd></div>
+      <div><dt class="t-small">{s('Organisation', 'Організація')}</dt><dd>{tr(lang, club.district)}</dd><dd><a class="link text-[15px]" href={lp(lang, '/lions')}>{s('Lions clubs in Ukraine', 'Lions клуби в Україні')}</a></dd></div>
       <div><dt class="t-small">Facebook</dt><dd><a class="link" href={club.social[0].href} target="_blank" rel="noopener">{club.facebookName}</a></dd></div>
       <div><dt class="t-small">{s('Meeting language', 'Мова зустрічей')}</dt><dd>{s('English', 'Англійська')}</dd></div>
     </dl>

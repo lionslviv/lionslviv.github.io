@@ -66,7 +66,7 @@ const heroSize = `clamp(4.2rem, ${Math.min(22, 17.5 * 8 / club.heroWord.length).
         {s('1.4 million Lions in more than 200 countries chose not to wait, but to act. We do it in Lviv.',
            '1,4 мільйона Lions у понад 200 країнах вирішили не чекати, а робити. Ми робимо це у Львові.')}
       </p>
-      <a href={lp(lang, '/about')} class="link mt-8 inline-block text-[19px]">{s('About the club and Lions International', 'Про клуб і Lions International')}</a>
+      <div class="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-[19px]"><a href={lp(lang, '/about')} class="link inline-block">{s('About our club', 'Про наш клуб')}</a><a href={lp(lang, '/lions')} class="link inline-block">{s('Lions history, Lions in Ukraine and Lion AI', 'Історія Lions, Lions в Україні та Lion AI')}</a></div>
     </div>
   </section>
 
