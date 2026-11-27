@@ -9,7 +9,7 @@ const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 ---
 <Base title={T.nav.privacy} description={s('Privacy policy of Lviv International Lions Club.', 'Політика конфіденційності Lviv International Lions Club.')}>
-  <PageHead title={s('Privacy policy', 'Політика конфіденційності')} lead={s('Draft. The final text will be approved by the club board with a lawyer.', 'Чернетка. Фінальний текст погоджує правління клубу з юристом.')} />
+  <PageHead title={s('Privacy policy', 'Політика конфіденційності')} />
   <section class="wrap-narrow pb-24">
     {lang === 'uk' ? (
       <div class="prose-lions">
