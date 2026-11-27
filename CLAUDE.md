@@ -13,12 +13,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Резервна копія: щомісяця `.github/workflows/backup.yml` + `scripts/backup.sh`, зашифрований артефакт 90 днів (docs/backup.md).
 - Контакти членів: поля в `profiles`, показ через функцію `member_contacts(slug)` лише членам; привʼязка акаунта до профілю (`member_slug`) лише редакторами через `set_member_slug`.
 - Ролі видаються через `role_invites` (адмінка → Учасники). Секретні ключі Supabase в репозиторій не додавати.
+- Вхід: посилання на email або Google (провайдер у Supabase; кнопка на `/login` з'являється, лише якщо `/auth/v1/settings` каже, що Google увімкнено). Налаштування в `docs/google-login.md`.
+- У `main` регулярно пушать інші: деплой за cron і нічне завдання Claude (01:35 Київ, виправляє очевидне і пише звіт у `docs/nightly-report.md`, `docs/site.md` розділ 10). Перед змінами роби `git pull`.
 
 ## Команди
 - `npm run dev` (localhost:4321), `npm run build` (у `dist/`), `npm run preview`.
 - `npm run check`: astro check (типи). CI (`ci.yml`) запускає check + build + `npm test`.
 - `npm test`: `tests/rls-anon.test.mjs`, RLS для аноніма через живий REST Supabase (потрібен інтернет, у базі нічого не створює). Один тест: `node --test --test-name-pattern "<назва>" tests/rls-anon.test.mjs`.
 - `npm run test:ui`: `tests/smoke.py` (Python + Playwright) по зібраному `dist/`, тож спершу `npm run build`. Шлях до Chrome за замовчуванням `/usr/bin/google-chrome`; на Windows задати `PLAYWRIGHT_CHROME`. Перевіряє обидві мови, desktop/mobile, внутрішні посилання, відсутність довгих тире.
+- `npm run brand:import -- <папка>`: копіює офіційні файли бренду в `public/brand/` (розпізнає за назвою, див. `docs/brand/README.md`).
 - `tests/rls_roles.sql`: RLS для всіх ролей, запускається вручну в Supabase SQL Editor (весь файл, очікується `passed = total`).
 - Міграції з `supabase/migrations/` застосовуються вручну в SQL Editor за датою в назві; CLI/автодеплою бази немає. Змінюючи RLS, додавай перевірки в `tests/rls_roles.sql` (і в `rls-anon.test.mjs`, якщо стосується аноніма).
 
