@@ -1,15 +1,22 @@
 # Lviv International Lions Club: сайт клубу
 
-Сайт другого клубу Lions International у Львові, англомовної спільноти. Робоча назва для демонстрації: **Lviv International Lions Club** (змінюється в `src/data/site.ts`: `name`, `shortName`, `heroWord`). Офіційний запис у реєстрі LCI погоджується з District 134.
-Цільовий домен: `leopolislions.org.ua` (редирект з `lionsleopolis.org.ua`).
+Сайт другого клубу Lions International у Львові, англомовної спільноти. Робоча назва **Lviv International Lions Club** (змінюється в `src/data/site.ts`: `name`, `shortName`, `heroWord`). Офіційна назва і домен ще погоджуються з Lions International: District 134 розформовано в березні 2026, а назва Lviv Leopolis уже зайнята в реєстрі LCI.
 
-Сайт: **https://lionslviv.github.io/** (українська версія: https://lionslviv.github.io/uk/). Публікується автоматично з гілки `main` через GitHub Actions.
+- Сайт: **https://lionslviv.github.io/** (EN основна), українська версія **https://lionslviv.github.io/uk/**
+- Публікація: автоматично з гілки `main` через GitHub Actions, плюс перезбірка кожні 30 хвилин
+- Бекенд: Supabase (вхід за посиланням на email, ролі, новини, події, коментарі, відгуки, заявки, фото, контакти членів)
 
-Мови: **англійська основна** (`/`, `/about`, ...), **українська** під `/uk/` (`/uk/about`, ...). Перемикач EN/UA у шапці веде на ту саму сторінку іншою мовою; є hreflang, `og:locale`, окремі календарі (`/events.ics`, `/uk/events.ics`). Словник інтерфейсу: `src/i18n/index.ts` (сервер) і `src/scripts/i18n.ts` (браузерні скрипти). Контент у `src/data/*.ts` має поля `{ en, uk }`. Сторінки лежать у `src/pages/[...lang]/` і генеруються для обох мов через `getStaticPaths`.
+## Документація
 
-Бекенд: **Supabase** (вхід за посиланням на email, адмінка, коментарі, відгуки, заявки, фото). Новини й події редагуються в адмінці (`/admin`), сайт перезбирається кожні 30 хвилин.
+| Документ | Для кого |
+| --- | --- |
+| [docs/site.md](docs/site.md) | Опис сайту і технічна документація: архітектура, дані, ролі, безпека, деплой, тести |
+| [docs/editor-guide.md](docs/editor-guide.md) | Інструкція для адмінів і редакторів (EN і UA): як публікувати, модерувати, видавати ролі |
+| [docs/backup.md](docs/backup.md) | Резервна копія бази: налаштування і відновлення |
+| [docs/brand/README.md](docs/brand/README.md) | Конспект брендбуку Lions International і офіційні файли |
+| [CLAUDE.md](CLAUDE.md) | Правила для Claude Code при зміні коду |
 
-Попередній стан: **етап 1 (MVP) у демо-режимі.** Усі сторінки, дизайн-система і потоки адмінки працюють без бекенду: дані адмінки, коментарі й відгуки зберігаються в браузері (localStorage). Контент умовний і позначений як демо.
+Технічне завдання зі станом реалізації, планом і відкладеними ідеями: документ «ТЗ: сайт Lviv International Lions Club» (Claude Docs).
 
 ## Запуск локально
 
@@ -20,74 +27,14 @@ npm install
 npm run dev        # http://localhost:4321
 npm run build      # статична збірка в dist/
 npm run preview    # перегляд збірки
+npm run check      # перевірка типів (astro check)
+npm test           # правила доступу Supabase для аноніма (потрібен інтернет)
+npm run test:ui    # 103 перевірки інтерфейсу (Python + Playwright, після build)
 ```
 
-## Що спробувати в демо
+## Що налаштувати після клонування або переїзду
 
-1. Відкрийте `/login` і увійдіть як **редактор**. Відкриється адмінка.
-2. У вкладці «Новини» опублікуйте новину. Вона з’явиться на `/news`.
-3. Вийдіть і увійдіть як **користувач**. Залиште коментар під новиною: він піде на модерацію.
-4. Знову увійдіть як редактор: вкладка «Модерація» покаже коментар і відгуки з `/reviews`.
-5. Увійдіть як **член клубу**: на `/events` з’являться закриті збори і кнопка RSVP.
-6. Кнопка «Скинути демо» в адмінці повертає все до початкового стану.
-
-## Публікація на GitHub Pages
-
-1. Створіть репозиторій у GitHub-організації клубу (не на особистому акаунті), наприклад `lions-lviv-leopolis`.
-2. Залийте код:
-   ```bash
-   git remote add origin git@github.com:<org>/lions-lviv-leopolis.git
-   git push -u origin main
-   ```
-3. У репозиторії: **Settings → Pages → Source: GitHub Actions**.
-4. Workflow `.github/workflows/deploy-pages.yml` збере сайт на кожен push у `main`.
-   Адреса: `https://<org>.github.io/lions-lviv-leopolis/`.
-
-### Власний домен
-
-1. Додайте файл `public/CNAME` з рядком `leopolislions.org.ua`.
-2. У **Settings → Secrets and variables → Actions → Variables** задайте `BASE_PATH=/` і `SITE_URL=https://leopolislions.org.ua`.
-3. У DNS домену (рекомендовано Cloudflare) додайте записи для GitHub Pages і увімкніть HTTPS у налаштуваннях Pages.
-
-> GitHub Pages віддає лише статику. Для етапу 2 (справжній вхід, коментарі, завантаження фото) потрібен Supabase,
-> а хостинг краще перенести на Cloudflare (див. ТЗ, розділ 7). Код уже розділено так, щоб перехід був локальним.
-
-## Резервна копія
-
-Раз на місяць (1-го числа) GitHub Actions робить зашифровану копію бази Supabase і файлів сховища та зберігає її 90 днів як артефакт. Налаштування секретів і відновлення: [docs/backup.md](docs/backup.md).
-
-## Структура
-
-```
-src/
-  data/site.ts        налаштування клубу, навігація, цифри впливу, DEMO-прапорець
-  data/content.ts     демо-контент: новини, проєкти, події, альбоми, учасники, відгуки
-  scripts/store.ts    демо-сховище (localStorage). Замінюється на Supabase-клієнт з тим самим API
-  components/         Header, Footer, Skyline (силует Львова), Photo (плейсхолдери), Comments, ...
-  layouts/Base.astro  мета-теги, schema.org, View Transitions
-  pages/              усі сторінки, /admin, /login, /account, events.ics, sitemap.xml
-  styles/global.css   дизайн-токени і компоненти
-supabase/migrations/  схема БД з RLS для етапу 2
-```
-
-## Бренд
-
-- Дизайн-система за Lions International Brand Guidelines V4.0 (05/23): Blue `#00338D`, Yellow `#EBB700`, Purple `#7A2582`, Navy `#0D2240`, Cool Gray 11 `#55565A`, цифровий шрифт Roboto (на сайті Roboto Flex). Конспект: `docs/brand/README.md`.
-- Офіційні PDF брендбуків: `bash scripts/fetch-brand-assets.sh` (кладе їх у `public/brand/` і `docs/brand/`). Сторінка сайту `/brand` покаже кнопки завантаження.
-- **Емблему Lions не малюємо.** Офіційні емблема і підписи Lions International уже в проєкті: оригінали в `docs/brand/logos/` (PNG, JPG CMYK, EPS для друку), веб-копії в `public/brand/`. Іконки напрямів служіння ще треба завантажити з lionsclubs.org/en/logos і виконати `npm run brand:import -- <папка>`. Таблиця: `docs/brand/README.md`.
-- Перевірка дизайну: сторінка `/styleguide`.
-
-## Перед релізом
-
-- [ ] Погодити назву з District 134 і клубом-спонсором, зареєструвати домени
-- [ ] Замінити демо-контент, вимкнути `DEMO` у `src/data/site.ts`
-- [ ] Реальні реквізити ГО на `/support`
-- [x] Офіційні емблема і підписи Lions International
-- [ ] Іконки напрямів служіння (`npm run brand:import`)
-- [ ] Етап 2: Supabase, Auth, Turnstile, Resend
-
-## Тести
-
-- `npm test`: правила доступу Supabase для аноніма (REST, нічого не створює). Запускаються в CI на кожен push.
-- `tests/rls_roles.sql`: правила доступу для всіх ролей (користувач, член клубу, редактор, адмін). Запуск у Supabase SQL Editor; створює тимчасових користувачів і прибирає їх за собою. Очікуваний результат: `31 | 31 | none`.
-- `npm run build && npm run test:ui`: smoke-тести інтерфейсу (сторінки EN/UK на компʼютері й телефоні, посилання, перемикач мови, календар, галерея, вхід, адмінка без входу). Потрібні Python, Playwright і Chrome.
+1. Supabase: застосувати файли з `supabase/migrations/` по черзі в SQL Editor, у Authentication → URL Configuration вказати адресу сайту.
+2. GitHub: Settings → Pages → Source: GitHub Actions. Для резервної копії секрети `SUPABASE_DB_URL` і `BACKUP_PASSPHRASE` (див. docs/backup.md).
+3. Власний домен: файл `public/CNAME`, змінні `BASE_PATH=/` і `SITE_URL=https://домен` у Settings → Secrets and variables → Actions → Variables.
+4. Аналітика: акаунт GoatCounter з кодом із `analytics.goatcounter` у `src/data/site.ts`.
