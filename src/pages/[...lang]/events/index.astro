@@ -21,8 +21,12 @@ const albumOf = (slug: string) => albums.find((a) => a.eventSlug === slug);
 const monthKey = (iso: string) => iso.slice(0, 7);
 const groups = Object.entries(Object.groupBy(upcoming, (e) => monthKey(e.start)));
 // У календарі показуємо всі місяці з подіями, і минулими, і майбутніми
-const calStart = [sorted[0] ? monthKey(sorted[0].start) : '', `${new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(now).slice(0, 7)}`].filter(Boolean).sort()[0];
-const birthdays = birthdaysBetween(calStart);
+// Дні народження: найближчі 12 місяців, а в минулих місяцях лише ті, де були події.
+// Сайт перезбирається кожні 30 хвилин, тож вікно рухається разом з часом.
+const thisMonth = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(now).slice(0, 7);
+const eventMonths = new Set(sorted.map((e) => monthKey(e.start)));
+const calStart = [sorted[0] ? monthKey(sorted[0].start) : thisMonth, thisMonth].sort()[0];
+const birthdays = birthdaysBetween(calStart, addMonths(thisMonth, 11)).filter((b) => b.date.slice(0, 7) >= thisMonth || eventMonths.has(b.date.slice(0, 7)));
 const bdOf = (key: string) => birthdays.filter((b) => b.date.startsWith(key));
 const calMonths = [...new Set([...sorted.map((e) => monthKey(e.start)), ...birthdays.map((b) => b.date.slice(0, 7))])]
   .sort()
@@ -47,7 +51,7 @@ const icsAbs = new URL(icsPath, Astro.site).toString();
 const webcal = icsAbs.replace(/^https?:/, 'webcal:');
 const googleSub = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
 const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be confirmed', 'Час уточнюється') : time(e.start, lang));
-import { birthdaysBetween } from '../../../lib/birthdays';
+import { birthdaysBetween, addMonths } from '../../../lib/birthdays';
 ---
 <Base title={T.nav.events} description={s('Meetings and events of Lviv International Lions Club.', 'Розклад зустрічей і подій Lviv International Lions Club.')}>
   <PageHead title={s('Events and meetings', 'Події та зустрічі')} lead={s(`Our meetings are held in English at ${tr('en', club.meetingPlace)}. Guests are welcome: write to us before you come.`, `Зустрічі проходять англійською в готелі Leopolis, вул. Театральна, 16, Львів. Гості запрошені: напишіть нам перед візитом.`)}>

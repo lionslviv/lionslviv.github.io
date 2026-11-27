@@ -16,6 +16,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npx astro check
       - run: npm run build
 
   # Правила доступу Supabase для аноніма (нічого не створюють у базі).

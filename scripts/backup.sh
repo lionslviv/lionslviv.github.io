@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Резервна копія Supabase: схема public, дані (public, auth, storage), файли сховища
+# Резервна копія Supabase: схема public, дані (public, auth), файли сховища
 # і міграції з репозиторію. Результат шифрується паролем (gpg, AES256).
 # Запускається щомісяця з .github/workflows/backup.yml. Відновлення: docs/backup.md.
 #
@@ -32,10 +32,11 @@ echo "Клієнт: $(pg_dump --version)"
 # 1. Схема public (для звірки; при відновленні основа: міграції з репозиторію)
 pg_dump "$SUPABASE_DB_URL" --schema-only --no-owner --no-privileges --schema=public -f "$dir/schema.sql"
 
-# 2. Дані. Тимчасові й службові таблиці auth/storage не беремо;
-#    storage.buckets створює міграція, тому її дані теж не дублюємо.
+# 2. Дані public і auth. Тимчасові й службові таблиці auth не беремо.
+#    Схему storage не беремо: бакет створює міграція, а записи файлів
+#    зʼявляються знову, коли файли з media/ завантажують у новий проєкт.
 pg_dump "$SUPABASE_DB_URL" --data-only --no-owner --no-privileges \
-  --schema=public --schema=auth --schema=storage \
+  --schema=public --schema=auth \
   --exclude-table-data='auth.sessions' \
   --exclude-table-data='auth.refresh_tokens' \
   --exclude-table-data='auth.flow_state' \
@@ -43,8 +44,6 @@ pg_dump "$SUPABASE_DB_URL" --data-only --no-owner --no-privileges \
   --exclude-table-data='auth.mfa_challenges' \
   --exclude-table-data='auth.audit_log_entries' \
   --exclude-table-data='auth.schema_migrations' \
-  --exclude-table-data='storage.migrations' \
-  --exclude-table-data='storage.buckets' \
   -f "$dir/data.sql"
 
 # 3. Файли зі сховища (публічний бакет)

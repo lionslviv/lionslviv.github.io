@@ -3,7 +3,7 @@
 Безкоштовний тариф Supabase не дає копій, які можна завантажити. Тому раз на місяць GitHub Actions (`.github/workflows/backup.yml`) робить власну копію:
 
 - дані таблиць `public` (новини, події, профілі, ролі, коментарі, відгуки, заявки, фото, журнал);
-- користувачі з `auth` (без сесій і токенів входу) і записи сховища `storage`;
+- користувачі з `auth` (без сесій і токенів входу);
 - усі файли з бакета `public-media` (фото, обкладинки);
 - схема `public` і міграції з репозиторію;
 - `MANIFEST.txt` з кількістю рядків у кожній таблиці.
@@ -46,7 +46,7 @@ psql "$NEW_DB_URL" --single-transaction -v ON_ERROR_STOP=1 \
 
 `session_replication_role = replica` вимикає тригери на час завантаження, щоб, наприклад, `handle_new_user` не створював профілі повторно.
 
-3. Файли з `media/` завантажити в бакет `public-media` з тими самими шляхами (Storage → public-media → Upload, або `supabase storage cp -r media/ ss:///public-media --experimental`).
+3. Файли з `media/` завантажити в бакет `public-media` з тими самими шляхами (Storage → public-media → Upload, або `supabase storage cp -r media/ ss:///public-media --experimental`). Записи про файли в базі сховища створюються при завантаженні, тому в `data.sql` їх немає.
 4. Оновити `SUPABASE_URL` і `SUPABASE_KEY` у `src/lib/supabase-config.ts`, а в Authentication → URL Configuration додати адреси сайту.
 
 Перевірено локально: копія → розшифрування → відновлення дає ті самі кількості рядків і файлів.
