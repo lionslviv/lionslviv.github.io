@@ -21,6 +21,10 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
           <button type="button" class="btn btn-ghost" data-out>{s('Sign out', 'Вийти')}</button>
         </div>
       </div>
+      <div class="mb-8 grid gap-4 border-b border-[var(--line)] pb-8" data-oauth hidden>
+        <button type="button" class="btn btn-quiet w-full sm:w-auto" data-google>{s('Sign in with Google', 'Увійти через Google')}</button>
+        <p class="t-small text-soft">{s('Or get a sign-in link by email:', 'Або отримайте посилання для входу на email:')}</p>
+      </div>
       <form class="grid gap-4" data-login novalidate>
         <div class="field"><label for="ml">Email</label><input id="ml" name="email" class="input" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required /></div>
         <button class="btn btn-blue w-full sm:w-auto" type="submit">{s('Send sign-in link', 'Надіслати посилання для входу')}</button>
@@ -30,7 +34,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
   </section>
 </Base>
 <script>
-  import { getProfile, signInWithEmail, signOut, can, displayName } from '../../scripts/api';
+  import { getProfile, signInWithEmail, signInWithGoogle, enabledProviders, signOut, can, displayName } from '../../scripts/api';
   import { ct, cprefix } from '../../scripts/i18n';
   async function paint() {
     const box = document.querySelector<HTMLElement>('[data-current]');
@@ -38,6 +42,8 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
     if (!box || !form) return;
     const p = await getProfile();
     box.hidden = !p; form.hidden = !!p;
+    const oauth = document.querySelector<HTMLElement>('[data-oauth]');
+    if (oauth) oauth.hidden = !!p || !(await enabledProviders()).google;
     if (p) {
       box.querySelector('[data-who]')!.innerHTML = `${ct().current}: <b></b> (${ct().roles[p.role]})`;
       box.querySelector('[data-who] b')!.textContent = displayName(p);
@@ -51,6 +57,16 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
     if (!form) return;
     paint();
     document.querySelector<HTMLButtonElement>('[data-out]')!.onclick = async () => { await signOut(); paint(); };
+    const g = document.querySelector<HTMLButtonElement>('[data-google]');
+    if (g) g.onclick = async () => {
+      g.disabled = true;
+      try { await signInWithGoogle(`${location.origin}${cprefix()}/account/`); }
+      catch (err) {
+        const st = form.querySelector<HTMLElement>('[data-status]')!;
+        st.className = 'text-[15px] text-[#b42318]'; st.textContent = `${ct().googleError} (${(err as Error).message})`;
+        g.disabled = false;
+      }
+    };
     form.onsubmit = async (e) => {
       e.preventDefault();
       const st = form.querySelector<HTMLElement>('[data-status]')!;

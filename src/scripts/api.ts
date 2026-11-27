@@ -57,6 +57,19 @@ export async function signInWithEmail(email: string, redirectTo: string) {
   const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo, shouldCreateUser: true } });
   if (error) throw error;
 }
+// Вхід через Google (OAuth). Провайдер вмикається в Supabase: Authentication → Providers → Google.
+export async function signInWithGoogle(redirectTo: string) {
+  const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
+  if (error) throw error;
+}
+// Які способи входу ввімкнені в Supabase (публічні налаштування Auth), щоб не показувати кнопку, яка не працює
+export async function enabledProviders(): Promise<Record<string, boolean>> {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: SUPABASE_KEY } });
+    if (!r.ok) return {};
+    return ((await r.json()).external ?? {}) as Record<string, boolean>;
+  } catch { return {}; }
+}
 export async function signOut() { await sb.auth.signOut(); try { localStorage.removeItem(CACHE); } catch { /* */ } profilePromise = null; emit(); }
 export async function updateProfile(patch: Partial<Profile>) {
   const p = await getProfile();

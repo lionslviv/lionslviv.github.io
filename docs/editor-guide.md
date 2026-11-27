@@ -10,7 +10,7 @@ Website: https://lionslviv.github.io/ · Admin panel: https://lionslviv.github.i
 
 ### Signing in
 
-1. Open **/login**, enter your email and press the button. You will get an email with a sign-in link (no password).
+1. Open **/login**. Press **Sign in with Google**, or enter your email and get a sign-in link (no password).
 2. Open the link on the same device. You land in **My account**.
 3. Your role decides what you see. A new account is a plain user until an admin gives it a role (member, editor or admin).
 
@@ -76,7 +76,7 @@ Open **/admin**. Tabs:
 
 ### Вхід
 
-1. Відкрий **/login**, введи email і натисни кнопку. Прийде лист із посиланням для входу (без пароля).
+1. Відкрий **/login**. Натисни **Увійти через Google** або введи email і отримай посилання для входу (без пароля).
 2. Відкрий посилання на тому самому пристрої. Відкриється **Мій кабінет**.
 3. Що ти бачиш, залежить від ролі. Новий акаунт має роль «користувач», доки адмін не надасть роль (член клубу, редактор чи адмін).
 
