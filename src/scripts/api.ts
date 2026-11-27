@@ -204,13 +204,6 @@ export async function setRsvp(slug: string, going: boolean) {
   const { error } = await sb.from('event_rsvps').upsert({ event_slug: slug, user_id: p.id, going });
   if (error) throw error;
 }
-export async function rsvpCounts() {
-  const { data } = await sb.from('event_rsvps').select('event_slug,going');
-  const out: Record<string, number> = {};
-  for (const r of (data ?? []) as { event_slug: string; going: boolean }[]) if (r.going) out[r.event_slug] = (out[r.event_slug] ?? 0) + 1;
-  return out;
-}
-
 // ---------- фото ----------
 // Стискаємо в браузері до 1600 px: так прибираються й метадані (EXIF, геолокація).
 async function shrink(file: File, max = 1600): Promise<Blob> {
@@ -242,10 +235,6 @@ export async function uploadPhotos(albumSlug: string, files: File[]) {
 }
 export async function allPhotos() {
   const { data } = await sb.from('photos').select('*').order('created_at', { ascending: false }).limit(300);
-  return (data ?? []) as DbPhoto[];
-}
-export async function approvedPhotos(albumSlug: string) {
-  const { data } = await sb.from('photos').select('*').eq('album_slug', albumSlug).eq('status', 'approved').order('created_at');
   return (data ?? []) as DbPhoto[];
 }
 export async function setPhotoStatus(id: string, status: Status) {

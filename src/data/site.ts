@@ -63,14 +63,6 @@ export const navSecondary = [
   { href: '/privacy', key: 'privacy' },
 ] as const;
 
-// Цифри впливу редагуються в адмінці. Зараз умовні (демо).
-export const impact: { value: L; label: L }[] = [
-  { value: { en: '1,240', uk: '1 240' }, label: { en: 'children had their eyesight checked', uk: 'дітей пройшли перевірку зору' } },
-  { value: { en: '36', uk: '36' }, label: { en: 'generators delivered to communities', uk: 'генераторів передали в громади' } },
-  { value: { en: '2,800', uk: '2 800' }, label: { en: 'hours of volunteer service', uk: 'годин волонтерського служіння' } },
-  { value: { en: '₴1.9M', uk: '₴1,9 млн' }, label: { en: 'raised and reported', uk: 'зібрали й прозвітували' } },
-];
-
 // Глобальні напрями служіння Lions International.
 export const causes: { key: string; label: L; text: L }[] = [
   { key: 'vision', label: { en: 'Vision', uk: 'Зір' }, text: { en: 'Eye screenings, glasses, support for people with visual impairments.', uk: 'Перевірки зору, окуляри, підтримка людей з порушеннями зору.' } },

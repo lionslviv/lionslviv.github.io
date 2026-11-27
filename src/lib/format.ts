@@ -11,6 +11,3 @@ export const weekday = (iso: string, lang: Lang = 'en') => f(iso, lang, { weekda
 export const time = (iso: string, lang: Lang = 'en') => f(iso, lang, { hour: '2-digit', minute: '2-digit' });
 export const monthTitle = (key: string, lang: Lang = 'en') => new Intl.DateTimeFormat(loc(lang), { month: 'long', year: 'numeric' }).format(new Date(`${key}-15`));
 
-export function initials(name: string): string {
-  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
-}

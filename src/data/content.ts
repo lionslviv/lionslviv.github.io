@@ -241,11 +241,8 @@ export const members: Member[] = [
 
 export type Review = { id: string; author: L; kind: 'partner' | 'beneficiary' | 'volunteer' | 'guest'; text: L; date: string };
 
-export const reviews: Review[] = [
-  { id: 'r1', author: { en: 'Sample partner review', uk: 'Приклад відгуку партнера' }, kind: 'partner', text: { en: 'A real partner review will appear here after moderation and the author’s consent to publish.', uk: 'Тут буде справжній відгук партнера після модерації та згоди автора на публікацію.' }, date: '2026-11-10' },
-  { id: 'r2', author: { en: 'Sample volunteer review', uk: 'Приклад відгуку волонтера' }, kind: 'volunteer', text: { en: 'Reviews are moderated in the admin panel. Critical ones go privately to the board.', uk: 'Відгуки проходять модерацію в адмінці. Негативні отримує правління приватно.' }, date: '2026-11-08' },
-  { id: 'r3', author: { en: 'Sample parent review', uk: 'Приклад відгуку батьків' }, kind: 'beneficiary', text: { en: 'The form on this page works in demo mode: your review will appear in the admin panel for moderation.', uk: 'Форма на цій сторінці працює в демо-режимі: відгук з’явиться в адмінці на модерації.' }, date: '2026-11-05' },
-];
+// Справжні відгуки приходять з бази після модерації в адмінці.
+export const reviews: Review[] = [];
 
 export const reviewKindLabel: Record<Review['kind'], L> = {
   partner: { en: 'Partner', uk: 'Партнер' },

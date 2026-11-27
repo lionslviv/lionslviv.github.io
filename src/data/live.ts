@@ -29,8 +29,6 @@ const [dbPosts, dbEvents, dbPhotos] = await Promise.all([
   get<DbPhoto>('photos?select=album_slug,storage_path,created_at&status=eq.approved&order=created_at'),
 ]);
 
-export const fromDb = { posts: dbPosts !== null, events: dbEvents !== null, photos: dbPhotos !== null };
-
 // ---------- новини ----------
 function mapPost(p: DbPost): Post {
   const st = staticNews.find((s) => s.slug === p.slug);
