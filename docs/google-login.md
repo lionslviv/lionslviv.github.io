@@ -1,5 +1,7 @@
 # Вхід через Google: налаштування
 
+**Стан: увімкнено 27.11.2026.** Проєкт Google Cloud `lviv-lions-site` (акаунт lions.lviv.admin@gmail.com), OAuth-клієнт «Lviv Lions website», додаток у статусі In production. Екран Google показує домен Supabase замість назви клубу, доки база не на власному домені.
+
 Код уже готовий: кнопка «Увійти через Google» на `/login` з’являється сама, щойно провайдер Google увімкнено в Supabase. Ролі працюють як і раніше: їх видають за email, тож запрошення в адмінці діють і для входу через Google.
 
 ## 1. Google Cloud (на клубний акаунт lions.lviv.admin@gmail.com)
