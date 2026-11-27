@@ -127,3 +127,14 @@ const uk: Dict = {
 
 export const ui: Record<Lang, Dict> = { en, uk };
 export const t = (lang: Lang) => ui[lang];
+
+// Кількість фото: 1 photo / 5 photos; українською «фото» не змінюється
+export const photoCount = (lang: Lang, n: number) => (lang === 'uk' ? `${n} фото` : `${n} ${n === 1 ? 'photo' : 'photos'}`);
+
+// Українська форма множини: 1 член, 2-4 члени, 5+ членів
+export const ukPlural = (n: number, one: string, few: string, many: string) => {
+  const d = n % 10, h = n % 100;
+  if (d === 1 && h !== 11) return one;
+  if (d >= 2 && d <= 4 && (h < 12 || h > 14)) return few;
+  return many;
+};

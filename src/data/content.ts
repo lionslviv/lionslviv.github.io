@@ -39,14 +39,14 @@ export const news: Post[] = [
         '## 3 December: third club meeting',
         'Our next meeting will feature talks by our Club President Lars Vestbjerg and Vice President Oleksiy Druhov.',
         '## 12 December: New Year gathering',
-        'We will end our first year together with a festive New Year gathering of club members.',
+        'We will end the year together with a festive New Year gathering of club members.',
         'Both meetings take place at Hotel Leopolis, 16 Teatralna Street, Lviv. If you would like to join us as a guest, get in touch via the Contact page.',
       ],
       uk: [
         '## 3 грудня: третя зустріч клубу',
         'На наступній зустрічі виступлять президент клубу Lars Vestbjerg і віцепрезидент Олексій Другов.',
         '## 12 грудня: новорічна зустріч',
-        'Завершимо наш перший рік разом святковою новорічною зустріччю членів клубу.',
+        'Завершимо рік разом святковою новорічною зустріччю членів клубу.',
         'Обидві зустрічі відбудуться в готелі Leopolis, вул. Театральна, 16, Львів. Якщо хочете долучитися як гість, напишіть нам через сторінку «Контакти».',
       ],
     },
@@ -64,20 +64,20 @@ export const news: Post[] = [
       en: [
         'A new beginning. A shared purpose. A new Lions family in Lviv!',
         'On 5 November, Lviv International Lions Club held its very first meeting at the beautiful Hotel Leopolis, marking the beginning of an exciting journey of friendship, humanitarian service and positive change.',
-        'We started with a lovely dinner, getting to know each other and building new connections. During the meeting, we introduced our members, discussed the Club’s structure and future development, and presented our active humanitarian project.',
+        'We started with a lovely dinner, getting to know each other and building new connections. During the meeting, we introduced our members, discussed the club’s structure and future development, and presented our active humanitarian project.',
         'We were also delighted to welcome Roman Monastyrskyy from Lions Club Lviv as our special guest.',
         'Looking ahead, members shared their ideas for future humanitarian projects, giving us inspiration and direction for the work we will develop together.',
-        'A special moment was presenting each member with a commemorative diploma, celebrating the beginning of our journey as a new Lions Club.',
+        'A special moment was presenting each member with a commemorative diploma, celebrating the beginning of our journey as a new Lions club.',
         'What made this evening truly special was the warm and friendly atmosphere, the enthusiasm and the shared desire to make a difference.',
         '> This is just the beginning. Together, we are ready to turn ideas into action and make a meaningful impact in our community. We Serve!',
       ],
       uk: [
         'Новий початок. Спільна мета. Нова родина Lions у Львові!',
         '5 листопада Lviv International Lions Club провів свою першу зустріч у чудовому готелі Leopolis. Так почалася наша подорож дружби, гуманітарного служіння і позитивних змін.',
-        'Ми почали з теплої вечері: знайомилися і налагоджували нові зв’язки. На зустрічі представили членів клубу, обговорили його структуру і подальший розвиток, а також презентували наш чинний гуманітарний проєкт.',
+        'Ми почали з теплої вечері: знайомилися і налагоджували нові зв’язки. На зустрічі представили членів клубу, обговорили його структуру і подальший розвиток, а також презентували наш поточний гуманітарний проєкт.',
         'Особливим гостем вечора був Роман Монастирський з Lions Club Lviv.',
         'Члени клубу поділилися ідеями майбутніх гуманітарних проєктів, і це дало нам натхнення та напрям для спільної роботи.',
-        'Окремим моментом стало вручення кожному члену клубу пам’ятного диплома на честь початку нашого шляху як нового Lions клубу.',
+        'Особливим моментом стало вручення кожному члену клубу пам’ятного диплома на честь початку нашого шляху як нового Lions клубу.',
         'Вечір був по-справжньому особливим завдяки теплій і дружній атмосфері, ентузіазму та спільному бажанню змінювати життя на краще.',
         '> Це лише початок. Разом ми готові перетворювати ідеї на дії і робити вагомий внесок у життя нашої громади. We Serve!',
       ],
@@ -87,7 +87,7 @@ export const news: Post[] = [
     // Реальна новина: текст клубу про другу зустріч (19.11.2026), фото надав клуб
     slug: 'druha-zustrich-klubu',
     type: 'news',
-    title: { en: 'Our second Lions Club meeting, and our community is growing', uk: 'Друга зустріч клубу: наша спільнота зростає' },
+    title: { en: 'Our second club meeting: our community is growing', uk: 'Друга зустріч клубу: наша спільнота зростає' },
     excerpt: { en: 'New faces, fresh ideas and a special guest from Lions Club Kyiv Ecology.', uk: 'Нові обличчя, свіжі ідеї та особливий гість з Lions Club Kyiv Ecology.' },
     date: '2026-11-19',
     cover: { seed: 'second-meeting', motif: 'event', src: '/gallery/druha-zustrich/01.jpg', w: 1600, h: 900 },
@@ -95,14 +95,14 @@ export const news: Post[] = [
     source: 'https://www.facebook.com/people/Lviv-International-Lions-Club/61595416070045/',
     body: {
       en: [
-        'Our second meeting on 19 November brought new faces, fresh ideas and inspiring conversations. We were pleased to welcome Lion Serhii Denisenko, our special guest from the Lions Club Kyiv Ecology, and welcome new members to our growing community.',
-        'Serhii gave us an insightful introduction to the Lions Clubs International structure, its history and projects, making the meeting both inspiring and engaging.',
-        'We also had a productive discussion about new opportunities for collaboration between Lions Clubs in Lviv, Kyiv and beyond.',
+        'Our second meeting on 19 November brought new faces, fresh ideas and inspiring conversations. We were pleased to welcome Lion Serhii Denisenko, our special guest from Lions Club Kyiv Ecology, and to welcome new members to our growing community.',
+        'Serhii gave us an insightful introduction to the structure, history and projects of Lions Clubs International, making the meeting both inspiring and engaging.',
+        'We also had a productive discussion about new opportunities for collaboration between Lions clubs in Lviv, Kyiv and beyond.',
         '> Great conversations, new connections and shared ideas, all driven by one common purpose: We Serve.',
       ],
       uk: [
         'Наша друга зустріч 19 листопада принесла нові обличчя, свіжі ідеї та натхненні розмови. Ми раді були вітати особливого гостя, Lion Сергія Денисенка з Lions Club Kyiv Ecology, а також нових членів нашої спільноти, що зростає.',
-        'Сергій змістовно розповів про структуру Lions Clubs International, її історію та проєкти, і зустріч вийшла водночас надихаючою й захопливою.',
+        'Сергій змістовно розповів про структуру Lions Clubs International, її історію та проєкти, і зустріч вийшла водночас надихальною і захопливою.',
         'Ми також продуктивно обговорили нові можливості для співпраці між Lions клубами Львова, Києва та інших міст.',
         '> Чудові розмови, нові знайомства і спільні ідеї, які об’єднує одна мета: We Serve.',
       ],
@@ -131,7 +131,7 @@ export const events: Event[] = [
   // Реальний розклад клубу (підтвердив клуб 26.11.2026). Час і місце, де невідомі, уточнюються.
   { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our second meeting, with special guest Lion Serhii Denisenko from Lions Club Kyiv Ecology: the structure, history and projects of Lions Clubs International, new members and collaboration between Lions clubs.', uk: 'Друга зустріч клубу з особливим гостем Lion Сергієм Денисенком з Lions Club Kyiv Ecology: структура, історія і проєкти Lions Clubs International, нові члени клубу та співпраця між Lions клубами.' }, timeUnknown: true },
   { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, start: '2026-11-05T18:00:00+02:00', end: '2026-11-05T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'The first meeting and the start of Lviv International Lions Club: dinner, member introductions, club structure, humanitarian projects and commemorative diplomas.', uk: 'Перша зустріч і старт роботи Lviv International Lions Club: вечеря, знайомство членів клубу, структура клубу, гуманітарні проєкти і пам’ятні дипломи.' }, timeUnknown: true },
-  { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our next club meeting with talks by Club President Lars Vestbjerg and Vice President Oleksiy Druhov. Guests interested in joining are welcome: write to us to get the details.', uk: 'Наступна зустріч клубу, на якій виступлять президент клубу Lars Vestbjerg і віцепрезидент Олексій Другов. Гості, які думають долучитися, запрошені: напишіть нам, щоб отримати деталі.' }, timeUnknown: true },
+  { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our next club meeting with talks by Club President Lars Vestbjerg and Vice President Oleksiy Druhov. Guests interested in joining are welcome: write to us for the details.', uk: 'Наступна зустріч клубу, на якій виступлять президент клубу Lars Vestbjerg і віцепрезидент Олексій Другов. Запрошуємо гостей, які думають долучитися: напишіть нам, щоб дізнатися деталі.' }, timeUnknown: true },
   { slug: 'novorichna-zustrich-2026', title: { en: 'New Year club gathering', uk: 'Новорічна зустріч клубу' }, start: '2026-12-12T18:00:00+02:00', end: '2026-12-12T22:00:00+02:00', location: leopolis, visibility: 'public', kind: 'gala', description: { en: 'A festive New Year gathering of club members to celebrate the start of our journey together.', uk: 'Святкова новорічна зустріч членів клубу, щоб разом відзначити початок нашого шляху.' }, timeUnknown: true },
 ];
 

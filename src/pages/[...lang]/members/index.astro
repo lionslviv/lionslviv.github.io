@@ -4,7 +4,7 @@ import PageHead from '../../../components/PageHead.astro';
 import MemberCard from '../../../components/MemberCard.astro';
 import { members } from '../../../data/content';
 import { u } from '../../../lib/url';
-import { langPaths, langOf, lp, tr, t } from '../../../i18n';
+import { langPaths, langOf, lp, tr, t, ukPlural } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
@@ -22,7 +22,10 @@ const open = members.filter((m) => !m.real);
   </section>
   <section class="bg-alt section-tight">
     <div class="wrap">
-      <p class="text-soft">{s(`${open.length} more club members have not published their profiles yet. Roles in the club will be assigned at the meeting on 3 December.`, `Ще ${open.length} членів клубу поки не опублікували профілі. Ролі в клубі розподілимо на зустрічі 3 грудня.`)}</p>
+      <p class="text-soft">{s(
+        `${open.length} more club ${open.length === 1 ? 'member has' : 'members have'} not published ${open.length === 1 ? 'a profile' : 'their profiles'} yet. Roles in the club will be assigned at the meeting on 3 December.`,
+        `Ще ${open.length} ${ukPlural(open.length, 'член', 'члени', 'членів')} клубу поки не ${ukPlural(open.length, 'опублікував профіль', 'опублікували профілі', 'опублікували профілі')}. Ролі в клубі розподілимо на зустрічі 3 грудня.`,
+      )}</p>
       <ul class="mt-6 flex flex-wrap gap-3">
         {open.map(() => (
           <li class="grid h-14 w-14 place-items-center rounded-full bg-[var(--surface)]" aria-label={s('Profile not published', 'Профіль не опубліковано')}>

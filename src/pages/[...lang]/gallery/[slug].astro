@@ -5,7 +5,7 @@ import Photo from '../../../components/Photo.astro';
 import Comments from '../../../components/Comments.astro';
 import { albums, events } from '../../../data/live';
 import { dateLong } from '../../../lib/format';
-import { langOf, lp, tr, t } from '../../../i18n';
+import { langOf, lp, tr, t, photoCount } from '../../../i18n';
 export function getStaticPaths() {
   return [undefined, 'uk'].flatMap((lang) => albums.map((a) => ({ params: { lang, slug: a.slug }, props: { a } })));
 }
@@ -18,7 +18,7 @@ const ev = events.find((e) => e.slug === a.eventSlug);
 const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
 ---
 <Base title={title} description={`${s('Photo album', 'Фотоальбом')}: ${title}`}>
-  <PageHead title={title} lead={`${dateLong(a.date, lang)}, ${a.photos.length} ${T.photos}`} back={{ href: '/gallery', label: s('Whole gallery', 'Уся галерея') }}>
+  <PageHead title={title} lead={`${dateLong(a.date, lang)}, ${photoCount(lang, a.photos.length)}`} back={{ href: '/gallery', label: s('Whole gallery', 'Уся галерея') }}>
     {ev && <a class="link mt-4 inline-block" href={lp(lang, `/events/${ev.slug}`)}>{s('About the event', 'Про подію')}</a>}
   </PageHead>
   <section class="wrap pb-16">
@@ -26,11 +26,11 @@ const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
     <div class="columns-2 gap-3 md:columns-3 [&>*]:mb-3" data-gallery>
       {a.photos.map((p, i) => (
         <button type="button" class="block w-full overflow-hidden rounded-2xl focus-visible:outline-offset-2" data-index={i} aria-label={s(`Open photo ${i + 1} of ${a.photos.length}`, `Відкрити фото ${i + 1} з ${a.photos.length}`)}>
-          <Photo art={p} alt={`${title}, ${T.photos} ${i + 1}`} ratio={p.w && p.h ? `${p.w} / ${p.h}` : ratios[i % ratios.length]} class="transition-transform duration-500 hover:scale-[1.02]" />
+          <Photo art={p} alt={`${title}, ${s('photo', 'фото')} ${i + 1}`} ratio={p.w && p.h ? `${p.w} / ${p.h}` : ratios[i % ratios.length]} class="transition-transform duration-500 hover:scale-[1.02]" />
         </button>
       ))}
     </div>
-    <p class="t-small mt-6">{s('Photos are published with the consent of the people in them. Want a photo of you removed? Write to us via the Contact page.', 'Фото публікуються зі згоди людей у кадрі. Хочете прибрати фото з собою? Напишіть нам через сторінку «Контакти».')}</p>
+    <p class="t-small mt-6">{s('Photos are published with the consent of the people in them. Want a photo of yourself removed? Write to us via the Contact page.', 'Фото публікуються зі згоди людей у кадрі. Хочете прибрати фото, на якому ви є? Напишіть нам через сторінку «Контакти».')}</p>
   </section>
   <Comments target={`album-${a.slug}`} />
 

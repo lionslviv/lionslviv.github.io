@@ -16,7 +16,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
         <h2>Які дані ми збираємо</h2>
         <ul>
           <li>Ім’я та email з форм заявки, контакту і відгуку.</li>
-          <li>Дані облікового запису під час входу через Google, Apple або email.</li>
+          <li>Ваші email та ім’я, коли ви входите за посиланням на email.</li>
           <li>Профілі членів клубу, які вони заповнюють і публікують самостійно.</li>
         </ul>
         <h2>Для чого</h2>
@@ -26,7 +26,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
         <h2>Дні народження</h2>
         <p>Дні народження членів клубу (лише день і місяць, без року) показуємо в календарі подій і в календарній підписці тільки за їхньою згодою. Щоб прибрати дату, напишіть на {club.email}.</p>
         <h2>Фото</h2>
-        <p>Фото людей публікуємо зі згоди. Фото дітей лише зі згоди батьків або так, щоб обличчя не було видно. Щоб прибрати фото, напишіть на {club.email}.</p>
+        <p>Фото людей публікуємо зі згоди. Фото дітей публікуємо лише зі згоди батьків або так, щоб обличчя не було видно. Щоб прибрати фото, напишіть на {club.email}.</p>
         <h2>Ваші права</h2>
         <p>Відповідно до Закону України «Про захист персональних даних» (і GDPR для гостей з ЄС) ви можете отримати, виправити або видалити свої дані. Пишіть на <a href={`mailto:${club.email}`}>{club.email}</a>.</p>
       </div>
@@ -35,7 +35,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
         <h2>What data we collect</h2>
         <ul>
           <li>Name and email from the join, contact and review forms.</li>
-          <li>Account data when you sign in with Google, Apple or email.</li>
+          <li>Your email and name when you sign in with an email link.</li>
           <li>Club member profiles that members fill in and publish themselves.</li>
         </ul>
         <h2>Why</h2>
@@ -45,7 +45,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
         <h2>Birthdays</h2>
         <p>Club members’ birthdays (day and month only, no year) appear in the events calendar and the calendar feed only with their consent. To remove a date, write to {club.email}.</p>
         <h2>Photos</h2>
-        <p>We publish photos of people with their consent. Photos of children only with parental consent or with faces not visible. To have a photo removed, write to {club.email}.</p>
+        <p>We publish photos of people with their consent. We publish photos of children only with parental consent or with their faces not visible. To have a photo removed, write to {club.email}.</p>
         <h2>Your rights</h2>
         <p>Under the Law of Ukraine “On Personal Data Protection” (and the GDPR for guests from the EU) you can access, correct or delete your data. Write to <a href={`mailto:${club.email}`}>{club.email}</a>.</p>
       </div>

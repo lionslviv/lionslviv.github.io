@@ -38,7 +38,7 @@ const targets = [
           <form class="panel grid gap-5 p-6 sm:p-8" data-members-only data-contacts>
             <div>
               <h2 class="t-h3">{s('My contacts', 'Мої контакти')}</h2>
-              <p class="mt-2 text-soft">{s('Visible only to signed-in club members on your profile page. Guests never see them.', 'Бачать лише члени клубу після входу, на сторінці твого профілю. Гостям сайту їх не видно.')}</p>
+              <p class="mt-2 text-soft">{s('Visible only to signed-in club members on your profile page. Guests never see them.', 'Бачать лише члени клубу після входу, на сторінці вашого профілю. Гостям сайту їх не видно.')}</p>
             </div>
             <div class="field"><label for="c-phone">{s('Phone', 'Телефон')}</label><input id="c-phone" name="phone" class="input" type="tel" autocomplete="tel" maxlength="40" /></div>
             <div class="field"><label for="c-email">Email</label><input id="c-email" name="contact_email" class="input" type="email" autocomplete="email" maxlength="120" /></div>
@@ -93,8 +93,8 @@ const targets = [
     (c.elements.namedItem('show_contacts') as HTMLInputElement).checked = !!user.show_contacts;
     const uk = document.documentElement.lang === 'uk';
     root.querySelector('[data-contacts-link]')!.textContent = user.member_slug
-      ? (uk ? `Привʼязано до профілю на сайті: ${user.member_slug}` : `Linked to the website profile: ${user.member_slug}`)
-      : (uk ? 'Акаунт ще не привʼязано до профілю на сайті. Це робить редактор в адмінці.' : 'Your account is not linked to a website profile yet. An editor does this in the admin panel.');
+      ? (uk ? `Прив’язано до профілю на сайті: ${user.member_slug}` : `Linked to the website profile: ${user.member_slug}`)
+      : (uk ? 'Акаунт ще не прив’язано до профілю на сайті. Це робить редактор в адмінці.' : 'Your account is not linked to a website profile yet. An editor does this in the admin panel.');
   }
   document.addEventListener('astro:page-load', () => {
     const root = document.querySelector<HTMLElement>('[data-account]');

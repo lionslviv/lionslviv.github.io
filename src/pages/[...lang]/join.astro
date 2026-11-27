@@ -11,7 +11,8 @@ const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 const now = new Date(); // час збірки; сайт перезбирається за розкладом
 const openNight = events.filter((e) => e.kind === 'meeting' && e.visibility === 'public' && !e.demo && new Date(e.start) > now).sort((a, b) => a.start.localeCompare(b.start))[0];
-const when = (iso: string, unknown?: boolean) => (unknown ? dateLong(iso, lang) : `${dateLong(iso, lang)}, ${time(iso, lang)}`);
+// Без крапки в кінці («2026 р.»), щоб після дати не було двох крапок
+const when = (iso: string, unknown?: boolean) => (unknown ? dateLong(iso, lang) : `${dateLong(iso, lang)}, ${time(iso, lang)}`).replace(/\.$/, '');
 const steps = [
   [s('Come to a club meeting', 'Прийдіть на зустріч клубу'), openNight ? s(`Next one: ${when(openNight.start, openNight.timeUnknown)}. Write to us to get the details.`, `Найближча: ${when(openNight.start, openNight.timeUnknown)}. Напишіть нам, щоб отримати деталі.`) : s('We will announce the date in Events.', 'Дату оголосимо в розділі «Події».')],
   [s('Try service', 'Спробуйте служіння'), s('Volunteer on one of our projects to see how we work.', 'Долучіться волонтером до одного з проєктів, щоб відчути, як ми працюємо.')],
@@ -39,7 +40,7 @@ const steps = [
         <p class="text-soft">{s('We will explain membership dues and what is expected of members at the first meeting.', 'Членський внесок і очікування від членів клубу пояснимо на першій зустрічі.')}</p>
         {openNight && <a href={lp(lang, `/events/${openNight.slug}`)} class="link inline-block">{s('About the next meeting', 'Про найближчу зустріч')}</a>}
       </div>
-      <RequestForm kind="join" submitLabel={s('Send request', 'Надіслати заявку')} messageLabel={s('About you and how you would like to help', 'Про себе і чим хочете долучитися')} />
+      <RequestForm kind="join" submitLabel={s('Send request', 'Надіслати заявку')} messageLabel={s('About you and how you would like to help', 'Про себе і як хочете допомогти')} />
     </div>
   </section>
 </Base>

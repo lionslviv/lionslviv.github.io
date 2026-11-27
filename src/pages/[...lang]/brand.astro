@@ -50,8 +50,8 @@ const okCount = assets.filter((a) => a.ok).length;
     <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.4fr]">
       <div class="space-y-4">
         <h2 class="t-h2">{s('How to write the name', 'Як писати назву')}</h2>
-        <p class="t-lead">{s('We are the second Lions club in Lviv, so the name is always written in full: Lviv International Lions Club.', 'Наш клуб другий Lions club у Львові, тому назва завжди повна: Lviv International Lions Club.')}</p>
-        <p class="text-soft">{s('The official record in the Lions International registry is agreed with Lions International under the club naming rules (Board Policy Manual, chapter 10).', 'Офіційний запис у реєстрі Lions International погоджуємо з Lions International за правилами назв клубів (Board Policy Manual, розділ 10).')}</p>
+        <p class="t-lead">{s('We are the second Lions club in Lviv, so the name is always written in full: Lviv International Lions Club.', 'Наш клуб є другим Lions club у Львові, тому назва завжди повна: Lviv International Lions Club.')}</p>
+        <p class="text-soft">{s('The official record in the Lions International registry is agreed under the club naming rules (Board Policy Manual, chapter 10).', 'Офіційний запис у реєстрі Lions International погоджуємо за правилами назв клубів (Board Policy Manual, розділ 10).')}</p>
       </div>
       <dl class="divide-y divide-[var(--line)] border-y border-[var(--line)]">
         {nameRules.map(([k, v]) => (
@@ -71,7 +71,7 @@ const okCount = assets.filter((a) => a.ok).length;
         <p class="t-lead">{s('The emblem and signatures are never redrawn. Official files from lionsclubs.org only.', 'Емблему і підписи ніколи не перемальовують. Лише офіційні файли з lionsclubs.org.')}</p>
         <ul class="grid gap-2 text-[17px]">
           <li><span class="font-[620]">{s('Clear space:', 'Вільне поле:')}</span> {s('at least the height of the “L” in the centre of the emblem on all sides.', 'не менше висоти літери «L» у центрі емблеми з усіх боків.')}</li>
-          <li><span class="font-[620]">{s('Print size:', 'Розмір у друці:')}</span> {s('ideally 1.43 cm, at least 0.95 cm emblem height.', 'бажано 1,43 см, мінімум 0,95 см заввишки емблеми.')}</li>
+          <li><span class="font-[620]">{s('Print size:', 'Розмір у друці:')}</span> {s('emblem height ideally 1.43 cm, at least 0.95 cm.', 'висота емблеми бажано 1,43 см, мінімум 0,95 см.')}</li>
           <li><span class="font-[620]">{s('Colours:', 'Кольори:')}</span> {s('Blue 287, two colour 287 + 7406, full colour or black and white.', 'Blue 287, двоколірна 287 + 7406, повнокольорова або чорно-біла.')}</li>
         </ul>
         <a href="https://www.lionsclubs.org/en/logos" target="_blank" rel="noopener" class="link inline-block">{s('Official emblem files', 'Офіційні файли емблеми')}</a>
@@ -197,7 +197,7 @@ const okCount = assets.filter((a) => a.ok).length;
           <button class="btn btn-quiet btn-sm" data-copy-boiler>{s('Copy text', 'Скопіювати текст')}</button>
         </li>
         <li class="rounded-2xl border border-[var(--line)] p-5">
-          <p class="text-[15px] leading-[1.6]" data-boiler>{s('Lviv International Lions Club is an English-speaking club of Lions Clubs International in Lviv, Ukraine, focusing on healthcare and humanitarian service. Lions Clubs International is the world’s largest service club organisation, with more than 1.4 million members in over 48,000 clubs in more than 200 countries and geographic areas. It was founded in 1917.', 'Lviv International Lions Club це англомовний клуб Lions Clubs International у Львові, що зосереджується на охороні здоров’я та гуманітарній допомозі. Lions Clubs International є найбільшою у світі організацією сервісних клубів: понад 1,4 мільйона членів у більш ніж 48 000 клубах у понад 200 країнах і регіонах. Організацію засновано 1917 року.')}</p>
+          <p class="text-[15px] leading-[1.6]" data-boiler>{s('Lviv International Lions Club is an English-speaking club of Lions Clubs International in Lviv, Ukraine, focusing on healthcare and humanitarian service. Lions Clubs International is the world’s largest service club organisation, with more than 1.4 million members in about 50,000 clubs in more than 200 countries and geographic areas. It was founded in 1917.', 'Lviv International Lions Club є англомовним клубом Lions Clubs International у Львові, що зосереджується на охороні здоров’я та гуманітарній допомозі. Lions Clubs International є найбільшою у світі організацією сервісних клубів: понад 1,4 мільйона членів приблизно в 50 000 клубах у понад 200 країнах і регіонах. Організацію засновано 1917 року.')}</p>
         </li>
       </ul>
     </div>

@@ -13,7 +13,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 const name = tr(lang, m.name);
 const role = tr(lang, m.role);
 ---
-<Base title={m.real ? `${name}, ${role}` : role} description={m.bio ? tr(lang, m.bio) : undefined} noindex={!m.real}>
+<Base title={m.real ? `${name}, ${lang === 'uk' ? role.charAt(0).toLowerCase() + role.slice(1) : role}` : role} description={m.bio ? tr(lang, m.bio) : undefined} noindex={!m.real}>
   <section class="wrap grid gap-12 pb-24 pt-[clamp(3rem,7vw,6rem)] md:grid-cols-[minmax(0,380px)_1fr]">
     {m.photo ? (
       <div class="aspect-square self-start overflow-hidden rounded-[var(--radius-card)] bg-[var(--bg-alt)]">

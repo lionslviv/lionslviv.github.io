@@ -6,7 +6,7 @@ import { events, albums } from '../../../data/live';
 import { club } from '../../../data/site';
 import { u } from '../../../lib/url';
 import { dayNum, monthShort, weekday, time, monthTitle } from '../../../lib/format';
-import { langPaths, langOf, lp, tr, t } from '../../../i18n';
+import { langPaths, langOf, lp, tr, t, photoCount } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
@@ -54,7 +54,7 @@ const when = (e: (typeof events)[number]) => (e.timeUnknown ? s('Time to be conf
 import { birthdaysBetween, addMonths } from '../../../lib/birthdays';
 ---
 <Base title={T.nav.events} description={s('Meetings and events of Lviv International Lions Club.', 'Розклад зустрічей і подій Lviv International Lions Club.')}>
-  <PageHead title={s('Events and meetings', 'Події та зустрічі')} lead={s(`Our meetings are held in English at ${tr('en', club.meetingPlace)}. Guests are welcome: write to us before you come.`, `Зустрічі проходять англійською в готелі Leopolis, вул. Театральна, 16, Львів. Гості запрошені: напишіть нам перед візитом.`)}>
+  <PageHead title={s('Events and meetings', 'Події та зустрічі')} lead={s(`Our meetings are held in English at ${tr('en', club.meetingPlace)}. Guests are welcome: write to us before you come.`, `Зустрічі проходять англійською в готелі Leopolis, вул. Театральна, 16, Львів. Гостям раді: напишіть нам перед візитом.`)}>
     <div class="mt-8 flex flex-wrap items-center gap-3">
       <div class="inline-flex rounded-full bg-[var(--bg-alt)] p-1" role="tablist" aria-label={s('View', 'Вигляд')}>
         <button type="button" class="btn btn-sm bg-[var(--surface)] shadow-sm" role="tab" aria-selected="true" aria-controls="pane-list" data-view="list">{s('List', 'Список')}</button>
@@ -73,7 +73,7 @@ import { birthdaysBetween, addMonths } from '../../../lib/birthdays';
 
   <section id="pane-list" class="wrap pb-24" data-pane="list" role="tabpanel">
     <p class="panel mb-10 p-5 text-[15px]" data-members-note hidden>
-      {s('The schedule includes members-only meetings.', 'У розкладі є зустрічі лише для членів клубу.')} <a class="link" href={lp(lang, '/login')}>{T.signIn}</a> {s('to see them.', ', щоб їх бачити.')}
+      {s('The schedule includes members-only meetings.', 'У розкладі є зустрічі лише для членів клубу.')} <a class="link" href={lp(lang, '/login')}>{T.signIn}</a>{s(' to see them.', ', щоб їх бачити.')}
     </p>
     <div data-local-events data-known={JSON.stringify(events.map((e) => e.slug))}></div>
     {groups.length === 0 && <p class="t-lead mb-14">{s('New meetings will be announced here soon.', 'Нові зустрічі скоро з’являться тут.')}</p>}
@@ -121,7 +121,7 @@ import { birthdaysBetween, addMonths } from '../../../lib/birthdays';
                   </div>
                   <div>
                     <p class="text-[19px] font-[620] group-hover:text-[var(--accent)]">{tr(lang, e.title)}</p>
-                    <p class="t-small mt-1">{tr(lang, e.location)}{al ? ` · ${al.photos.length} ${T.photos}` : ''}</p>
+                    <p class="t-small mt-1">{tr(lang, e.location)}{al ? ` · ${photoCount(lang, al.photos.length)}` : ''}</p>
                   </div>
                   {cover?.src && <img src={u(cover.src)} alt="" width="160" height="110" loading="lazy" decoding="async" class="col-start-2 h-[72px] w-[108px] rounded-xl object-cover md:col-start-auto md:h-[88px] md:w-[132px]" />}
                 </a>

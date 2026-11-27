@@ -4,7 +4,7 @@ import PageHead from '../../../components/PageHead.astro';
 import Photo from '../../../components/Photo.astro';
 import { albums } from '../../../data/live';
 import { dateLong } from '../../../lib/format';
-import { langPaths, langOf, lp, tr, t } from '../../../i18n';
+import { langPaths, langOf, lp, tr, t, photoCount } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
@@ -22,7 +22,7 @@ const ft = tr(lang, first.title);
       </div>
       <div class="mt-5 flex flex-wrap items-baseline justify-between gap-3">
         <h2 class="t-h2 group-hover:text-[var(--accent)]">{ft}</h2>
-        <p class="text-soft">{dateLong(first.date, lang)}, {first.photos.length} {T.photos}</p>
+        <p class="text-soft">{dateLong(first.date, lang)}, {photoCount(lang, first.photos.length)}</p>
       </div>
     </a>
     <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -31,7 +31,7 @@ const ft = tr(lang, first.title);
           <div class="overflow-hidden rounded-[var(--radius-card)]"><Photo art={a.photos[0]} alt={tr(lang, a.title)} ratio="4 / 3" class="transition-transform duration-700 group-hover:scale-[1.03]" /></div>
           <div>
             <h2 class="text-[21px] font-[650] tracking-[-0.015em] group-hover:text-[var(--accent)]">{tr(lang, a.title)}</h2>
-            <p class="t-small mt-1">{dateLong(a.date, lang)}, {a.photos.length} {T.photos}</p>
+            <p class="t-small mt-1">{dateLong(a.date, lang)}, {photoCount(lang, a.photos.length)}</p>
           </div>
         </a>
       ))}

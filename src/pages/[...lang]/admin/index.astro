@@ -77,7 +77,7 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
               <div class="field"><label for="pf-buk">{s('Text', 'Текст')}</label><textarea id="pf-buk" name="body_uk" class="textarea min-h-[220px]"></textarea></div>
             </fieldset>
           </div>
-          <p class="t-small">{s('Text: blank line between paragraphs; a line starting with "## " is a subheading, with "> " a quote.', 'Текст: порожній рядок між абзацами; рядок з "## " це підзаголовок, з "> " цитата.')}</p>
+          <p class="t-small">{s('Text: blank line between paragraphs; a line starting with "## " is a subheading, with "> " a quote.', 'Текст: порожній рядок між абзацами; рядок, що починається з "## ", стає підзаголовком, а з "> " цитатою.')}</p>
           <div class="grid gap-5 sm:grid-cols-2">
             <div class="field"><label for="pf-slug">{s('Web address (slug)', 'Адреса сторінки (slug)')}</label><input id="pf-slug" name="slug" class={inp} pattern="[a-z0-9-]+" placeholder="auto" /></div>
             <div class="field"><label for="pf-date">{s('Publication date', 'Дата публікації')}</label><input id="pf-date" name="date" type="date" class={inp} /></div>
@@ -295,7 +295,7 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
     const site: { slug: string; name: string }[] = JSON.parse($('[data-member-rows]').dataset.siteProfiles || '[]');
     const uk = document.documentElement.lang === 'uk';
     const slugSelect = (p: A.Profile) => `<select class="select max-w-[220px] !py-2" aria-label="${uk ? 'Профіль на сайті' : 'Website profile'}: ${A.esc(p.email || '')}" data-slug-for="${p.id}" data-who="${A.esc(p.email || p.full_name)}">
-          <option value="">${uk ? 'не привʼязано' : 'not linked'}</option>
+          <option value="">${uk ? 'не прив’язано' : 'not linked'}</option>
           ${site.map((m) => `<option value="${m.slug}" ${m.slug === p.member_slug ? 'selected' : ''}>${A.esc(m.name)}</option>`).join('')}
         </select>`;
     $('[data-member-rows]').innerHTML = people.map((p) => `

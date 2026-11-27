@@ -258,7 +258,7 @@ export async function setRole(id: string, role: Role, who: string) {
   if (error) throw error;
   await log(`role of ${who}: ${role}`);
 }
-// Привʼязка акаунта до профілю на сайті (тільки редактори, через функцію в базі)
+// Прив’язка акаунта до профілю на сайті (тільки редактори, через функцію в базі)
 export async function setMemberSlug(id: string, slug: string, who: string) {
   const { error } = await sb.rpc('set_member_slug', { p_profile: id, p_slug: slug });
   if (error) throw error;

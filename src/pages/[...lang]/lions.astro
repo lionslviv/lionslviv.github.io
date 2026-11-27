@@ -7,7 +7,7 @@ const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 ---
-<Base title={T.nav.lions} description={s('History of Lions Clubs International, Lions clubs in Ukraine and the Lion AI assistant.', 'Історія Lions Clubs International, Lions клуби в Україні та AI-асистент Lion AI.')}>
+<Base title={T.nav.lions} description={s('History of Lions Clubs International, Lions clubs in Ukraine and the Lion AI assistant.', 'Історія Lions Clubs International, Lions клуби в Україні та AI-асистентка Lion AI.')}>
   <section class="hero">
     <div class="wrap relative z-[2] pb-[clamp(3rem,6vw,5rem)] pt-[clamp(3rem,7vw,6rem)]">
       <h1 class="t-h1 max-w-[18ch]">{s('Lions: since 1917, and now in Lviv', 'Lions: з 1917 року, а тепер і у Львові')}</h1>
@@ -104,7 +104,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
   <section id="ai" class="section-tight scroll-mt-24">
     <div class="wrap">
       <h2 class="t-h2">{s('Lion AI: Ellie, the assistant for Lions', 'Lion AI: Ellie, асистентка для Lions')}</h2>
-      <p class="mt-4 max-w-[62ch] text-[19px] leading-[1.6]">{s('Lions International has its own AI assistant called Ellie on lionsclubs.org. It helps Lions and Leos find programmes, resources and ideas for service faster.', 'У Lions International є власний AI-асистент Ellie на lionsclubs.org. Вона допомагає Lions і Leo швидше знаходити програми, матеріали та ідеї для служіння.')}</p>
+      <p class="mt-4 max-w-[62ch] text-[19px] leading-[1.6]">{s('Lions International has its own AI assistant called Ellie on lionsclubs.org. It helps Lions and Leos find programmes, resources and ideas for service faster.', 'У Lions International є власна AI-асистентка Ellie на lionsclubs.org. Вона допомагає Lions і Leo швидше знаходити програми, матеріали та ідеї для служіння.')}</p>
       <div class="mt-10 grid gap-x-12 gap-y-8 sm:grid-cols-2">
         {lionAi.points.map((p) => (
           <div class="max-w-[48ch] border-t-2 border-[var(--color-lions)] pt-4">
@@ -113,7 +113,7 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
           </div>
         ))}
       </div>
-      <p class="mt-10 max-w-[62ch] text-[17px] leading-[1.6]">{s('Our club uses AI tools in its own work too, carefully and with human review. If you would like to help the club with AI or digital skills, we will be glad to hear from you.', 'Наш клуб теж використовує AI-інструменти у своїй роботі, обережно і з перевіркою людиною. Якщо хочеш допомогти клубу з AI чи цифровими навичками, будемо раді.')}</p>
+      <p class="mt-10 max-w-[62ch] text-[17px] leading-[1.6]">{s('Our club uses AI tools in its own work too, carefully and with human review. If you would like to help the club with AI or digital skills, we will be glad to hear from you.', 'Наш клуб теж використовує AI-інструменти у своїй роботі, обережно і з перевіркою людиною. Якщо хочете допомогти клубу з AI чи цифровими навичками, будемо раді.')}</p>
       <div class="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-[17px]">
         <a class="link" href={lionAi.url} target="_blank" rel="noopener">{s('Try Lion AI on lionsclubs.org', 'Спробувати Lion AI на lionsclubs.org')}</a>
         <a class="link" href={lionAi.about} target="_blank" rel="noopener">{s('About Lion AI and privacy', 'Про Lion AI і конфіденційність')}</a>

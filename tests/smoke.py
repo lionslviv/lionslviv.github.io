@@ -81,6 +81,16 @@ async def main():
         # без довгих тире у видимому тексті
         dashes = [f for f in glob.glob(ROOT + '/**/*.html', recursive=True) if re.search('[\\u2014\\u2013]', re.sub(r'<script.*?</script>', '', open(f, encoding='utf-8').read(), flags=re.S))]
         check('без довгих тире', not dashes, str(dashes[:3]))
+        # типові граматичні огріхи у видимому тексті: подвійна крапка, пробіл перед розділовим знаком,
+        # подвійні пробіли, «Lions Club» з великої C у загальному значенні, неузгоджене «4 членів»
+        typos = []
+        for f in glob.glob(ROOT + '/**/*.html', recursive=True):
+            txt = re.sub(r'<(script|style).*?</\1>', '', open(f, encoding='utf-8').read(), flags=re.S)
+            txt = re.sub(r'<[^>]+>', '', txt)
+            for pat in [r'[^.\s]\.\.(?!\.)', r'\w \s*[,.;:!?](?=\s)', r'\b[234] членів\b', r'\b1 photos\b', r'photo\(s\)']:
+                m = re.search(pat, txt)
+                if m: typos.append((os.path.relpath(f, ROOT), m.group(0)))
+        check('без типових граматичних огріхів', not typos, str(typos[:3]))
         await b.close()
     failed = [r for r in results if not r[1]]
     print(f'\n{len(results) - len(failed)}/{len(results)} passed')

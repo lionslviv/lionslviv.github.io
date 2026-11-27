@@ -13,12 +13,12 @@ export const club = {
   // З березня 2026 District 134 (Україна) розформовано: клуби України підтримує Lions International напряму.
   shortName: 'Lviv International',
   heroWord: 'Lviv', // велике слово в hero між шарами силуету міста (було: 'Leopolis')
-  lciRecord: { en: 'to be confirmed with Lions International', uk: 'уточнюється з Lions International' } as L,
+  lciRecord: { en: 'being agreed with Lions International', uk: 'погоджується з Lions International' } as L,
   facebookName: 'Lviv International Lions Club',
   district: { en: 'Lions Clubs International, Ukraine', uk: 'Lions Clubs International, Україна' } as L,
   motto: 'We Serve',
   about: {
-    en: 'English-speaking Lions community in Lviv, Ukraine, focusing on healthcare and humanitarian service.',
+    en: 'An English-speaking Lions community in Lviv, Ukraine, focusing on healthcare and humanitarian service.',
     uk: 'Англомовна спільнота Lions у Львові, що служить через охорону здоров’я та гуманітарну допомогу.',
   } as L,
   email: 'lv@dba-Ukraine.com',
