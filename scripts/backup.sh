@@ -12,6 +12,16 @@ set -euo pipefail
 : "${SUPABASE_DB_URL:?Немає SUPABASE_DB_URL: додай секрет у GitHub (див. docs/backup.md)}"
 : "${BACKUP_PASSPHRASE:?Немає BACKUP_PASSPHRASE: додай секрет у GitHub (див. docs/backup.md)}"
 
+# Перевіряємо формат рядка до першого підключення: з помилкою в ньому psql
+# друкує ім'я користувача, і пароль може потрапити в публічний лог.
+url_re='^postgres(ql)?://([^:@/]+):([^@]+)@([^:/@]+)(:[0-9]+)?/[^/?]+'
+if [[ ! "$SUPABASE_DB_URL" =~ $url_re ]]; then
+  echo "SUPABASE_DB_URL має неправильний формат. Потрібно: postgresql://postgres.<проєкт>:<пароль>@<хост>:5432/postgres (див. docs/backup.md)" >&2
+  exit 1
+fi
+# У GitHub Actions ховаємо пароль у логах, навіть якщо він з'явиться частинами
+[ -n "${GITHUB_ACTIONS:-}" ] && echo "::add-mask::${BASH_REMATCH[3]}"
+
 OUT_DIR=${OUT_DIR:-backup-out}
 MEDIA_BUCKET=${MEDIA_BUCKET:-public-media}
 MEDIA_BASE=${MEDIA_BASE:-https://lyoicjdpqzvsfluromvo.supabase.co/storage/v1/object/public}
