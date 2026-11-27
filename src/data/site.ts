@@ -63,7 +63,7 @@ export const navSecondary = [
   { href: '/privacy', key: 'privacy' },
 ] as const;
 
-// Глобальні напрями служіння Lions International.
+// Вісім глобальних напрямів служіння Lions International (lionsclubs.org, Our global causes, перевірено 27.11.2026).
 export const causes: { key: string; label: L; text: L }[] = [
   { key: 'vision', label: { en: 'Vision', uk: 'Зір' }, text: { en: 'Eye screenings, glasses, support for people with visual impairments.', uk: 'Перевірки зору, окуляри, підтримка людей з порушеннями зору.' } },
   { key: 'hunger', label: { en: 'Hunger', uk: 'Голод' }, text: { en: 'Food packages, kitchens, support for displaced people.', uk: 'Продуктові набори, кухні, підтримка переселенців.' } },
@@ -71,6 +71,7 @@ export const causes: { key: string; label: L; text: L }[] = [
   { key: 'diabetes', label: { en: 'Diabetes', uk: 'Діабет' }, text: { en: 'Screenings and prevention awareness.', uk: 'Скринінги та просвіта щодо профілактики.' } },
   { key: 'cancer', label: { en: 'Childhood cancer', uk: 'Дитячий рак' }, text: { en: 'Support for families and hospitals.', uk: 'Допомога родинам і лікарням.' } },
   { key: 'humanitarian', label: { en: 'Humanitarian aid', uk: 'Гуманітарна допомога' }, text: { en: 'Generators, medicines, hospital equipment.', uk: 'Генератори, ліки, обладнання для лікарень.' } },
+  { key: 'disaster', label: { en: 'Disaster relief', uk: 'Допомога під час лих' }, text: { en: 'Emergency aid and recovery for communities after disasters.', uk: 'Термінова допомога і відновлення громад після стихійних лих.' } },
   { key: 'youth', label: { en: 'Youth', uk: 'Молодь' }, text: { en: 'Leo clubs, mentoring, education programmes.', uk: 'Leo-клуби, менторство, освітні програми.' } },
 ];
 
