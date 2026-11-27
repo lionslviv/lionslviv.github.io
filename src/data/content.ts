@@ -195,10 +195,11 @@ export const members: Member[] = [
     name: { en: 'Lars Vestbjerg', uk: 'Lars Vestbjerg' },
     role: { en: 'Club President', uk: 'Президент клубу' },
     since: 2026,
-    field: { en: 'Danish Business Association, Vestbjerg Invest ApS', uk: 'Danish Business Association, Vestbjerg Invest ApS' },
+    // Біо оновлено 27.11.2026 за текстом, який надав сам Lars
+    field: { en: 'Danish Business Association, Service Ukraine', uk: 'Danish Business Association, Service Ukraine' },
     bio: {
-      en: 'Danish entrepreneur based in Lviv. Founder and CEO of Vestbjerg Invest ApS, works with the Danish Business Association. Former Chairman of the Board of the European Business Association in Ukraine (2004-2007, 2009).',
-      uk: 'Данський підприємець, який живе у Львові. Засновник і CEO Vestbjerg Invest ApS, працює в Danish Business Association. Очолював правління European Business Association в Україні (2004-2007, 2009).',
+      en: 'Danish entrepreneur based in Lviv, working in Ukraine since 2003. Founder and President of the Danish Business Association since 2010, connecting Danish companies with business opportunities in Ukraine. Established the European Business Association’s presence in western Ukraine and chaired its regional board, including in 2005-2009. For 22 years (2003-2025) General Manager of Sika Footwear in Ukraine, a Danish-owned manufacturer of safety and occupational footwear. Worked for about eight years as an investment adviser to the Danish Investment Fund, supporting Danish investment in Ukraine. Since 2023 co-owner of Service Ukraine, a company set up to help Ukraine during the war, which supports the Ministry of Health and the army. Has held advisory board roles at companies investing in Ukraine.',
+      uk: 'Данський підприємець, який живе у Львові і працює в Україні з 2003 року. Засновник і президент Danish Business Association з 2010 року: допомагає данським компаніям знаходити бізнес-можливості в Україні. Започаткував представництво European Business Association на заході України і очолював його регіональне правління, зокрема у 2005-2009 роках. 22 роки (2003-2025) був генеральним директором Sika Footwear в Україні, данського виробника захисного і професійного взуття. Близько восьми років працював інвестиційним радником Danish Investment Fund і підтримував данські інвестиції в Україні. З 2023 року співвласник компанії Service Ukraine, створеної, щоб допомагати Україні під час війни: вона підтримує Міністерство охорони здоров’я та армію. Входив до консультативних рад компаній, що інвестують в Україну.',
     },
     board: true, real: true, photo: '/members/lars-vestbjerg.jpg', birthday: '01-31',
   },
