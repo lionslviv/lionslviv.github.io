@@ -30,7 +30,6 @@ const role = tr(lang, m.role);
       <p class="flex flex-wrap gap-2"><span class="badge badge-blue">{role}</span><span class="badge">{s('member since', 'у клубі з')} {m.since}</span></p>
       {m.field && m.real && <p class="text-[19px] font-[560]">{tr(lang, m.field)}</p>}
       {m.bio ? <p class="max-w-[58ch] text-[19px] leading-[1.6]">{tr(lang, m.bio)}</p> : <p class="max-w-[52ch] text-soft">{s('A short bio of up to 300 characters, field of work and a LinkedIn link will appear here. Members edit their profile in their account and decide whether to show it publicly.', 'Тут буде коротке біо до 300 символів, сфера діяльності та посилання на LinkedIn. Член клубу редагує профіль у кабінеті і сам вирішує, чи показувати його публічно.')}</p>}
-      {m.real && <p class="t-small">{s('Profile prepared from public professional information; the final text is being approved.', 'Профіль підготовлено за відкритими професійними даними, остаточний текст погоджується.')}</p>}
       {m.real && (
         <div class="panel max-w-[52ch] p-5 text-[15px]" data-contacts={m.slug}>
           <p data-contacts-note>{s('Contacts are visible to club members after signing in.', 'Контакти бачать лише члени клубу після входу.')} <a href={lp(lang, '/login')} class="link" data-contacts-login>{T.signIn}</a></p>
