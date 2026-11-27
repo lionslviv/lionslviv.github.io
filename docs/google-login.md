@@ -1,6 +1,8 @@
 # Вхід через Google: налаштування
 
-**Стан: увімкнено 27.11.2026.** Проєкт Google Cloud `lviv-lions-site` (акаунт lions.lviv.admin@gmail.com), OAuth-клієнт «Lviv Lions website», додаток у статусі In production. Екран Google показує домен Supabase замість назви клубу, доки база не на власному домені.
+**Стан: увімкнено 27.11.2026.** Проєкт Google Cloud `lviv-lions-site` (акаунт lions.lviv.admin@gmail.com), OAuth-клієнт «Lviv Lions website», додаток у статусі In production. Екран Google показує домен Supabase замість назви клубу, доки база не на власному домені. У клієнта один активний Client Secret (перший видалено 27.11.2026 після перевірки входу з новим).
+
+**Заміна ключа:** Google Cloud → Google Auth Platform → Clients → Lviv Lions website → Additional information → Client secrets → Add secret; вставити новий ключ у Supabase, перевірити вхід, потім вимкнути і видалити старий.
 
 Код уже готовий: кнопка «Увійти через Google» на `/login` з’являється сама, щойно провайдер Google увімкнено в Supabase. Ролі працюють як і раніше: їх видають за email, тож запрошення в адмінці діють і для входу через Google.
 
