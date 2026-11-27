@@ -127,12 +127,39 @@ export type Event = {
 // Усі зустрічі клубу відбуваються в готелі Leopolis
 export const leopolis: L = { en: 'Hotel Leopolis, 16 Teatralna St, Lviv', uk: 'Готель Leopolis, вул. Театральна, 16, Львів' };
 
+// Регулярні зустрічі: кожен другий четвер (5.11, 19.11, 3.12, ...) до кінця червня 2027 (підтвердив клуб 27.11.2026).
+// Перші три зустрічі описані вище окремо, тут наступні.
+const kyivOffset = (d: Date) => {
+  const n = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Kyiv', timeZoneName: 'longOffset' }).formatToParts(d).find((x) => x.type === 'timeZoneName')?.value ?? 'GMT+02:00';
+  return n.replace('GMT', '') || '+00:00';
+};
+function regularMeetings(from: string, until: string): Event[] {
+  const out: Event[] = [];
+  for (let d = new Date(`${from}T12:00:00Z`); d <= new Date(`${until}T12:00:00Z`); d = new Date(d.getTime() + 14 * 864e5)) {
+    const day = d.toISOString().slice(0, 10);
+    const off = kyivOffset(d);
+    out.push({
+      slug: `zustrich-${day}`,
+      title: { en: 'Club meeting', uk: 'Зустріч клубу' },
+      start: `${day}T18:00:00${off}`,
+      end: `${day}T21:00:00${off}`,
+      location: leopolis,
+      visibility: 'public',
+      kind: 'meeting',
+      description: { en: 'Regular club meeting, held every other Thursday. Guests interested in joining are welcome: write to us for the details.', uk: 'Регулярна зустріч клубу, яка відбувається щодругого четверга. Запрошуємо гостей, які думають долучитися: напишіть нам, щоб дізнатися деталі.' },
+      timeUnknown: true,
+    });
+  }
+  return out;
+}
+
 export const events: Event[] = [
   // Реальний розклад клубу (підтвердив клуб 26.11.2026). Час і місце, де невідомі, уточнюються.
   { slug: 'druha-zustrich', title: { en: 'Second club meeting', uk: 'Друга зустріч клубу' }, start: '2026-11-19T18:00:00+02:00', end: '2026-11-19T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our second meeting, with special guest Lion Serhii Denisenko from Lions Club Kyiv Ecology: the structure, history and projects of Lions Clubs International, new members and collaboration between Lions clubs.', uk: 'Друга зустріч клубу з особливим гостем Lion Сергієм Денисенком з Lions Club Kyiv Ecology: структура, історія і проєкти Lions Clubs International, нові члени клубу та співпраця між Lions клубами.' }, timeUnknown: true },
   { slug: 'persha-zustrich', title: { en: 'First club meeting', uk: 'Перша зустріч клубу' }, start: '2026-11-05T18:00:00+02:00', end: '2026-11-05T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'The first meeting and the start of Lviv International Lions Club: dinner, member introductions, club structure, humanitarian projects and commemorative diplomas.', uk: 'Перша зустріч і старт роботи Lviv International Lions Club: вечеря, знайомство членів клубу, структура клубу, гуманітарні проєкти і пам’ятні дипломи.' }, timeUnknown: true },
   { slug: 'tretia-zustrich', title: { en: 'Third club meeting', uk: 'Третя зустріч клубу' }, start: '2026-12-03T18:00:00+02:00', end: '2026-12-03T21:00:00+02:00', location: leopolis, visibility: 'public', kind: 'meeting', description: { en: 'Our next club meeting with talks by Club President Lars Vestbjerg and Vice President Oleksiy Druhov. Guests interested in joining are welcome: write to us for the details.', uk: 'Наступна зустріч клубу, на якій виступлять президент клубу Lars Vestbjerg і віцепрезидент Олексій Другов. Запрошуємо гостей, які думають долучитися: напишіть нам, щоб дізнатися деталі.' }, timeUnknown: true },
   { slug: 'novorichna-zustrich-2026', title: { en: 'New Year club gathering', uk: 'Новорічна зустріч клубу' }, start: '2026-12-12T18:00:00+02:00', end: '2026-12-12T22:00:00+02:00', location: leopolis, visibility: 'public', kind: 'gala', description: { en: 'A festive New Year gathering of club members to celebrate the start of our journey together.', uk: 'Святкова новорічна зустріч членів клубу, щоб разом відзначити початок нашого шляху.' }, timeUnknown: true },
+  ...regularMeetings('2026-12-17', '2027-06-30'),
 ];
 
 export const kindLabel: Record<Event['kind'], L> = {
