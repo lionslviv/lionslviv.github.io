@@ -16,6 +16,8 @@ const tabs = [
 ];
 const inp = 'input';
 import { analytics } from '../../../data/site';
+import { members } from '../../../data/content';
+const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, name: lang === 'uk' ? m.name.uk : m.name.en }));
 ---
 <Base title={T.admin} noindex>
   <section class="wrap pb-24 pt-10" data-admin>
@@ -156,9 +158,9 @@ import { analytics } from '../../../data/site';
         <div>
           <h2 class="t-h3">{s('Registered people', 'Зареєстровані')}</h2>
           <div class="mt-5 overflow-x-auto">
-            <table class="w-full min-w-[520px] text-left text-[15px]">
-              <thead class="text-soft"><tr><th class="py-2 font-[560]">{s('Name', 'Ім’я')}</th><th class="py-2 font-[560]">Email</th><th class="py-2 font-[560]">{s('Role', 'Роль')}</th></tr></thead>
-              <tbody data-member-rows></tbody>
+            <table class="w-full min-w-[720px] text-left text-[15px]">
+              <thead class="text-soft"><tr><th class="py-2 font-[560]">{s('Name', 'Ім’я')}</th><th class="py-2 font-[560]">Email</th><th class="py-2 font-[560]">{s('Role', 'Роль')}</th><th class="py-2 font-[560]">{s('Website profile', 'Профіль на сайті')}</th></tr></thead>
+              <tbody data-member-rows data-site-profiles={JSON.stringify(siteProfiles)}></tbody>
             </table>
           </div>
         </div>
@@ -290,6 +292,12 @@ import { analytics } from '../../../data/site';
     document.querySelectorAll<HTMLElement>('[data-admin-only]').forEach((el) => (el.hidden = !admin));
     const people = await A.profiles();
     const roles: A.Role[] = ['user', 'member', 'editor', 'admin'];
+    const site: { slug: string; name: string }[] = JSON.parse($('[data-member-rows]').dataset.siteProfiles || '[]');
+    const uk = document.documentElement.lang === 'uk';
+    const slugSelect = (p: A.Profile) => `<select class="select max-w-[220px] !py-2" aria-label="${uk ? 'Профіль на сайті' : 'Website profile'}: ${A.esc(p.email || '')}" data-slug-for="${p.id}" data-who="${A.esc(p.email || p.full_name)}">
+          <option value="">${uk ? 'не привʼязано' : 'not linked'}</option>
+          ${site.map((m) => `<option value="${m.slug}" ${m.slug === p.member_slug ? 'selected' : ''}>${A.esc(m.name)}</option>`).join('')}
+        </select>`;
     $('[data-member-rows]').innerHTML = people.map((p) => `
       <tr class="border-t border-[var(--line)]">
         <td class="py-3 pr-3">${A.esc(p.full_name || '')}${p.id === me?.id ? ` <span class="t-small">(${L().you})</span>` : ''}</td>
@@ -297,6 +305,7 @@ import { analytics } from '../../../data/site';
         <td class="py-3">${admin && p.id !== me?.id
           ? `<select class="select max-w-[200px] !py-2" aria-label="${L().roleOf}: ${A.esc(p.email || '')}" data-role-for="${p.id}" data-who="${A.esc(p.email || p.full_name)}">${roles.map((x) => `<option value="${x}" ${x === p.role ? 'selected' : ''}>${ct().roles[x]}</option>`).join('')}</select>`
           : ct().roles[p.role]}</td>
+        <td class="py-3 pl-3">${slugSelect(p)}${p.show_contacts ? ` <span class="t-small">${uk ? 'контакти видно' : 'contacts shown'}</span>` : ''}</td>
       </tr>`).join('');
     if (admin) {
       const inv = await A.invites();
@@ -383,6 +392,10 @@ import { analytics } from '../../../data/site';
       const t = e.target as HTMLSelectElement;
       if (t.dataset.roleFor) {
         try { await A.setRole(t.dataset.roleFor, t.value as A.Role, t.dataset.who || ''); t.insertAdjacentHTML('afterend', `<span class="t-small ml-2">${L().saved}</span>`); }
+        catch (err) { alertInline(t, err); }
+      }
+      if (t.dataset.slugFor) {
+        try { await A.setMemberSlug(t.dataset.slugFor, t.value, t.dataset.who || ''); t.insertAdjacentHTML('afterend', `<span class="t-small ml-2">${L().saved}</span>`); }
         catch (err) { alertInline(t, err); }
       }
     });

@@ -31,7 +31,45 @@ const role = tr(lang, m.role);
       {m.field && m.real && <p class="text-[19px] font-[560]">{tr(lang, m.field)}</p>}
       {m.bio ? <p class="max-w-[58ch] text-[19px] leading-[1.6]">{tr(lang, m.bio)}</p> : <p class="max-w-[52ch] text-soft">{s('A short bio of up to 300 characters, field of work and a LinkedIn link will appear here. Members edit their profile in their account and decide whether to show it publicly.', 'Тут буде коротке біо до 300 символів, сфера діяльності та посилання на LinkedIn. Член клубу редагує профіль у кабінеті і сам вирішує, чи показувати його публічно.')}</p>}
       {m.real && <p class="t-small">{s('Profile prepared from public professional information; the final text is being approved.', 'Профіль підготовлено за відкритими професійними даними, остаточний текст погоджується.')}</p>}
-      <p class="panel max-w-[52ch] p-5 text-[15px]">{s('Phone and email are visible to club members after signing in.', 'Телефон і email видно лише членам клубу після входу.')}</p>
+      {m.real && (
+        <div class="panel max-w-[52ch] p-5 text-[15px]" data-contacts={m.slug}>
+          <p data-contacts-note>{s('Contacts are visible to club members after signing in.', 'Контакти бачать лише члени клубу після входу.')} <a href={lp(lang, '/login')} class="link" data-contacts-login>{T.signIn}</a></p>
+          <dl class="mt-3 grid gap-2" data-contacts-list hidden></dl>
+        </div>
+      )}
     </div>
   </section>
 </Base>
+
+<script>
+  import { getProfile, can, memberContacts, esc } from '../../../scripts/api';
+  // Контакти показуємо лише члену клубу; база сама перевіряє роль і згоду власника.
+  async function paintContacts() {
+    const box = document.querySelector<HTMLElement>('[data-contacts]');
+    if (!box) return;
+    const uk = document.documentElement.lang === 'uk';
+    const note = box.querySelector<HTMLElement>('[data-contacts-note]')!;
+    const list = box.querySelector<HTMLElement>('[data-contacts-list]')!;
+    const me = await getProfile();
+    if (!me) return; // гість: лишається підказка з кнопкою входу
+    if (!can.memberArea(me)) {
+      note.textContent = uk ? 'Контакти бачать лише члени клубу. Доступ надає адміністратор клубу.' : 'Contacts are visible to club members only. The club admin grants access.';
+      return;
+    }
+    const c = await memberContacts(box.dataset.contacts!);
+    const rows: [string, string][] = [];
+    if (c?.phone) rows.push([uk ? 'Телефон' : 'Phone', `<a class="link" href="tel:${esc(c.phone.replace(/[^+\d]/g, ''))}">${esc(c.phone)}</a>`]);
+    if (c?.contact_email) rows.push(['Email', `<a class="link" href="mailto:${esc(c.contact_email)}">${esc(c.contact_email)}</a>`]);
+    if (c?.telegram) { const u = c.telegram.replace(/^@|^https?:\/\/t\.me\//, ''); rows.push(['Telegram', `<a class="link" href="https://t.me/${encodeURIComponent(u)}" target="_blank" rel="noopener">@${esc(u)}</a>`]); }
+    if (c?.linkedin && /^https:\/\/([a-z]+\.)?linkedin\.com\//i.test(c.linkedin)) rows.push(['LinkedIn', `<a class="link" href="${esc(c.linkedin)}" target="_blank" rel="noopener">${uk ? 'профіль' : 'profile'}</a>`]);
+    if (!rows.length) {
+      note.textContent = uk ? 'Учасник ще не відкрив свої контакти для членів клубу.' : 'This member has not shared contacts with club members yet.';
+      return;
+    }
+    note.textContent = uk ? 'Контакти для членів клубу' : 'Contacts for club members';
+    list.innerHTML = rows.map(([k, v]) => `<div class="flex flex-wrap gap-x-3"><dt class="w-24 text-soft">${k}</dt><dd>${v}</dd></div>`).join('');
+    list.hidden = false;
+  }
+  document.addEventListener('astro:page-load', paintContacts);
+  window.addEventListener('llp:change', paintContacts);
+</script>

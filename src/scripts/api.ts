@@ -9,7 +9,9 @@ export const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 export type Role = 'user' | 'member' | 'editor' | 'admin';
 export type Status = 'pending' | 'approved' | 'hidden' | 'private';
-export type Profile = { id: string; email: string | null; full_name: string; role: Role; club_position: string | null; profession: string | null; bio: string | null; quote: string | null; is_public: boolean; created_at?: string };
+export type Profile = { id: string; email: string | null; full_name: string; role: Role; club_position: string | null; profession: string | null; bio: string | null; quote: string | null; is_public: boolean; created_at?: string;
+  member_slug?: string | null; phone?: string | null; contact_email?: string | null; telegram?: string | null; linkedin?: string | null; show_contacts?: boolean };
+export type MemberContacts = { full_name: string; phone: string | null; contact_email: string | null; telegram: string | null; linkedin: string | null };
 export type DbPost = { id: string; slug: string; title_en: string; title_uk: string; excerpt_en: string | null; excerpt_uk: string | null; body_en: string | null; body_uk: string | null; cover_url: string | null; status: 'draft' | 'published'; published_at: string | null; updated_at?: string };
 export type DbEvent = { id: string; slug: string; title_en: string; title_uk: string; description_en: string | null; description_uk: string | null; starts_at: string; time_unknown: boolean; location_en: string | null; location_uk: string | null; visibility: 'public' | 'members'; status: 'draft' | 'published' };
 export type DbComment = { id: string; target: string; author_id: string; author_name: string; body: string; status: Status; created_at: string };
@@ -59,7 +61,7 @@ export async function signOut() { await sb.auth.signOut(); try { localStorage.re
 export async function updateProfile(patch: Partial<Profile>) {
   const p = await getProfile();
   if (!p) throw new Error('Not signed in');
-  const { role: _r, id: _i, email: _e, ...safe } = patch;
+  const { role: _r, id: _i, email: _e, member_slug: _m, ...safe } = patch;
   const { error } = await sb.from('profiles').update(safe).eq('id', p.id);
   if (error) throw error;
   await getProfile(true); emit();
@@ -256,6 +258,20 @@ export async function setRole(id: string, role: Role, who: string) {
   if (error) throw error;
   await log(`role of ${who}: ${role}`);
 }
+// Привʼязка акаунта до профілю на сайті (тільки редактори, через функцію в базі)
+export async function setMemberSlug(id: string, slug: string, who: string) {
+  const { error } = await sb.rpc('set_member_slug', { p_profile: id, p_slug: slug });
+  if (error) throw error;
+  await log(`profile link of ${who}: ${slug || '-'}`);
+}
+// Контакти члена клубу для сторінки профілю: база віддає їх лише членам клубу
+// і лише якщо власник увімкнув показ. null = немає доступу або функції ще немає.
+export async function memberContacts(slug: string): Promise<MemberContacts | null> {
+  const { data, error } = await sb.rpc('member_contacts', { p_slug: slug });
+  if (error || !Array.isArray(data) || !data.length) return null;
+  return data[0] as MemberContacts;
+}
+
 export async function invites() {
   const { data } = await sb.from('role_invites').select('*').order('created_at', { ascending: false });
   return (data ?? []) as { email: string; role: Role; created_at: string }[];

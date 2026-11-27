@@ -71,3 +71,14 @@ test('анонім не може завантажити файл у сховищ
   const r = await fetch(`${URL}/storage/v1/object/public-media/ci-test/x.txt`, { method: 'POST', headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'image/jpeg' }, body: 'x' });
   assert.ok(r.status >= 400, `завантаження дозволено (${r.status})`);
 });
+
+test('анонім не бачить контактів членів клубу', async () => {
+  const r = await rest('rpc/member_contacts', { method: 'POST', body: JSON.stringify({ p_slug: 'lars-vestbjerg' }) });
+  const data = r.ok ? await r.json() : null;
+  assert.ok(!r.ok || (Array.isArray(data) && data.length === 0), `контакти видно аноніму: ${JSON.stringify(data)}`);
+});
+
+test('анонім не може привʼязати профіль', async () => {
+  const r = await rest('rpc/set_member_slug', { method: 'POST', body: JSON.stringify({ p_profile: '00000000-0000-0000-0000-000000000000', p_slug: 'x' }) });
+  assert.ok(!r.ok, `set_member_slug доступна аноніму: ${r.status}`);
+});

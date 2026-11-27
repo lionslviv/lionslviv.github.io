@@ -16,7 +16,8 @@ insert into auth.users (instance_id, id, aud, role, email, raw_user_meta_data, c
   ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000a1', 'authenticated', 'authenticated', 'rls-test-user@example.test',   '{"full_name":"RLS User"}',   now(), now()),
   ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000a2', 'authenticated', 'authenticated', 'rls-test-member@example.test', '{"full_name":"RLS Member"}', now(), now()),
   ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000a3', 'authenticated', 'authenticated', 'rls-test-editor@example.test', '{"full_name":"RLS Editor"}', now(), now()),
-  ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000a4', 'authenticated', 'authenticated', 'rls-test-admin@example.test',  '{"full_name":"RLS Admin"}',  now(), now());
+  ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000a4', 'authenticated', 'authenticated', 'rls-test-admin@example.test',  '{"full_name":"RLS Admin"}',  now(), now()),
+  ('00000000-0000-0000-0000-000000000000', '00000000-0000-4000-8000-0000000000a5', 'authenticated', 'authenticated', 'rls-test-guest@example.test',  '{"full_name":"RLS Guest"}',  now(), now());
 update public.profiles set role = 'member' where id = '00000000-0000-4000-8000-0000000000a2';
 update public.profiles set role = 'editor' where id = '00000000-0000-4000-8000-0000000000a3';
 update public.profiles set role = 'admin'  where id = '00000000-0000-4000-8000-0000000000a4';
@@ -115,12 +116,73 @@ begin
 end $$;
 reset role;
 
+-- ========== контакти членів клубу ==========
+-- На цей момент: a1 = member (запрошення), a2 = editor, a3 = editor, a5 = user.
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a2","role":"authenticated"}', true);
+update public.profiles set phone = '+380 00 000 0000', show_contacts = true, member_slug = 'rls-hack' where id = auth.uid();
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a3","role":"authenticated"}', true);
+do $$
+begin
+  begin perform public.set_member_slug('00000000-0000-4000-8000-0000000000a2', 'rls-test-member'); perform set_config('t.editor_links_profile', 'PASS', false);
+  exception when others then perform set_config('t.editor_links_profile', 'FAIL: ' || sqlerrm, false); end;
+end $$;
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a5","role":"authenticated"}', true);
+do $$
+declare n int;
+begin
+  select count(*) into n from public.member_contacts('rls-test-member'); perform set_config('t.user_cannot_see_contacts', case when n = 0 then 'PASS' else 'FAIL: ' || n end, false);
+  begin perform public.set_member_slug(auth.uid(), 'rls-test-guest'); perform set_config('t.user_cannot_link_profile', 'FAIL: linked', false);
+  exception when others then perform set_config('t.user_cannot_link_profile', 'PASS', false); end;
+end $$;
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
+do $$
+declare v text;
+begin
+  select phone into v from public.member_contacts('rls-test-member'); perform set_config('t.member_sees_contacts', case when v = '+380 00 000 0000' then 'PASS' else 'FAIL: ' || coalesce(v, 'null') end, false);
+end $$;
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a2","role":"authenticated"}', true);
+update public.profiles set show_contacts = false where id = auth.uid();
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
+do $$
+declare n int;
+begin
+  select count(*) into n from public.member_contacts('rls-test-member'); perform set_config('t.hidden_contacts_not_shown', case when n = 0 then 'PASS' else 'FAIL: ' || n end, false);
+end $$;
+reset role;
+
+set local role anon;
+select set_config('request.jwt.claims', '{"role":"anon"}', true);
+do $$
+declare n int;
+begin
+  begin select count(*) into n from public.member_contacts('rls-test-member'); perform set_config('t.anon_cannot_see_contacts', case when n = 0 then 'PASS' else 'FAIL: ' || n end, false);
+  exception when others then perform set_config('t.anon_cannot_see_contacts', 'PASS', false); end;
+end $$;
+reset role;
+
 -- ========== перевірки станом бази ==========
 select set_config('t.user_cannot_escalate_role', case when (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') <> 'admin' then 'PASS' else 'FAIL' end, false);
 select set_config('t.user_cannot_change_email', case when (select email from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') = 'rls-test-user@example.test' then 'PASS' else 'FAIL' end, false);
 select set_config('t.comment_author_name_from_db', case when (select author_name from public.comments where body = 'pending ok') = 'RLS User' then 'PASS' else 'FAIL: ' || coalesce((select author_name from public.comments where body = 'pending ok'), 'null') end, false);
 select set_config('t.audit_actor_from_db', case when (select actor_name from public.audit_log where action = 'rls test' order by id desc limit 1) = 'RLS Editor' then 'PASS' else 'FAIL' end, false);
 select set_config('t.invite_applies_role', case when (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') = 'member' then 'PASS' else 'FAIL: ' || (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') end, false);
+select set_config('t.owner_cannot_set_own_link', case when (select member_slug from public.profiles where id = '00000000-0000-4000-8000-0000000000a2') = 'rls-test-member' then 'PASS' else 'FAIL: ' || coalesce((select member_slug from public.profiles where id = '00000000-0000-4000-8000-0000000000a2'), 'null') end, false);
 select set_config('t.admin_role_change_applied', case when (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a2') = 'editor' then 'PASS' else 'FAIL' end, false);
 
 commit;
@@ -140,7 +202,8 @@ from unnest(array[
   'member_comment_published', 'member_sees_only_own_profile', 'member_cannot_post', 'member_uploads_pending_photo', 'member_cannot_self_approve_photo',
   'editor_can_post', 'editor_sees_profiles', 'editor_reads_requests', 'editor_cannot_invite', 'editor_moderates_comments', 'audit_actor_from_db',
   'admin_can_invite', 'admin_can_set_role', 'invite_applies_role', 'admin_role_change_applied',
-  'anon_cannot_read_profiles', 'anon_cannot_comment', 'anon_cannot_publish_review', 'anon_can_send_review', 'anon_sees_no_drafts'
+  'anon_cannot_read_profiles', 'anon_cannot_comment', 'anon_cannot_publish_review', 'anon_can_send_review', 'anon_sees_no_drafts',
+  'editor_links_profile', 'user_cannot_see_contacts', 'user_cannot_link_profile', 'member_sees_contacts', 'hidden_contacts_not_shown', 'anon_cannot_see_contacts', 'owner_cannot_set_own_link'
 ]) as name)
 select count(*) filter (where result = 'PASS') as passed, count(*) as total,
   coalesce(string_agg(test || ': ' || coalesce(result, 'not run'), '; ') filter (where result is distinct from 'PASS'), 'none') as failures
