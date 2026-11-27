@@ -5,20 +5,19 @@ import Photo from '../../../components/Photo.astro';
 import Comments from '../../../components/Comments.astro';
 import { albums, events } from '../../../data/live';
 import { dateLong } from '../../../lib/format';
-import { langOf, lp, tr, t, photoCount } from '../../../i18n';
+import { langOf, lp, tr, photoCount } from '../../../i18n';
 export function getStaticPaths() {
   return [undefined, 'uk'].flatMap((lang) => albums.map((a) => ({ params: { lang, slug: a.slug }, props: { a } })));
 }
 const { a } = Astro.props;
 const lang = langOf(Astro.params.lang);
-const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 const title = tr(lang, a.title);
 const ev = events.find((e) => e.slug === a.eventSlug);
 const ratios = ['4 / 3', '3 / 4', '1 / 1', '4 / 3', '3 / 2', '4 / 5'];
 ---
 <Base title={title} description={`${s('Photo album', 'Фотоальбом')}: ${title}`}>
-  <PageHead title={title} lead={`${dateLong(a.date, lang)}, ${photoCount(lang, a.photos.length)}`} back={{ href: '/gallery', label: s('Whole gallery', 'Уся галерея') }}>
+  <PageHead title={title} lead={`${dateLong(a.date, lang)}, ${photoCount(lang, a.photos.length)}`} back={{ href: '/gallery', label: s('All albums', 'Усі альбоми') }}>
     {ev && <a class="link mt-4 inline-block" href={lp(lang, `/events/${ev.slug}`)}>{s('About the event', 'Про подію')}</a>}
   </PageHead>
   <section class="wrap pb-16">

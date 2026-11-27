@@ -75,6 +75,10 @@ async def main():
         # адмінка без входу: доступ закрито
         await pg.goto(B + '/admin/'); await pg.wait_for_timeout(1500)
         check('адмінка без входу закрита', await pg.is_hidden('[data-app]'))
+        # регулярні зустрічі з коду мають бути в розкладі і тоді, коли події беруться з бази
+        if time.strftime('%Y-%m-%d') < '2027-06-17':
+            reg = glob.glob(ROOT + '/events/zustrich-20*') and glob.glob(ROOT + '/uk/events/zustrich-20*')
+            check('події: регулярні зустрічі в розкладі', bool(reg) and 'zustrich-20' in open(os.path.join(ROOT, 'events', 'index.html'), encoding='utf-8').read())
         # SEO: hreflang і canonical
         html = open(os.path.join(ROOT, 'uk', 'about', 'index.html'), encoding='utf-8').read()
         check('hreflang en/uk/x-default', all(f'hreflang="{x}"' in html for x in ['en', 'uk', 'x-default']))

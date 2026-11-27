@@ -14,7 +14,7 @@ const list = [...news].sort((a, b) => b.date.localeCompare(a.date));
 <Base title={T.nav.news} description={s('News from Lviv International Lions Club: project reports, event announcements and stories of the people we work with.', 'Новини Lviv International Lions Club: звіти про проєкти, анонси подій та історії людей, з якими ми працюємо.')}>
   <PageHead title={T.nav.news} lead={s('Project reports, event announcements and stories of the people we work alongside.', 'Звіти про проєкти, анонси подій та історії людей, поруч з якими ми працюємо.')} />
   <section class="wrap pb-24">
-    <!-- Пости, опубліковані в демо-адмінці, з’являються тут (localStorage) -->
+    <!-- Новини, опубліковані після останньої збірки, підтягуються сюди з Supabase -->
     <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2" data-local-posts data-known={JSON.stringify(list.map((n) => n.slug))} hidden></ul>
     <ul class="grid gap-x-10 gap-y-14 md:grid-cols-2">
       {list.map((n, i) => (

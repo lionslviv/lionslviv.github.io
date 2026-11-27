@@ -10,8 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -19,13 +19,27 @@ jobs:
       - run: npx astro check
       - run: npm run build
 
+  # Smoke-тести інтерфейсу на збірці з живими даними Supabase (як у продакшні).
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: python3 -m pip install --user --break-system-packages playwright
+      - run: python3 tests/smoke.py
+
   # Правила доступу Supabase для аноніма (нічого не створюють у базі).
   # Тести для ролей: tests/rls_roles.sql у Supabase SQL Editor.
   rls:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - run: node --test "tests/*.test.mjs"

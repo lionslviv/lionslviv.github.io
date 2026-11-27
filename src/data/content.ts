@@ -122,6 +122,8 @@ export type Event = {
   description: L;
   timeUnknown?: boolean;
   demo?: boolean;
+  // Регулярна зустріч із розкладу в коді: показується завжди, навіть коли події беруться з бази
+  regular?: boolean;
 };
 
 // Усі зустрічі клубу відбуваються в готелі Leopolis
@@ -148,6 +150,7 @@ function regularMeetings(from: string, until: string): Event[] {
       kind: 'meeting',
       description: { en: 'Regular club meeting, held every other Thursday. Guests interested in joining are welcome: write to us for the details.', uk: 'Регулярна зустріч клубу, яка відбувається щодругого четверга. Запрошуємо гостей, які думають долучитися: напишіть нам, щоб дізнатися деталі.' },
       timeUnknown: true,
+      regular: true,
     });
   }
   return out;
@@ -164,7 +167,7 @@ export const events: Event[] = [
 ];
 
 export const kindLabel: Record<Event['kind'], L> = {
-  meeting: { en: 'Meeting', uk: 'Збори' },
+  meeting: { en: 'Meeting', uk: 'Зустріч' },
   service: { en: 'Service', uk: 'Служіння' },
   gala: { en: 'Celebration', uk: 'Свято' },
 };

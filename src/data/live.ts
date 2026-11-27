@@ -58,12 +58,18 @@ function mapEvent(e: DbEvent): Event {
     end,
     location: both(e.location_en, e.location_uk),
     visibility: e.visibility,
+    regular: st?.regular,
     kind: st?.kind ?? (/new year|новоріч/i.test(e.title_en + e.title_uk) ? 'gala' : 'meeting'),
     description: both(e.description_en, e.description_uk),
     timeUnknown: e.time_unknown,
   };
 }
-export const events: Event[] = (dbEvents ? dbEvents.map(mapEvent) : staticEvents).sort((a, b) => a.start.localeCompare(b.start));
+// Події з бази замінюють статичні. Регулярні зустрічі з коду (regular) додаємо завжди;
+// подія з бази з тим самим slug має пріоритет, тож редактор може уточнити окрему зустріч в адмінці.
+const fromDb = dbEvents?.map(mapEvent);
+export const events: Event[] = (fromDb ? [...fromDb, ...staticEvents.filter((s) => s.regular && !fromDb.some((e) => e.slug === s.slug))] : staticEvents).sort((a, b) =>
+  a.start.localeCompare(b.start),
+);
 
 // ---------- альбоми: статичні + схвалені фото з бази ----------
 const extra = (slug: string): Art[] => (dbPhotos ?? []).filter((p) => p.album_slug === slug).map((p) => ({ seed: p.storage_path, motif: 'event', src: mediaUrl(p.storage_path) }));

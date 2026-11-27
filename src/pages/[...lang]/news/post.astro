@@ -1,9 +1,9 @@
 ---
-// Перегляд поста, створеного в демо-адмінці (дані з localStorage).
+// Перегляд новини, якої ще немає в статичній збірці: дані беремо з Supabase за ?slug=...
 // У продакшні це звичайна сторінка /news/[slug] з даними з Supabase.
 import Base from '../../../layouts/Base.astro';
 import Comments from '../../../components/Comments.astro';
-import { langPaths, langOf, lp, tr, t } from '../../../i18n';
+import { langPaths, langOf, lp, t } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);

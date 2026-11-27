@@ -7,6 +7,7 @@ export const dateLong = (iso: string, lang: Lang = 'en') => f(iso, lang, { day: 
 export const dateShort = (iso: string, lang: Lang = 'en') => f(iso, lang, { day: 'numeric', month: 'long' });
 export const dayNum = (iso: string, lang: Lang = 'en') => f(iso, lang, { day: 'numeric' });
 export const monthShort = (iso: string, lang: Lang = 'en') => f(iso, lang, { month: 'short' }).replace('.', '');
+export const weekdayShort = (iso: string, lang: Lang = 'en') => f(iso, lang, { weekday: 'short' }).replace('.', '');
 export const weekday = (iso: string, lang: Lang = 'en') => f(iso, lang, { weekday: 'long' });
 export const time = (iso: string, lang: Lang = 'en') => f(iso, lang, { hour: '2-digit', minute: '2-digit' });
 export const monthTitle = (key: string, lang: Lang = 'en') => new Intl.DateTimeFormat(loc(lang), { month: 'long', year: 'numeric' }).format(new Date(`${key}-15`));

@@ -2,14 +2,20 @@
 import Base from '../../layouts/Base.astro';
 import { events, albums } from '../../data/live';
 import { langPaths, langOf, lp, tr, t } from '../../i18n';
+import { dateLong } from '../../lib/format';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
 const T = t(lang);
 const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
-// Куди можна додати фото: альбоми і події
+// Куди можна додати фото: альбоми і події, що вже відбулися (майбутні з'являться після чергової збірки).
+// Дата в назві потрібна, бо регулярні зустрічі мають однакову назву.
+const now = Date.now();
 const targets = [
-  ...albums.map((a) => ({ slug: a.slug, title: tr(lang, a.title) })),
-  ...events.filter((e) => !albums.some((a) => a.slug === e.slug)).map((e) => ({ slug: e.slug, title: tr(lang, e.title) })),
+  ...albums.map((a) => ({ slug: a.slug, title: `${tr(lang, a.title)}, ${dateLong(a.date, lang)}` })),
+  ...events
+    .filter((e) => !albums.some((a) => a.slug === e.slug) && new Date(e.start).getTime() <= now)
+    .sort((a, b) => b.start.localeCompare(a.start))
+    .map((e) => ({ slug: e.slug, title: `${tr(lang, e.title)}, ${dateLong(e.start, lang)}` })),
 ];
 ---
 <Base title={T.account} noindex>

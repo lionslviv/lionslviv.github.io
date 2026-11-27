@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Команди
 - `npm run dev` (localhost:4321), `npm run build` (у `dist/`), `npm run preview`.
-- `npm run check`: astro check (типи). CI (`ci.yml`) запускає check + build + `npm test`.
+- `npm run check`: astro check (типи). CI (`ci.yml`) запускає check + build + `npm test` + `tests/smoke.py` на збірці з живими даними бази.
 - `npm test`: `tests/rls-anon.test.mjs`, RLS для аноніма через живий REST Supabase (потрібен інтернет, у базі нічого не створює). Один тест: `node --test --test-name-pattern "<назва>" tests/rls-anon.test.mjs`.
 - `npm run test:ui`: `tests/smoke.py` (Python + Playwright) по зібраному `dist/`, тож спершу `npm run build`. Шлях до Chrome за замовчуванням `/usr/bin/google-chrome`; на Windows задати `PLAYWRIGHT_CHROME`. Перевіряє обидві мови, desktop/mobile, внутрішні посилання, відсутність довгих тире.
 - `npm run brand:import -- <папка>`: копіює офіційні файли бренду в `public/brand/` (розпізнає за назвою, див. `docs/brand/README.md`).
@@ -28,6 +28,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Архітектура (що не видно з одного файлу)
 - Два шари даних: збірка рендерить статичний HTML з `src/data/live.ts` (top-level await до REST Supabase, злиття зі статичними даними за slug, база має пріоритет), а в браузері `src/scripts/api.ts` підтягує свіже і все, що потребує входу (коментарі, кабінет, адмінка, RSVP). Новина, створена після останньої збірки, відкривається через `/news/post/?slug=...` (`src/pages/[...lang]/news/post.astro`), а не через `[slug].astro`.
 - Ролі `user < member < editor < admin`; у клієнті перевірки через `can.*` в `api.ts`, але справжній захист лише RLS, тригери (`protect_role`, `set_comment_author`, `set_audit_actor`) і `security definer` функції в міграціях. Клієнтські перевірки не замінюють правил у базі.
+- Локальна збірка без доступу до Supabase бере статичні дані, а продакшн-збірка бере новини й події з бази: статичні події база замінює повністю, крім регулярних зустрічей (`regular: true`, `regularMeetings()` у `content.ts`). Зміни в подіях перевіряй на живому сайті або в CI, а не лише локально.
 - Учасники (`members` у `src/data/content.ts`) поки редагуються в коді, а не в адмінці; дні народження (`MM-DD`) з них ідуть у календар і `/events.ics` (`src/lib/birthdays.ts`, `src/lib/ics.ts`).
 - `/admin`, `/account`, `/login` статичні оболонки, весь вміст рендерить клієнтський скрипт.
 - `BASE_PATH` і `SITE_URL` задаються змінними середовища в `astro.config.mjs` (workflow деплою їх виставляє).

@@ -1,4 +1,4 @@
-// Клієнтський API сайту поверх Supabase (замінив демо-сховище в localStorage).
+// Клієнтський API сайту поверх Supabase.
 // Доступ контролюють політики RLS: див. supabase/migrations/20261126000000_init.sql.
 import { createClient, type User } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_KEY, MEDIA_BUCKET, mediaUrl } from '../lib/supabase-config';

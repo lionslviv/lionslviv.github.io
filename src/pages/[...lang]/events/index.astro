@@ -5,7 +5,7 @@ import { kindLabel } from '../../../data/content';
 import { events, albums } from '../../../data/live';
 import { club } from '../../../data/site';
 import { u } from '../../../lib/url';
-import { dayNum, monthShort, weekday, time, monthTitle } from '../../../lib/format';
+import { dayNum, monthShort, weekdayShort, time, monthTitle } from '../../../lib/format';
 import { langPaths, langOf, lp, tr, t, photoCount } from '../../../i18n';
 export const getStaticPaths = langPaths;
 const lang = langOf(Astro.params.lang);
@@ -33,7 +33,7 @@ const calMonths = [...new Set([...sorted.map((e) => monthKey(e.start)), ...birth
   .map((key) => [key, sorted.filter((e) => monthKey(e.start) === key)] as const);
 const [ty, tm, td] = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv' }).format(now).split('-').map(Number);
 const todayKey = { y: ty, m: tm, d: td };
-const wd = (iso: string) => (lang === 'uk' ? weekday(iso, lang).slice(0, 2) : weekday(iso, lang).slice(0, 3));
+const wd = (iso: string) => weekdayShort(iso, lang);
 const days = lang === 'uk' ? ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // Сітка календаря: понеділок перший

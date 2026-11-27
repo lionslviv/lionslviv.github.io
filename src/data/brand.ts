@@ -76,7 +76,7 @@ export const photoRules: { do: L[]; dont: L[] } = {
   ],
   dont: [
     { en: 'Staged photos that do not show service', uk: 'Постановочні фото, що не показують служіння' },
-    { en: 'Too dark or overexposed shots', uk: 'Занадто темні або пересвічені кадри' },
+    { en: 'Shots that are too dark or overexposed', uk: 'Занадто темні або пересвічені кадри' },
     { en: 'Photos from search engines without a checked licence', uk: 'Фото з пошуковиків без перевірки ліцензії' },
     { en: 'Children’s faces without parental consent', uk: 'Обличчя дітей без згоди батьків' },
   ],

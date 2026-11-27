@@ -15,7 +15,7 @@ export type BrandAssetInfo = { key: AssetKey; title: L; source: string; file?: s
 const causesWhere: L = { en: 'Causes', uk: 'Напрями служіння' };
 
 export const brandAssets: BrandAssetInfo[] = [
-  { key: 'emblem', group: 'emblem', title: { en: 'Emblem, two colour', uk: 'Емблема, двоколірна' }, source: 'Lions Emblems → Two Color', file: 'LCI_emblem_2color_web.png', where: { en: 'Site header', uk: 'Шапка сайту' } },
+  { key: 'emblem', group: 'emblem', title: { en: 'Emblem, two-colour', uk: 'Емблема, двоколірна' }, source: 'Lions Emblems → Two Color', file: 'LCI_emblem_2color_web.png', where: { en: 'Site header', uk: 'Шапка сайту' } },
   { key: 'emblem-blue', group: 'emblem', title: { en: 'Emblem, blue', uk: 'Емблема, синя' }, source: 'Lions Emblems → One Color, Blue', file: 'LCI_emblem_blue.png', where: { en: 'Documents, Brand page', uk: 'Документи, сторінка «Бренд»' } },
   { key: 'signature', group: 'signature', title: { en: 'Lions International signature, horizontal', uk: 'Підпис Lions International, горизонтальний' }, source: 'Lions International Signatures → Horizontal, Two Color, Blue Text', file: 'Logo_rgb_LI_Signature_Horz1_2C_BlueText.png', where: { en: 'About page', uk: '«Про клуб»' } },
   { key: 'signature-white', group: 'signature', title: { en: 'Lions International signature, white', uk: 'Підпис Lions International, білий' }, source: 'Lions International Signatures → Horizontal, One Color, White', file: 'Logo_rgb_LI_Signature_Horz1_1C_White.png', where: { en: 'Home hero, footer', uk: 'Hero головної, футер' }, dark: true },
