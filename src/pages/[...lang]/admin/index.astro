@@ -11,6 +11,7 @@ const tabs = [
   ['events', T.nav.events],
   ['moderation', s('Moderation', 'Модерація')],
   ['requests', s('Requests', 'Заявки')],
+  ['feedback', s('Feedback', 'Побажання')],
   ['members', T.nav.members],
   ['audit', s('Log', 'Журнал')],
 ];
@@ -53,6 +54,7 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
               <button type="button" class="btn btn-blue btn-sm" data-goto="posts">{s('Write news', 'Написати новину')}</button>
               <button type="button" class="btn btn-quiet btn-sm" data-goto="events">{s('Add event', 'Додати подію')}</button>
               <button type="button" class="btn btn-quiet btn-sm" data-goto="moderation">{s('Review queue', 'Перевірити чергу')}</button>
+              <button type="button" class="btn btn-quiet btn-sm" data-goto="feedback">{s('Website feedback', 'Побажання до сайту')}</button>
               {analytics.dashboard && <a class="btn btn-quiet btn-sm" href={analytics.dashboard} target="_blank" rel="noopener">{s('Visitor statistics', 'Статистика відвідувань')}</a>}
             </div>
           </div>
@@ -142,6 +144,16 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
       <!-- Заявки -->
       <div class="mt-10" data-pane="requests" hidden><ul class="grid gap-3" data-requests></ul></div>
 
+      <!-- Побажання до сайту (форма /feedback) -->
+      <div class="mt-10" data-pane="feedback" hidden>
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex flex-wrap gap-1.5" role="group" aria-label={s('Filter by status', 'Фільтр за статусом')} data-fb-filters></div>
+          <a class="link text-[15px]" href={lp(lang, '/feedback')} target="_blank" rel="noopener">{s('Open the form', 'Відкрити форму')}</a>
+        </div>
+        <p class="t-small mt-3" role="status" data-fb-note></p>
+        <ul class="mt-5 grid gap-4" data-feedback></ul>
+      </div>
+
       <!-- Учасники -->
       <div class="mt-10 grid gap-10" data-pane="members" hidden>
         <div data-admin-only>
@@ -205,6 +217,7 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
     const [cs, rs, ps, reqs, log] = await Promise.all([A.allComments(), A.allReviews(), A.allPhotos(), A.requests(), A.audit(8)]);
     const pend = cs.filter((c) => c.status === 'pending').length + rs.filter((r) => r.status === 'pending').length + ps.filter((p) => p.status === 'pending').length;
     setCount('moderation', pend); setCount('requests', reqs.length);
+    A.allFeedback().then((fb) => setCount('feedback', fb.filter((x) => x.status === 'new').length)).catch(() => {});
     const upcoming = eventsCache.filter((e) => new Date(e.starts_at) > new Date()).length;
     $('[data-kpis]').innerHTML = [[L().pending, pend], [L().posts, postsCache.length], [L().events, upcoming], [L().requests, reqs.length]]
       .map(([l, v]) => `<div class="panel p-5 sm:p-6"><p class="t-num text-[40px] font-[760] leading-none tracking-[-0.04em]">${v}</p><p class="t-small mt-2">${l}</p></div>`).join('');
@@ -287,6 +300,77 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
       </li>`).join('') || empty(L().requestsEmpty);
   }
 
+  // ---------- побажання до сайту ----------
+  let fbCache: A.DbFeedback[] = [];
+  let fbFilter = 'new';
+  const FB = () => L().fb;
+  const fbPageUrl = (pg: string | null) => {
+    if (!pg) return '';
+    if (/^\/(?!\/)/.test(pg)) return `${location.origin}${pg}`;
+    try { const u = new URL(pg); return u.origin === location.origin ? u.href : ''; } catch { return ''; }
+  };
+  const showable = (f: A.FeedbackFile) => /^image\/(jpeg|png|webp)$/.test(f.type);
+  const fbSize = (b: number) => (b > 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
+
+  async function renderFeedback() {
+    const note = $('[data-fb-note]'); note.textContent = '';
+    try { fbCache = await A.allFeedback(); }
+    catch (err) { fbCache = []; const code = (err as { code?: string }).code; note.textContent = code === 'PGRST205' || code === '42P01' ? FB().missing : `${L().error}: ${(err as Error).message}`; }
+    setCount('feedback', fbCache.filter((x) => x.status === 'new').length);
+    const counts: Record<string, number> = { all: fbCache.length };
+    for (const x of fbCache) counts[x.status] = (counts[x.status] ?? 0) + 1;
+    $('[data-fb-filters]').innerHTML = ['new', 'in_progress', 'done', 'declined', 'all'].map((k) =>
+      `<button type="button" class="btn btn-sm ${k === fbFilter ? 'btn-blue' : 'btn-quiet'}" aria-pressed="${k === fbFilter}" data-fb-filter="${k}">${FB().filters[k]} ${counts[k] ?? 0}</button>`).join('');
+    const list = fbCache.filter((x) => fbFilter === 'all' || x.status === fbFilter);
+    const urls = await A.feedbackFileUrls(list.flatMap((x) => (x.files ?? []).map((f) => f.path))).catch(() => ({} as Record<string, string>));
+    $('[data-feedback]').innerHTML = list.map((x) => {
+      const pageUrl = fbPageUrl(x.page);
+      const files = x.files ?? [];
+      const stBadge = x.status === 'new' ? 'badge-gold' : x.status === 'in_progress' ? 'badge-blue' : '';
+      const btn = (status: A.FeedbackStatus, label: string, cls = 'btn-quiet') => x.status === status ? '' : `<button type="button" class="btn ${cls} btn-sm" data-fb-status="${x.id}" data-s="${status}">${label}</button>`;
+      return `<li class="rounded-2xl border border-[var(--line)] p-4 sm:p-5">
+        <div class="flex flex-wrap items-center gap-2"><span class="badge ${stBadge}">${FB().st[x.status]}</span><span class="badge">${FB().kinds[x.kind] ?? x.kind}</span><span class="t-small">${fmtLong(x.created_at)}</span></div>
+        <p class="mt-2 text-[15px]">${A.esc(x.name || '')}${x.email ? ` <a class="link" href="mailto:${A.esc(x.email)}">${A.esc(x.email)}</a>` : ''} <span class="t-small">(${x.author_id ? FB().account : FB().anon})</span></p>
+        ${x.page ? `<p class="t-small mt-1">${FB().page}: ${pageUrl ? `<a class="link" href="${A.esc(pageUrl)}" target="_blank" rel="noopener">${A.esc(x.page)}</a>` : A.esc(x.page)}</p>` : ''}
+        <p class="mt-3 whitespace-pre-line">${A.esc(x.message)}</p>
+        ${files.length ? `<div class="mt-4"><p class="t-small">${FB().files}${x.consent_publish ? `, ${FB().consent}` : ''}</p>
+          <ul class="mt-2 flex flex-wrap gap-3">${files.map((f) => {
+            const href = urls[f.path];
+            if (showable(f) && href) return `<li><a href="${A.esc(href)}" target="_blank" rel="noopener" title="${A.esc(f.name)}"><img src="${A.esc(href)}" alt="${A.esc(f.name)}" loading="lazy" class="h-24 w-24 rounded-xl object-cover" /></a></li>`;
+            return `<li class="self-center text-[15px]">${href ? `<a class="link" href="${A.esc(href)}" target="_blank" rel="noopener">${A.esc(f.name)}</a>` : A.esc(f.name)} <span class="t-small">${fbSize(f.size)}</span></li>`;
+          }).join('')}</ul></div>` : ''}
+        <div class="field mt-4"><label for="fbn-${x.id}">${FB().note}</label><textarea id="fbn-${x.id}" class="textarea min-h-[70px]" maxlength="2000" data-fb-note-for="${x.id}">${A.esc(x.admin_note || '')}</textarea></div>
+        ${x.handled_name ? `<p class="t-small mt-2">${A.esc(FB().handled(x.handled_name, fmtLong(x.updated_at)))}</p>` : ''}
+        <div class="mt-3 flex flex-wrap gap-2">
+          ${x.status === 'new' ? btn('in_progress', FB().take, 'btn-blue') : ''}
+          ${x.status === 'in_progress' ? btn('done', FB().done, 'btn-blue') : ''}
+          ${x.status !== 'new' ? btn('new', FB().reopen) : ''}
+          ${x.status !== 'declined' && x.status !== 'done' ? btn('declined', FB().decline) : ''}
+          <button type="button" class="btn btn-quiet btn-sm" data-fb-save-note="${x.id}">${FB().saveNote}</button>
+          <button type="button" class="btn btn-quiet btn-sm" data-fb-copy="${x.id}">${FB().copy}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fb-del="${x.id}">${L().del}</button>
+        </div>
+      </li>`;
+    }).join('') || empty(FB().empty);
+  }
+
+  // Текст завдання для команди сайту або чату з Claude: усе звернення і посилання на файли на 7 днів
+  async function feedbackTask(x: A.DbFeedback) {
+    const urls = await A.feedbackFileUrls((x.files ?? []).map((f) => f.path), 7 * 24 * 3600).catch(() => ({} as Record<string, string>));
+    const page = fbPageUrl(x.page) || x.page;
+    const lines = [
+      `## ${FB().taskTitle}: ${FB().kinds[x.kind] ?? x.kind} (${fmtLong(x.created_at)})`,
+      page ? `- ${FB().page}: ${page}` : '',
+      `- ${FB().author}: ${[x.name, x.email].filter(Boolean).join(', ') || '-'} (${x.author_id ? FB().account : FB().anon})`,
+      `- ${FB().status}: ${FB().st[x.status]}`,
+      x.files?.length ? `- ${FB().rights}: ${x.consent_publish ? FB().yes : FB().no}` : '',
+      '', x.message, '',
+      x.files?.length ? `${FB().files} (${FB().linksNote}):\n${x.files.map((f) => `- ${f.name}: ${urls[f.path] ?? f.path}`).join('\n')}` : '',
+      x.admin_note ? `\n${FB().note}: ${x.admin_note}` : '',
+    ];
+    return lines.filter((l, i) => l !== '' || (i > 0 && lines[i - 1] !== '')).join('\n').trim();
+  }
+
   async function renderMembers() {
     const admin = A.can.manageRoles(me);
     document.querySelectorAll<HTMLElement>('[data-admin-only]').forEach((el) => (el.hidden = !admin));
@@ -318,7 +402,7 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
     $('[data-audit]').innerHTML = log.map((a) => `<li class="border-b border-[var(--line)] py-2"><span class="text-soft">${fmtLong(a.at)}</span> ${A.esc(a.actor_name || '')}: ${A.esc(a.action)}</li>`).join('') || empty(L().auditEmpty);
   }
 
-  const renderers: Record<string, () => Promise<void>> = { overview: renderOverview, posts: renderPosts, events: renderEvents, moderation: renderModeration, requests: renderRequests, members: renderMembers, audit: renderAudit };
+  const renderers: Record<string, () => Promise<void>> = { overview: renderOverview, posts: renderPosts, events: renderEvents, moderation: renderModeration, requests: renderRequests, feedback: renderFeedback, members: renderMembers, audit: renderAudit };
   async function showTab(k: string) {
     if (!renderers[k]) k = 'overview';
     document.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((t) => { const on = t.dataset.tab === k; t.setAttribute('aria-selected', String(on)); t.classList.toggle('bg-[var(--surface)]', on); t.classList.toggle('shadow-sm', on); });
@@ -364,6 +448,27 @@ const siteProfiles = members.filter((m) => m.real).map((m) => ({ slug: m.slug, n
         if (t.dataset.r) { await A.setReviewStatus(t.dataset.r, t.dataset.s as A.Status); return void renderModeration(); }
         if (t.dataset.photo) { await A.setPhotoStatus(t.dataset.photo, t.dataset.s as A.Status); return void renderModeration(); }
         if (t.dataset.delPhoto) { if (confirmInline(t)) { await A.deletePhoto(photosCache.find((p) => p.id === t.dataset.delPhoto)!); renderModeration(); } return; }
+        const fbFilterBtn = t.closest<HTMLElement>('[data-fb-filter]');
+        if (fbFilterBtn) { fbFilter = fbFilterBtn.dataset.fbFilter!; return void renderFeedback(); }
+        if (t.dataset.fbStatus) {
+          const note = document.querySelector<HTMLTextAreaElement>(`[data-fb-note-for="${t.dataset.fbStatus}"]`);
+          await A.updateFeedback(t.dataset.fbStatus, { status: t.dataset.s as A.FeedbackStatus, admin_note: note?.value.trim() || null });
+          return void renderFeedback();
+        }
+        if (t.dataset.fbSaveNote) {
+          const note = document.querySelector<HTMLTextAreaElement>(`[data-fb-note-for="${t.dataset.fbSaveNote}"]`)!;
+          await A.updateFeedback(t.dataset.fbSaveNote, { admin_note: note.value.trim() || null });
+          const x = fbCache.find((f) => f.id === t.dataset.fbSaveNote); if (x) x.admin_note = note.value.trim() || null;
+          t.insertAdjacentHTML('afterend', `<span class="t-small self-center">${L().saved}</span>`); setTimeout(() => t.nextElementSibling?.remove(), 2500);
+          return;
+        }
+        if (t.dataset.fbCopy) {
+          const x = fbCache.find((f) => f.id === t.dataset.fbCopy)!;
+          await navigator.clipboard.writeText(await feedbackTask(x));
+          $('[data-fb-note]').textContent = FB().copied;
+          return;
+        }
+        if (t.dataset.fbDel) { if (confirmInline(t)) { await A.deleteFeedback(fbCache.find((f) => f.id === t.dataset.fbDel)!); renderFeedback(); } return; }
         if (t.dataset.delReq) { if (confirmInline(t)) { await A.deleteRequest(t.dataset.delReq); renderRequests(); } return; }
         if (t.dataset.delInvite) { await A.deleteInvite(t.dataset.delInvite); return void renderMembers(); }
         if (t.dataset.delPost) { if (confirmInline(t)) { const p = postsCache.find((x) => x.id === t.dataset.delPost)!; await A.deletePost(p.id, p.title_en || p.title_uk); renderPosts(); } return; }

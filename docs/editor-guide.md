@@ -27,6 +27,7 @@ Open **/admin**. Tabs:
 | Events | Add meetings and events, edit or delete them |
 | Moderation | Approve or reject photos, comments and reviews |
 | Requests | Read messages from the Join and Contact forms |
+| Feedback | Ideas, errors and materials for the website from the /feedback form: take them on, add a note, mark as done |
 | Members | Give access by email, change roles (admins), link accounts to website profiles |
 | Log | Who changed what and when |
 
@@ -50,6 +51,13 @@ Open **/admin**. Tabs:
 - **Photos** uploaded by members wait for approval. Approved photos appear in the album of their event.
 - **Comments** from users who are not yet members wait for approval; members' comments are published straight away.
 - **Reviews** from guests are published only after approval. Critical reviews can stay unpublished and be discussed by the board.
+
+### Website feedback
+
+- Anyone can send an idea, report an error or offer photos via **/feedback** (the link “Suggest a website improvement” is in the footer of every page and remembers the page). Files can be attached after signing in.
+- Admin → **Feedback**. New messages are counted on the tab. Press **Take on**, then **Mark as done** once the website is updated, or **Decline**. Add a note on what was done.
+- Files open via temporary links. Publish photos only if the sender confirmed rights and consent (“rights and consent confirmed”).
+- **Copy as task** copies the whole message with file links (valid for 7 days): paste it into a chat with Claude or a task list.
 
 ### Giving access (admins)
 
@@ -93,6 +101,7 @@ Open **/admin**. Tabs:
 | Події | Додавати зустрічі й події, редагувати чи видаляти |
 | Модерація | Схвалювати або відхиляти фото, коментарі й відгуки |
 | Заявки | Читати повідомлення з форм «Приєднатися» і «Контакти» |
+| Побажання | Ідеї, помилки й матеріали для сайту з форми /feedback: взяти в роботу, додати нотатку, позначити виконаним |
 | Учасники | Надавати доступ за email, змінювати ролі (адміни), привʼязувати акаунти до профілів на сайті |
 | Журнал | Хто, що і коли змінив |
 
@@ -116,6 +125,13 @@ Open **/admin**. Tabs:
 - **Фото**, які завантажили члени клубу, чекають схвалення. Схвалені зʼявляються в альбомі своєї події.
 - **Коментарі** від користувачів, які ще не члени клубу, чекають схвалення; коментарі членів публікуються одразу.
 - **Відгуки** гостей публікуються лише після схвалення. Критичні можна не публікувати і обговорити на правлінні.
+
+### Побажання до сайту
+
+- Будь-хто може надіслати ідею, повідомити про помилку чи запропонувати фото через **/feedback** (посилання «Запропонувати зміни до сайту» є у футері кожної сторінки і запам’ятовує сторінку). Файли можна додати після входу.
+- Адмінка → **Побажання**. Кількість нових видно на вкладці. Натисни **Взяти в роботу**, а коли сайт оновлено, **Позначити виконаним**, або **Відхилити**. У нотатці запиши, що зроблено.
+- Файли відкриваються за тимчасовими посиланнями. Фото публікуй лише тоді, коли автор підтвердив права і згоду («права і згоду підтверджено»).
+- **Скопіювати як завдання** копіює звернення з посиланнями на файли (діють 7 днів): встав у чат із Claude або в список завдань.
 
 ### Як надати доступ (адміни)
 

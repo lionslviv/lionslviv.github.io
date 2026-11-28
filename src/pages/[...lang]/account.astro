@@ -105,6 +105,13 @@ const targets = [
   document.addEventListener('astro:page-load', () => {
     const root = document.querySelector<HTMLElement>('[data-account]');
     if (!root) return;
+    // Повернення після входу на сторінку, з якої людина пішла на /login/?next=... (наприклад, форма побажань)
+    try {
+      const v = JSON.parse(localStorage.getItem('llp.next') || 'null');
+      if (v && Date.now() - v.at < 3600_000 && /^\/(?!\/)/.test(v.to)) {
+        getProfile().then((p) => { if (p) { localStorage.removeItem('llp.next'); location.replace(v.to); } });
+      } else if (v) localStorage.removeItem('llp.next');
+    } catch { /* */ }
     paint();
     const f = root.querySelector<HTMLFormElement>('[data-profile]')!;
     f.onsubmit = async (e) => {

@@ -36,6 +36,12 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
 <script>
   import { getProfile, signInWithEmail, signInWithGoogle, enabledProviders, signOut, can, displayName } from '../../scripts/api';
   import { ct, cprefix } from '../../scripts/i18n';
+  // ?next=/шлях: після входу повертаємо людину туди, звідки вона прийшла (лише адреси цього сайту).
+  // Зберігаємо в localStorage, бо посилання з листа і Google ведуть на /account/.
+  const NEXT = 'llp.next';
+  function savedNext(): string | null {
+    try { const v = JSON.parse(localStorage.getItem(NEXT) || 'null'); return v && Date.now() - v.at < 3600_000 ? v.to : null; } catch { return null; }
+  }
   async function paint() {
     const box = document.querySelector<HTMLElement>('[data-current]');
     const form = document.querySelector<HTMLFormElement>('[data-login]');
@@ -50,11 +56,15 @@ const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
       const go = box.querySelector<HTMLAnchorElement>('[data-go]')!;
       go.href = `${cprefix()}${can.admin(p) ? '/admin' : '/account'}`;
       go.textContent = can.admin(p) ? ct().admin : ct().account;
+      const next = savedNext();
+      if (next) { go.href = next; go.textContent = ct().back; }
     }
   }
   document.addEventListener('astro:page-load', () => {
     const form = document.querySelector<HTMLFormElement>('[data-login]');
     if (!form) return;
+    const next = new URLSearchParams(location.search).get('next');
+    if (next && /^\/(?!\/)/.test(next)) { try { localStorage.setItem(NEXT, JSON.stringify({ to: next, at: Date.now() })); } catch { /* */ } }
     paint();
     document.querySelector<HTMLButtonElement>('[data-out]')!.onclick = async () => { await signOut(); paint(); };
     const g = document.querySelector<HTMLButtonElement>('[data-google]');

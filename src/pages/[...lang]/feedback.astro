@@ -1,0 +1,146 @@
+---
+// Побажання до сайту: ідеї, помилки, матеріали для розміщення. Запис у Supabase (site_feedback),
+// файли в приватному бакеті feedback-files (лише після входу). Редактори бачать усе в адмінці → «Побажання».
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { langPaths, langOf, lp, t } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = langOf(Astro.params.lang);
+const T = t(lang);
+const s = (en: string, uk: string) => (lang === 'uk' ? uk : en);
+const kinds = [
+  ['idea', s('Idea or suggestion', 'Ідея або побажання')],
+  ['bug', s('Error or inaccuracy on the website', 'Помилка чи неточність на сайті')],
+  ['materials', s('Photos or materials to publish', 'Фото чи матеріали для розміщення')],
+  ['other', s('Something else', 'Інше')],
+];
+---
+<Base title={T.nav.feedback} description={s('Suggest an improvement to the Lviv International Lions Club website or send photos and materials to publish.', 'Запропонуйте зміни до сайту Lviv International Lions Club або надішліть фото й матеріали для розміщення.')}>
+  <PageHead title={s('Help us improve the website', 'Допоможіть покращити сайт')} lead={s('Spotted a mistake, have an idea or photos from a club event? Send them here: the website team will review every message and update the site.', 'Помітили помилку, маєте ідею чи фото з події клубу? Надішліть сюди: команда сайту розгляне кожне звернення і оновить сайт.')} />
+  <section class="wrap grid gap-14 pb-24 lg:grid-cols-[1.5fr_1fr]">
+    <form class="relative grid content-start gap-5" data-feedback-form novalidate>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] h-px w-px opacity-0" />
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="field"><label for="fb-kind">{s('What is it about', 'Про що звернення')}</label>
+          <select id="fb-kind" name="kind" class="select">{kinds.map(([k, l]) => <option value={k}>{l}</option>)}</select></div>
+        <div class="field"><label for="fb-page">{s('Page (optional)', 'Сторінка (необов’язково)')}</label><input id="fb-page" name="page" class="input" maxlength="300" placeholder={s('e.g. /about/ or a link', 'наприклад, /about/ або посилання')} /></div>
+      </div>
+      <div class="field"><label for="fb-msg">{s('Your message', 'Ваше повідомлення')}</label><textarea id="fb-msg" name="message" class="textarea min-h-[160px]" minlength="2" maxlength="3000" required placeholder={s('What should we change, add or fix?', 'Що варто змінити, додати чи виправити?')}></textarea></div>
+
+      <div class="panel grid gap-3 p-5" data-files-box>
+        <p class="text-[15px] font-[580]">{s('Photos and files', 'Фото і файли')}</p>
+        <p class="t-small" data-files-guest>{s('To attach photos or files, ', 'Щоб додати фото чи файли, ')}<a class="link" href={lp(lang, '/login')} data-login-link>{s('sign in', 'увійдіть')}</a>{s(' with Google or an email link. You can send text without signing in.', ' через Google або посилання на email. Текст можна надіслати і без входу.')}</p>
+        <div class="grid gap-3" data-files-user hidden>
+          <label class="btn btn-quiet btn-sm w-fit cursor-pointer">{s('Choose files', 'Обрати файли')}<input type="file" name="files" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.pdf,.docx,.pptx,.xlsx,.txt" class="sr-only" data-files /></label>
+          <ul class="grid gap-1 text-[15px]" data-file-list></ul>
+          <p class="t-small">{s('Up to 8 files, 20 MB each: photos, PDF, Word, PowerPoint, Excel. Only the website editors can see them.', 'До 8 файлів, до 20 МБ кожен: фото, PDF, Word, PowerPoint, Excel. Файли бачать лише редактори сайту.')}</p>
+          <label class="check" data-rights hidden><input type="checkbox" name="rights" /> <span>{s('I have the right to share these materials with the club, and the people in the photos agree to their publication.', 'Маю право передати ці матеріали клубу, а люди на фото погодилися на їх публікацію.')}</span></label>
+        </div>
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="field"><label for="fb-name">{s('Name (optional)', 'Ім’я (необов’язково)')}</label><input id="fb-name" name="name" class="input" maxlength="120" autocomplete="name" /></div>
+        <div class="field"><label for="fb-email">{s('Email for a reply (optional)', 'Email для відповіді (необов’язково)')}</label><input id="fb-email" name="email" type="email" class="input" maxlength="200" autocomplete="email" /></div>
+      </div>
+      <label class="check"><input type="checkbox" name="consent" required /> <span>{s('I agree to the processing of the data in this form so the club can review my message.', 'Погоджуюся на обробку даних з цієї форми, щоб клуб міг розглянути звернення.')}</span></label>
+      <div class="flex flex-wrap items-center gap-4">
+        <button class="btn btn-blue" type="submit">{s('Send', 'Надіслати')}</button>
+        <p class="text-[15px]" role="status" data-status></p>
+      </div>
+    </form>
+
+    <aside class="lg:sticky lg:top-24 lg:self-start">
+      <h2 class="t-h3">{s('What happens next', 'Що буде далі')}</h2>
+      <ol class="mt-5 grid gap-4 text-[17px]">
+        <li><span class="font-[640]">1.</span> {s('Your message goes to the website editors. Nothing is published automatically.', 'Звернення отримують редактори сайту. Нічого не публікується автоматично.')}</li>
+        <li><span class="font-[640]">2.</span> {s('An editor takes it on, checks the facts and updates the website.', 'Редактор бере його в роботу, перевіряє факти й оновлює сайт.')}</li>
+        <li><span class="font-[640]">3.</span> {s('If you leave an email, we will reply once it is done or if we have questions.', 'Якщо залишите email, напишемо, коли все буде готово або якщо виникнуть запитання.')}</li>
+      </ol>
+      <p class="t-small mt-6">{s('We publish photos of people only with their consent. Details: ', 'Фото людей публікуємо лише за їхньою згодою. Докладніше: ')}<a class="link" href={lp(lang, '/privacy')}>{T.nav.privacy}</a>.</p>
+    </aside>
+  </section>
+</Base>
+<script>
+  import { getProfile, sendFeedback, feedbackLimits, type FeedbackKind } from '../../scripts/api';
+  import { ct, cprefix } from '../../scripts/i18n';
+  const fmtSize = (b: number) => (b > 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
+
+  document.addEventListener('astro:page-load', async () => {
+    const f = document.querySelector<HTMLFormElement>('[data-feedback-form]');
+    if (!f || f.dataset.bound) return; f.dataset.bound = '1';
+    const L = ct().fb;
+    const q = new URLSearchParams(location.search);
+    const page = f.elements.namedItem('page') as HTMLInputElement;
+    if (q.get('page') && !page.value) page.value = q.get('page')!.slice(0, 300);
+    const kind = f.elements.namedItem('kind') as HTMLSelectElement;
+    if (q.get('kind') && [...kind.options].some((o) => o.value === q.get('kind'))) kind.value = q.get('kind')!;
+    const loginLink = f.querySelector<HTMLAnchorElement>('[data-login-link]')!;
+    loginLink.href = `${cprefix()}/login/?next=${encodeURIComponent(location.pathname + location.search)}`;
+
+    const input = f.querySelector<HTMLInputElement>('[data-files]')!;
+    const list = f.querySelector<HTMLElement>('[data-file-list]')!;
+    const rights = f.querySelector<HTMLElement>('[data-rights]')!;
+    const st = f.querySelector<HTMLElement>('[data-status]')!;
+    const say = (text: string, ok = false) => { st.className = `text-[15px] ${ok ? 'text-[#067647]' : 'text-[#b42318]'}`; st.textContent = text; };
+    let picked: File[] = [];
+    const paintFiles = () => {
+      list.innerHTML = '';
+      picked.forEach((file, i) => {
+        const li = document.createElement('li'); li.className = 'flex flex-wrap items-center gap-3';
+        const name = document.createElement('span'); name.textContent = `${file.name} (${fmtSize(file.size)})`;
+        const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'link text-[14px]'; rm.textContent = L.remove;
+        rm.onclick = () => { picked.splice(i, 1); paintFiles(); };
+        li.append(name, rm); list.append(li);
+      });
+      rights.hidden = picked.length === 0;
+      (rights.querySelector('input') as HTMLInputElement).required = picked.length > 0;
+    };
+    input.addEventListener('change', () => {
+      const tooBig = [...(input.files ?? [])].filter((x) => x.size > feedbackLimits.mb * 1024 * 1024 && x.type !== 'image/jpeg');
+      picked = [...picked, ...[...(input.files ?? [])].filter((x) => !tooBig.includes(x))].slice(0, feedbackLimits.files);
+      input.value = '';
+      paintFiles();
+      if (tooBig.length) say(L.tooBig(tooBig.map((x) => x.name).join(', ')));
+      else st.textContent = '';
+    });
+
+    const p = await getProfile().catch(() => null);
+    f.querySelector<HTMLElement>('[data-files-guest]')!.hidden = !!p;
+    f.querySelector<HTMLElement>('[data-files-user]')!.hidden = !p;
+    if (p) {
+      const nm = f.elements.namedItem('name') as HTMLInputElement; const em = f.elements.namedItem('email') as HTMLInputElement;
+      if (!nm.value) nm.value = p.full_name || '';
+      if (!em.value) em.value = p.email || '';
+    }
+
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!f.checkValidity()) { say(L.invalid); f.reportValidity(); return; }
+      const d = new FormData(f);
+      if (String(d.get('website') || '')) { f.reset(); say(L.thanks, true); return; } // пастка для ботів
+      const btn = f.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      btn.disabled = true;
+      if (picked.length) say(L.uploading, true);
+      const email = String(d.get('email') || '').trim();
+      try {
+        await sendFeedback({
+          kind: String(d.get('kind')) as FeedbackKind,
+          page: String(d.get('page') || '').trim() || undefined,
+          message: String(d.get('message')).trim(),
+          name: String(d.get('name') || '').trim() || undefined,
+          email: email || undefined,
+          consent_publish: picked.length > 0 && d.get('rights') === 'on',
+        }, picked);
+      } catch (err) {
+        console.error(err);
+        say(ct().sendError); btn.disabled = false; return;
+      }
+      btn.disabled = false;
+      (f.elements.namedItem('message') as HTMLTextAreaElement).value = '';
+      (f.elements.namedItem('consent') as HTMLInputElement).checked = false;
+      (rights.querySelector('input') as HTMLInputElement).checked = false;
+      picked = []; paintFiles();
+      say(email ? L.thanksReply : L.thanks, true);
+    });
+  });
+</script>

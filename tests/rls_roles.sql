@@ -8,6 +8,7 @@ delete from public.comments where target = 'rls-test';
 delete from public.audit_log where action = 'rls test';
 delete from public.role_invites where email like 'rls-test-%@example.test';
 delete from public.reviews where author_name like 'RLS TEST%';
+delete from public.site_feedback where message like 'RLS TEST%';
 delete from auth.users where email like 'rls-test-%@example.test';
 
 begin;
@@ -176,6 +177,50 @@ begin
 end $$;
 reset role;
 
+-- ========== побажання до сайту (site_feedback) ==========
+-- На цей момент: a1 = member, a2 = editor, a3 = editor, a4 = admin, a5 = user.
+set local role anon;
+select set_config('request.jwt.claims', '{"role":"anon"}', true);
+do $$
+declare n int;
+begin
+  begin insert into public.site_feedback (kind, message) values ('idea', 'RLS TEST anon'); perform set_config('t.anon_sends_feedback', 'PASS', false);
+  exception when others then perform set_config('t.anon_sends_feedback', 'FAIL: ' || sqlerrm, false); end;
+  begin insert into public.site_feedback (kind, message, files) values ('materials', 'RLS TEST anon files', '[{"path":"x/y.jpg"}]'); perform set_config('t.anon_cannot_attach_files', 'FAIL: inserted', false);
+  exception when others then perform set_config('t.anon_cannot_attach_files', 'PASS', false); end;
+  begin insert into public.site_feedback (kind, message, status) values ('idea', 'RLS TEST anon done', 'done'); perform set_config('t.anon_cannot_set_feedback_status', 'FAIL: inserted', false);
+  exception when others then perform set_config('t.anon_cannot_set_feedback_status', 'PASS', false); end;
+  begin select count(*) into n from public.site_feedback; perform set_config('t.anon_cannot_read_feedback', case when n = 0 then 'PASS' else 'FAIL: ' || n end, false);
+  exception when others then perform set_config('t.anon_cannot_read_feedback', 'PASS', false); end;
+end $$;
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a5","role":"authenticated"}', true);
+do $$
+declare n int;
+begin
+  begin insert into public.site_feedback (kind, message, files, consent_publish) values ('materials', 'RLS TEST user', '[{"path":"00000000-0000-4000-8000-0000000000a5/f.jpg","name":"f.jpg"}]', true); perform set_config('t.user_sends_feedback_with_files', 'PASS', false);
+  exception when others then perform set_config('t.user_sends_feedback_with_files', 'FAIL: ' || sqlerrm, false); end;
+  begin insert into public.site_feedback (kind, message, files) values ('materials', 'RLS TEST user foreign', '[{"path":"00000000-0000-4000-8000-0000000000a1/f.jpg"}]'); perform set_config('t.user_cannot_attach_foreign_files', 'FAIL: inserted', false);
+  exception when others then perform set_config('t.user_cannot_attach_foreign_files', 'PASS', false); end;
+  select count(*) into n from public.site_feedback; perform set_config('t.user_cannot_read_feedback', case when n = 0 then 'PASS' else 'FAIL: ' || n end, false);
+  update public.site_feedback set status = 'done' where message like 'RLS TEST%'; get diagnostics n = row_count;
+  perform set_config('t.user_cannot_update_feedback', case when n = 0 then 'PASS' else 'FAIL: ' || n end, false);
+end $$;
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-8000-0000000000a3","role":"authenticated"}', true);
+do $$
+declare n int;
+begin
+  select count(*) into n from public.site_feedback where message like 'RLS TEST%'; perform set_config('t.editor_reads_feedback', case when n = 2 then 'PASS' else 'FAIL: ' || n end, false);
+  update public.site_feedback set status = 'in_progress', admin_note = 'rls note', message = 'hacked', handled_name = 'Lars Vestbjerg' where message = 'RLS TEST user'; get diagnostics n = row_count;
+  perform set_config('t.editor_takes_feedback', case when n = 1 then 'PASS' else 'FAIL: ' || n end, false);
+end $$;
+reset role;
+
 -- ========== перевірки станом бази ==========
 select set_config('t.user_cannot_escalate_role', case when (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') <> 'admin' then 'PASS' else 'FAIL' end, false);
 select set_config('t.user_cannot_change_email', case when (select email from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') = 'rls-test-user@example.test' then 'PASS' else 'FAIL' end, false);
@@ -183,6 +228,7 @@ select set_config('t.comment_author_name_from_db', case when (select author_name
 select set_config('t.audit_actor_from_db', case when (select actor_name from public.audit_log where action = 'rls test' order by id desc limit 1) = 'RLS Editor' then 'PASS' else 'FAIL' end, false);
 select set_config('t.invite_applies_role', case when (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') = 'member' then 'PASS' else 'FAIL: ' || (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a1') end, false);
 select set_config('t.owner_cannot_set_own_link', case when (select member_slug from public.profiles where id = '00000000-0000-4000-8000-0000000000a2') = 'rls-test-member' then 'PASS' else 'FAIL: ' || coalesce((select member_slug from public.profiles where id = '00000000-0000-4000-8000-0000000000a2'), 'null') end, false);
+select set_config('t.feedback_content_locked_handler_from_db', case when (select handled_name || '/' || status || '/' || coalesce(admin_note, '') from public.site_feedback where message = 'RLS TEST user') = 'RLS Editor/in_progress/rls note' then 'PASS' else 'FAIL: ' || coalesce((select handled_name || '/' || status from public.site_feedback where message like 'RLS TEST user%' limit 1), 'row changed or missing') end, false);
 select set_config('t.admin_role_change_applied', case when (select role from public.profiles where id = '00000000-0000-4000-8000-0000000000a2') = 'editor' then 'PASS' else 'FAIL' end, false);
 
 commit;
@@ -194,6 +240,7 @@ delete from public.comments where target = 'rls-test';
 delete from public.audit_log where action = 'rls test';
 delete from public.role_invites where email like 'rls-test-%@example.test';
 delete from public.reviews where author_name like 'RLS TEST%';
+delete from public.site_feedback where message like 'RLS TEST%';
 delete from auth.users where email like 'rls-test-%@example.test';
 with r as (select name as test, current_setting('t.' || name, true) as result
 from unnest(array[
@@ -203,7 +250,9 @@ from unnest(array[
   'editor_can_post', 'editor_sees_profiles', 'editor_reads_requests', 'editor_cannot_invite', 'editor_moderates_comments', 'audit_actor_from_db',
   'admin_can_invite', 'admin_can_set_role', 'invite_applies_role', 'admin_role_change_applied',
   'anon_cannot_read_profiles', 'anon_cannot_comment', 'anon_cannot_publish_review', 'anon_can_send_review', 'anon_sees_no_drafts',
-  'editor_links_profile', 'user_cannot_see_contacts', 'user_cannot_link_profile', 'member_sees_contacts', 'hidden_contacts_not_shown', 'anon_cannot_see_contacts', 'owner_cannot_set_own_link'
+  'editor_links_profile', 'user_cannot_see_contacts', 'user_cannot_link_profile', 'member_sees_contacts', 'hidden_contacts_not_shown', 'anon_cannot_see_contacts', 'owner_cannot_set_own_link',
+  'anon_sends_feedback', 'anon_cannot_attach_files', 'anon_cannot_set_feedback_status', 'anon_cannot_read_feedback', 'user_sends_feedback_with_files',
+  'user_cannot_attach_foreign_files', 'user_cannot_read_feedback', 'user_cannot_update_feedback', 'editor_reads_feedback', 'editor_takes_feedback', 'feedback_content_locked_handler_from_db'
 ]) as name)
 select count(*) filter (where result = 'PASS') as passed, count(*) as total,
   coalesce(string_agg(test || ': ' || coalesce(result, 'not run'), '; ') filter (where result is distinct from 'PASS'), 'none') as failures

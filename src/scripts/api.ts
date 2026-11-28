@@ -1,7 +1,7 @@
 // Клієнтський API сайту поверх Supabase.
 // Доступ контролюють політики RLS: див. supabase/migrations/20261126000000_init.sql.
 import { createClient, type User } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_KEY, MEDIA_BUCKET, mediaUrl } from '../lib/supabase-config';
+import { SUPABASE_URL, SUPABASE_KEY, MEDIA_BUCKET, FEEDBACK_BUCKET, mediaUrl } from '../lib/supabase-config';
 
 export const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
@@ -17,6 +17,11 @@ export type DbEvent = { id: string; slug: string; title_en: string; title_uk: st
 export type DbComment = { id: string; target: string; author_id: string; author_name: string; body: string; status: Status; created_at: string };
 export type DbReview = { id: string; author_name: string; author_kind: string; body: string; consent_publish: boolean; email: string | null; status: Status; created_at: string };
 export type DbRequest = { id: string; kind: 'join' | 'contact'; name: string; email: string; message: string; created_at: string };
+export type FeedbackKind = 'idea' | 'bug' | 'materials' | 'other';
+export type FeedbackStatus = 'new' | 'in_progress' | 'done' | 'declined';
+export type FeedbackFile = { path: string; name: string; size: number; type: string };
+export type DbFeedback = { id: string; kind: FeedbackKind; page: string | null; message: string; name: string | null; email: string | null; files: FeedbackFile[]; consent_publish: boolean;
+  author_id: string | null; status: FeedbackStatus; admin_note: string | null; handled_name: string | null; created_at: string; updated_at: string };
 export type DbPhoto = { id: string; album_slug: string; storage_path: string; caption: string | null; status: Status; created_at: string; uploaded_by: string | null };
 
 const rank: Record<Role, number> = { user: 0, member: 1, editor: 2, admin: 3 };
@@ -206,13 +211,13 @@ export async function setRsvp(slug: string, going: boolean) {
 }
 // ---------- фото ----------
 // Стискаємо в браузері до 1600 px: так прибираються й метадані (EXIF, геолокація).
-async function shrink(file: File, max = 1600): Promise<Blob> {
+async function shrink(file: File, max = 1600, quality = 0.84): Promise<Blob> {
   const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
   const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
   const c = document.createElement('canvas');
   c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
   c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height);
-  return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('Image conversion failed'))), 'image/jpeg', 0.84));
+  return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('Image conversion failed'))), 'image/jpeg', quality));
 }
 export async function uploadImage(folder: string, file: File) {
   const blob = await shrink(file);
@@ -249,6 +254,60 @@ export async function deletePhoto(ph: DbPhoto) {
   await log(`deleted photo ${ph.id.slice(0, 8)}`);
 }
 export { mediaUrl };
+
+// ---------- побажання до сайту ----------
+// Надіслати може будь-хто; файли лише після входу: вони лягають у приватний бакет у папку акаунта (<uid>/...).
+// JPEG-фото зменшуємо до 2400 px (лишається якість для сайту, зникають EXIF і геолокація); решта файлів іде як є.
+const FEEDBACK_MAX_MB = 20;
+export const feedbackLimits = { files: 8, mb: FEEDBACK_MAX_MB };
+async function uploadFeedbackFile(uid: string, f: File): Promise<FeedbackFile> {
+  let body: Blob = f; let type = f.type || 'application/octet-stream'; let name = f.name;
+  if (f.type === 'image/jpeg') { // PNG і WebP лишаємо як є: там може бути прозорість (логотипи)
+    try { body = await shrink(f, 2400, 0.9); type = 'image/jpeg'; name = f.name.replace(/\.[^.]+$/, '') + '.jpg'; } catch { /* лишаємо оригінал */ }
+  }
+  if (body.size > FEEDBACK_MAX_MB * 1024 * 1024) throw new Error(`${f.name}: > ${FEEDBACK_MAX_MB} MB`);
+  const ext = (name.match(/\.([a-z0-9]{1,5})$/i)?.[1] || 'bin').toLowerCase();
+  const path = `${uid}/${crypto.randomUUID()}.${ext}`;
+  const { error } = await sb.storage.from(FEEDBACK_BUCKET).upload(path, body, { contentType: type, upsert: false });
+  if (error) throw error;
+  return { path, name: name.slice(0, 160), size: body.size, type };
+}
+export async function sendFeedback(r: { kind: FeedbackKind; page?: string; message: string; name?: string; email?: string; consent_publish: boolean }, files: File[] = []) {
+  const p = files.length ? await getProfile() : null;
+  if (files.length && !p) throw new Error('Sign in to attach files');
+  const uploaded: FeedbackFile[] = [];
+  try {
+    for (const f of files.slice(0, feedbackLimits.files)) uploaded.push(await uploadFeedbackFile(p!.id, f));
+    const { error } = await sb.from('site_feedback').insert({ ...r, files: uploaded });
+    if (error) throw error;
+  } catch (err) {
+    if (uploaded.length) await sb.storage.from(FEEDBACK_BUCKET).remove(uploaded.map((u) => u.path));
+    throw err;
+  }
+}
+// Кидає помилку, якщо таблиці ще немає (міграція не застосована): адмінка показує підказку.
+export async function allFeedback() {
+  const { data, error } = await sb.from('site_feedback').select('*').order('created_at', { ascending: false }).limit(300);
+  if (error) throw error;
+  return (data ?? []) as DbFeedback[];
+}
+export async function updateFeedback(id: string, patch: { status?: FeedbackStatus; admin_note?: string | null }) {
+  const { error } = await sb.from('site_feedback').update(patch).eq('id', id);
+  if (error) throw error;
+  if (patch.status) await log(`site feedback ${id.slice(0, 8)}: ${patch.status}`);
+}
+export async function deleteFeedback(fb: DbFeedback) {
+  if (fb.files?.length) await sb.storage.from(FEEDBACK_BUCKET).remove(fb.files.map((f) => f.path));
+  const { error } = await sb.from('site_feedback').delete().eq('id', fb.id);
+  if (error) throw error;
+  await log(`deleted site feedback ${fb.id.slice(0, 8)}`);
+}
+// Тимчасові посилання на приватні файли (бачать лише редактори): за замовчуванням на годину.
+export async function feedbackFileUrls(paths: string[], seconds = 3600): Promise<Record<string, string>> {
+  if (!paths.length) return {};
+  const { data } = await sb.storage.from(FEEDBACK_BUCKET).createSignedUrls(paths, seconds);
+  return Object.fromEntries((data ?? []).filter((d) => d.signedUrl && d.path).map((d) => [d.path!, d.signedUrl as string]));
+}
 
 // ---------- учасники і ролі (адмін) ----------
 export async function profiles() {

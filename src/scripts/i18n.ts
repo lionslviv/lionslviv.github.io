@@ -15,12 +15,17 @@ const en = {
   formInvalid: 'Fill in all fields and agree to data processing.', joinSent: 'Request sent. The club secretary will reply soon.', contactSent: 'Message sent. We will reply by email.',
   sendError: 'Could not send. Please try again or write to us by email.',
   copied: 'Copied', copyFail: 'Could not copy', copy: 'Copy', copyText: 'Copy text',
-  current: 'Signed in as', signOut: 'Sign out',
+  current: 'Signed in as', signOut: 'Sign out', back: 'Back to the page',
   linkSent: (e: string) => `We sent a sign-in link to ${e}. Open it on this device. The link is valid for one hour.`,
   linkError: 'Could not send the link. Check the address or try again in a minute.',
   googleError: 'Could not open Google sign-in. Try again or use the email link.',
   profileSaved: 'Profile saved.', uploadSent: (n: number) => `${n} ${n === 1 ? 'photo' : 'photos'} sent for moderation.`, uploading: 'Uploading…', uploadError: 'Upload failed. Try a JPG or PNG up to 10 MB.',
   needMember: 'You are registered. Member features will become available once an admin confirms your membership.',
+  fb: {
+    remove: 'Remove', invalid: 'Write a message and agree to data processing. With files, also confirm your rights to them.',
+    tooBig: (n: string) => `Too large (over 20 MB): ${n}`, uploading: 'Uploading files…',
+    thanks: 'Thank you! The website team has received your message.', thanksReply: 'Thank you! The website team has received your message and will reply by email.',
+  },
   kinds: { partner: 'Partner', beneficiary: 'Beneficiary', volunteer: 'Volunteer', guest: 'Guest' } as Record<string, string>,
   a: {
     signedInAs: 'Signed in as', pending: 'Pending moderation', posts: 'News', events: 'Upcoming events', requests: 'Requests',
@@ -34,6 +39,17 @@ const en = {
     newPost: 'New post', editing: 'Editing', newEvent: 'New event', editingEvent: 'Editing event', roleOf: 'Role', you: 'you', saved: 'Saved.', error: 'Error',
     liveNote: 'Changes appear on news and events lists right away; full pages update within 30 minutes.',
     album: 'Album',
+    fb: {
+      kinds: { idea: 'idea', bug: 'error', materials: 'materials', other: 'other' } as Record<string, string>,
+      st: { new: 'new', in_progress: 'in progress', done: 'done', declined: 'declined' } as Record<string, string>,
+      filters: { new: 'New', in_progress: 'In progress', done: 'Done', declined: 'Declined', all: 'All' } as Record<string, string>,
+      take: 'Take on', done: 'Mark as done', decline: 'Decline', reopen: 'Back to new', note: 'Editor’s note', saveNote: 'Save note',
+      copy: 'Copy as task', copied: 'Copied: paste it into a task or a chat with Claude. File links work for 7 days.',
+      page: 'Page', files: 'Files', consent: 'rights and consent confirmed', handled: (who: string, when: string) => `Updated ${when} by ${who}`,
+      empty: 'No messages here.', missing: 'The feedback table is not in the database yet: apply the migration 20261128000000_site_feedback.sql.',
+      anon: 'without signing in', account: 'signed-in user',
+      taskTitle: 'Website feedback', author: 'Author', status: 'Status', linksNote: 'links work for 7 days', yes: 'yes', no: 'no', rights: 'Rights and consent to publish',
+    },
   },
 };
 type D = typeof en;
@@ -49,12 +65,17 @@ const uk: D = {
   formInvalid: 'Заповніть усі поля і дайте згоду на обробку даних.', joinSent: 'Заявку надіслано. Секретар клубу скоро відповість.', contactSent: 'Повідомлення надіслано. Відповімо на email.',
   sendError: 'Не вдалося надіслати. Спробуйте ще раз або напишіть нам на email.',
   copied: 'Скопійовано', copyFail: 'Не вдалося скопіювати', copy: 'Скопіювати', copyText: 'Скопіювати текст',
-  current: 'Ви увійшли як', signOut: 'Вийти',
+  current: 'Ви увійшли як', signOut: 'Вийти', back: 'Повернутися на сторінку',
   linkSent: (e: string) => `Ми надіслали посилання для входу на ${e}. Відкрийте його на цьому пристрої. Посилання діє одну годину.`,
   linkError: 'Не вдалося надіслати посилання. Перевірте адресу або спробуйте за хвилину.',
   googleError: 'Не вдалося відкрити вхід через Google. Спробуйте ще раз або увійдіть за посиланням на email.',
   profileSaved: 'Профіль збережено.', uploadSent: (n: number) => `${n} фото надіслано на модерацію.`, uploading: 'Завантаження…', uploadError: 'Не вдалося завантажити. Спробуйте JPG або PNG до 10 МБ.',
   needMember: 'Ви зареєстровані. Доступ до можливостей для членів клубу з’явиться, коли адмін підтвердить членство.',
+  fb: {
+    remove: 'Прибрати', invalid: 'Напишіть повідомлення і дайте згоду на обробку даних. Якщо є файли, підтвердьте права на них.',
+    tooBig: (n: string) => `Завеликі файли (понад 20 МБ): ${n}`, uploading: 'Завантажуємо файли…',
+    thanks: 'Дякуємо! Команда сайту отримала ваше звернення.', thanksReply: 'Дякуємо! Команда сайту отримала ваше звернення і відповість на email.',
+  },
   kinds: { partner: 'Партнер', beneficiary: 'Отримувач допомоги', volunteer: 'Волонтер', guest: 'Гість' },
   a: {
     signedInAs: 'Ви увійшли як', pending: 'На модерації', posts: 'Новин', events: 'Майбутніх подій', requests: 'Заявок',
@@ -68,6 +89,17 @@ const uk: D = {
     newPost: 'Нова публікація', editing: 'Редагування', newEvent: 'Нова подія', editingEvent: 'Редагування події', roleOf: 'Роль', you: 'ви', saved: 'Збережено.', error: 'Помилка',
     liveNote: 'Зміни одразу видно в списках новин і подій; повні сторінки оновлюються протягом 30 хвилин.',
     album: 'Альбом',
+    fb: {
+      kinds: { idea: 'ідея', bug: 'помилка', materials: 'матеріали', other: 'інше' },
+      st: { new: 'нове', in_progress: 'в роботі', done: 'виконано', declined: 'відхилено' },
+      filters: { new: 'Нові', in_progress: 'В роботі', done: 'Виконано', declined: 'Відхилено', all: 'Усі' },
+      take: 'Взяти в роботу', done: 'Позначити виконаним', decline: 'Відхилити', reopen: 'Повернути в нові', note: 'Нотатка редактора', saveNote: 'Зберегти нотатку',
+      copy: 'Скопіювати як завдання', copied: 'Скопійовано: вставте в завдання або в чат із Claude. Посилання на файли діють 7 днів.',
+      page: 'Сторінка', files: 'Файли', consent: 'права і згоду підтверджено', handled: (who: string, when: string) => `Оновлено ${when}, ${who}`,
+      empty: 'Тут звернень немає.', missing: 'Таблиці побажань ще немає в базі: застосуйте міграцію 20261128000000_site_feedback.sql.',
+      anon: 'без входу', account: 'з акаунта',
+      taskTitle: 'Побажання до сайту', author: 'Автор', status: 'Статус', linksNote: 'посилання діють 7 днів', yes: 'так', no: 'ні', rights: 'Права і згода на публікацію',
+    },
   },
 };
 export const ct = () => (clang() === 'uk' ? uk : en);

@@ -12,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Збірка бере новини, події і схвалені фото з бази (`src/data/live.ts`), статичні дані в `src/data/content.ts` лише запасний варіант. GitHub Actions перезбирає сайт кожні 30 хвилин.
 - Резервна копія: щомісяця `.github/workflows/backup.yml` + `scripts/backup.sh`, зашифрований артефакт 90 днів (docs/backup.md).
 - Контакти членів: поля в `profiles`, показ через функцію `member_contacts(slug)` лише членам; привʼязка акаунта до профілю (`member_slug`) лише редакторами через `set_member_slug`.
+- Побажання до сайту: форма `/feedback` → таблиця `site_feedback` (+ приватний бакет `feedback-files`, файли лише після входу, у папці `<uid>/`), вкладка адмінки «Побажання» (статуси new/in_progress/done/declined, «Скопіювати як завдання»). Міграція `20261128000000_site_feedback.sql`.
 - Ролі видаються через `role_invites` (адмінка → Учасники). Секретні ключі Supabase в репозиторій не додавати.
 - Вхід: посилання на email або Google (провайдер у Supabase; кнопка на `/login` з'являється, лише якщо `/auth/v1/settings` каже, що Google увімкнено). Налаштування в `docs/google-login.md`.
 - У `main` регулярно пушать інші: деплой за cron і нічне завдання Claude (01:35 Київ, виправляє очевидне і пише звіт у `docs/nightly-report.md`, `docs/site.md` розділ 10). Перед змінами роби `git pull`.

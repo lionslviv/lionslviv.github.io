@@ -19,7 +19,7 @@ test('публічні події і новини читаються', async () 
   assert.ok(po.data.every((p) => p.status === 'published'), 'аноніму видно чернетки новин');
 });
 
-for (const table of ['profiles', 'contact_requests', 'role_invites', 'audit_log', 'event_rsvps']) {
+for (const table of ['profiles', 'contact_requests', 'role_invites', 'audit_log', 'event_rsvps', 'site_feedback']) {
   test(`анонім не бачить ${table}`, async () => {
     const r = await rows(`${table}?select=*&limit=5`);
     assert.ok(r.data === null || r.data.length === 0, `${table}: видно ${r.data?.length} рядків`);
@@ -81,4 +81,21 @@ test('анонім не бачить контактів членів клубу'
 test('анонім не може привʼязати профіль', async () => {
   const r = await rest('rpc/set_member_slug', { method: 'POST', body: JSON.stringify({ p_profile: '00000000-0000-0000-0000-000000000000', p_slug: 'x' }) });
   assert.ok(!r.ok, `set_member_slug доступна аноніму: ${r.status}`);
+});
+
+test('анонім не може надіслати побажання з готовим статусом чи чужими файлами', async () => {
+  const tries = [
+    { kind: 'idea', message: 'ci test', status: 'done' },
+    { kind: 'idea', message: 'ci test', admin_note: 'x' },
+    { kind: 'materials', message: 'ci test', files: [{ path: '00000000-0000-0000-0000-000000000000/x.jpg' }] },
+  ];
+  for (const body of tries) {
+    const r = await rest('site_feedback', { method: 'POST', body: JSON.stringify(body) });
+    assert.ok(r.status >= 400, `site_feedback: вставка дозволена (${r.status}) для ${JSON.stringify(body)}`);
+  }
+});
+
+test('анонім не може завантажити файл до побажань', async () => {
+  const r = await fetch(`${URL}/storage/v1/object/feedback-files/ci-test/x.jpg`, { method: 'POST', headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'image/jpeg' }, body: 'x' });
+  assert.ok(r.status >= 400, `завантаження дозволено (${r.status})`);
 });
